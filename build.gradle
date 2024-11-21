@@ -1,0 +1,34 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.22'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+group = 'org.betamc.core'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://repository.johnymuffin.com/repository/maven-public'
+    }
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'com.legacyminecraft.poseidon:poseidon-craftbukkit:1.1.8'
+    implementation(files('lib/poseidon-commandapi-1.0-SNAPSHOT.jar'))
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = '1.8'
+}
+
+shadowJar {
+    dependencies {
+        exclude(dependency('com.legacyminecraft.poseidon:poseidon-craftbukkit:1.1.8'))
+    }
+    archiveBaseName.set('BMC-Core')
+    archiveVersion.set('1.0-SNAPSHOT')
+    archiveClassifier.set('')
+}
