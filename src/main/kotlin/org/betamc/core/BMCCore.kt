@@ -1,17 +1,20 @@
 package org.betamc.core
 
+import org.betamc.core.commands.*
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
+import org.poseidonplugins.commandapi.CommandManager
 import java.util.logging.Logger
 
 class BMCCore : JavaPlugin() {
 
     private lateinit var logger: Logger
-    private val prefix = "[BetaMC Core]"
+    private val prefix = "[BMC-Core]"
 
     override fun onEnable() {
         logger = Bukkit.getLogger()
-        logger.info("$prefix Plugin has loaded, Version ${description.version}")
+        CommandManager(this).registerCommands(CommandHelp(), CommandList())
+        logger.info("$prefix Has loaded, Version ${description.version}")
     }
 
     override fun onDisable() {
