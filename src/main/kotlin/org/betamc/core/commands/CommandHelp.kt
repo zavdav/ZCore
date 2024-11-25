@@ -7,10 +7,9 @@ import kotlin.math.ceil
 
 class CommandHelp : Command(
     "help",
-    listOf(),
-    "Shows a list of available commands.",
-    "/help",
-    "bmc.help",
+    description = "Shows a list of available commands.",
+    usage = "/help",
+    permission = "bmc.help",
     preprocessor = Preprocessor()) {
 
     override fun execute(event: CommandEvent) {
