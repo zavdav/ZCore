@@ -16,7 +16,7 @@ class CommandBroadcast : Command(
     preprocessor = Preprocessor()) {
 
     override fun execute(event: CommandEvent) {
-        broadcastMessage(Property.format_broadcastFormat.toString()
+        broadcastMessage(Property.BROADCAST_FORMAT.toString()
             .replace("%message%", joinArgs(event.args, 0)))
     }
 }
