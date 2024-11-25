@@ -14,7 +14,7 @@ class CommandKick : Command(
     preprocessor = Preprocessor()) {
 
     override fun execute(event: CommandEvent) {
-        val player: Player? = Bukkit.matchPlayer(event.args[0])?.get(0)
+        val player: Player? = Bukkit.matchPlayer(event.args[0]).getOrNull(0)
         if (player == null) {
             sendMessage(event.sender, Language.PLAYER_NOT_FOUND.msg
                 .replace("%player%", event.args[0]))
