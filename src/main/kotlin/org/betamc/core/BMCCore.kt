@@ -25,7 +25,14 @@ class BMCCore : JavaPlugin() {
         language = Configuration(File(dataFolder, "language.yml"))
         reloadConfig()
 
-        CommandManager(this).registerCommands(CommandBroadcast(), CommandHelp(), CommandList())
+        CommandManager(this).registerCommands(
+            CommandBroadcast(),
+            CommandHelp(),
+            CommandKick(),
+            CommandKickAll(),
+            CommandList()
+        )
+
         logger.info("$prefix Has loaded, Version: ${description.version}")
     }
 
