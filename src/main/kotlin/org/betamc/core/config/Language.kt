@@ -4,6 +4,7 @@ enum class Language(var msg: String) {
 
     NO_PERMISSION("&cYou don't have permission to do that."),
     PLAYER_ONLY("&cOnly players can run this command."),
+    PLAYER_NOT_FOUND("&cError: Could not find player &6%player%"),
 
     HELP_HEADER("&eHelp: Page &6%page% &eof &6%pages%"),
     HELP_COMMAND("&6%command%: &7%description%"),

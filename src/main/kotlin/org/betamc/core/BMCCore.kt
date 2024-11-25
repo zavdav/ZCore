@@ -13,7 +13,7 @@ class BMCCore : JavaPlugin() {
 
     override fun onEnable() {
         logger = Bukkit.getLogger()
-        CommandManager(this).registerCommands(CommandHelp(), CommandList())
+        CommandManager(this).registerCommands(CommandBroadcast(), CommandHelp(), CommandList())
         logger.info("$prefix Has loaded, Version ${description.version}")
     }
 
