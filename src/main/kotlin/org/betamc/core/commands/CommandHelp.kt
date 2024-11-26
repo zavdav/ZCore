@@ -15,7 +15,13 @@ class CommandHelp : Command(
     override fun execute(event: CommandEvent) {
         var query = event.args.joinToString(" ")
         var page = if (query.isEmpty()) 1 else event.args[0].toIntOrNull()
-        var commands = getPluginCommands().map { entry -> entry.value }.filter { command -> hasPermission(event.sender, command.permission) }
+        var commands = getPluginCommands().map { entry -> entry.value }
+            .filter { command ->
+                if (!event.sender.isOp && (command.permission == null || command.permission == "")) {
+                    command.plugin.description.name == "BMC-Core" && hasPermission(event.sender, "bmc.${command.name}")
+                }
+                else hasPermission(event.sender, command.permission)
+            }
 
         if (page == null) {
             page = event.args[event.args.size-1].toIntOrNull()
