@@ -10,6 +10,7 @@ enum class Language(var msg: String) {
     HELP_COMMAND("&6%command%: &7%description%"),
     HELP_NO_RESULTS("&cError: No matching results"),
     HELP_PAGE_TOO_HIGH("&cError: Page number too high"),
+    KICK_MESSAGE_BROADCAST("&c%sender% kicked %player%: &f%message%"),
     KICK_DEFAULT_MESSAGE("Kicked from server"),
     LIST_HEADER("&eThere are &6%count% &eout of &6%max% &eplayers online."),
     LIST_PLAYERS("&7Online players: &f%list%");
