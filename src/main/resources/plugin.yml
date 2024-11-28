@@ -1,4 +1,4 @@
 name: BMC-Core
-main: org.betamc.core.BMCCore
+main: org.betamc.core.BMCPlugin
 version: 1.0-SNAPSHOT
 description: BetaMC Core Plugin
