@@ -6,6 +6,8 @@ enum class Language(var msg: String) {
     PLAYER_ONLY("&cOnly players can run this command."),
     PLAYER_NOT_FOUND("&cError: Could not find player &6%player%"),
 
+    HEAL_SELF("&aYou have been healed"),
+    HEAL_PLAYER("&aHealed %player%"),
     HELP_HEADER("&eHelp: Page &6%page% &eof &6%pages%"),
     HELP_COMMAND("&6%command%: &7%description%"),
     HELP_NO_RESULTS("&cError: No matching results"),

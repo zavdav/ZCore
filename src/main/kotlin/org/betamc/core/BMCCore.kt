@@ -27,6 +27,7 @@ class BMCCore : JavaPlugin() {
 
         CommandManager(this).registerCommands(
             CommandBroadcast(),
+            CommandHeal(),
             CommandHelp(),
             CommandKick(),
             CommandKickAll(),
