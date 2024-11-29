@@ -3,11 +3,15 @@ package org.betamc.core
 import org.betamc.core.commands.*
 import org.betamc.core.config.Language
 import org.betamc.core.config.Property
+import org.betamc.core.listeners.BMCPlayerListener
+import org.betamc.core.player.PlayerMap
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 import org.bukkit.util.config.Configuration
 import org.poseidonplugins.commandapi.CommandManager
 import java.io.File
+import java.time.Duration
+import java.time.LocalDateTime
 import java.util.logging.Logger
 
 object BMCCore {
@@ -23,6 +27,9 @@ object BMCCore {
     lateinit var config: Configuration private set
     lateinit var language: Configuration private set
 
+    private var lastAutoSave: LocalDateTime = LocalDateTime.now()
+
+
     fun enable(plugin: Plugin) {
         if (enabled) return
         this.plugin = plugin
@@ -37,6 +44,7 @@ object BMCCore {
         cmdManager = CommandManager(plugin)
         cmdManager.registerCommands(
             CommandBroadcast(),
+            CommandGod(),
             CommandHeal(),
             CommandHelp(),
             CommandKick(),
@@ -44,12 +52,25 @@ object BMCCore {
             CommandList()
         )
 
+        Bukkit.getPluginManager().registerEvents(BMCPlayerListener(), plugin)
+
+        Bukkit.getScheduler().scheduleAsyncRepeatingTask(plugin, {
+            PlayerMap.runTasks()
+            if (Duration.between(lastAutoSave, LocalDateTime.now()).seconds >= Property.AUTO_SAVE_TIME.toLong()) {
+                lastAutoSave = LocalDateTime.now()
+                logger.info("$prefix Saving player data")
+                PlayerMap.saveData()
+            }
+        }, 0, 20 * 10)
+
         enabled = true
         logger.info("$prefix ${plugin.description.name} ${plugin.description.version} has been enabled.")
     }
 
     fun disable() {
         if (!enabled) return
+        PlayerMap.saveData()
+
         enabled = false
         logger.info("$prefix ${plugin.description.name} ${plugin.description.version} has been disabled.")
     }
