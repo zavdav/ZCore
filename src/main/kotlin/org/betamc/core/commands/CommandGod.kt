@@ -15,6 +15,7 @@ class CommandGod : Command(
     "Enables god mode.",
     "/god [player]",
     "bmc.god",
+    true,
     maxArgs = 1,
     preprocessor = Preprocessor()) {
 
@@ -23,11 +24,6 @@ class CommandGod : Command(
         var bmcPlayer = PlayerMap.getPlayer(player)
 
         if (event.args.isNotEmpty()) {
-            if (!hasPermission(event.sender, "bmc.god.others")) {
-                sendMessage(event.sender, Language.NO_PERMISSION)
-                return
-            }
-
             val onlinePlayer = Utils.getPlayerFromUsername(event.args[0])
             if (onlinePlayer == null) {
                 sendMessage(event.sender, Language.PLAYER_NOT_FOUND.msg
@@ -37,10 +33,14 @@ class CommandGod : Command(
             bmcPlayer = PlayerMap.getPlayer(onlinePlayer)
         }
 
-        val msg = if (bmcPlayer.getGodStatus()) Language.GOD_DISABLE.msg else Language.GOD_ENABLE.msg
         val isSelf = player.uniqueId == bmcPlayer.getUUID()
+        if (!isSelf && !hasPermission(event.sender, "bmc.god.others")) {
+            sendMessage(event.sender, Language.NO_PERMISSION)
+            return
+        }
         bmcPlayer.setGodStatus(!bmcPlayer.getGodStatus())
 
+        val msg = if (bmcPlayer.getGodStatus()) Language.GOD_ENABLE.msg else Language.GOD_DISABLE.msg
         sendMessage(event.sender, msg
             .replace("%player%", if (isSelf) "your" else "${bmcPlayer.getName()}'s"))
         if (!isSelf) sendMessage(bmcPlayer.getOnlinePlayer(), msg
