@@ -44,12 +44,15 @@ object BMCCore {
         cmdManager = CommandManager(plugin)
         cmdManager.registerCommands(
             CommandBroadcast(),
+            CommandDelHome(),
             CommandGod(),
             CommandHeal(),
             CommandHelp(),
+            CommandHome(),
             CommandKick(),
             CommandKickAll(),
-            CommandList()
+            CommandList(),
+            CommandSetHome()
         )
 
         Bukkit.getPluginManager().registerEvents(BMCPlayerListener(), plugin)

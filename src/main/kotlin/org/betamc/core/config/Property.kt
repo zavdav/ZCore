@@ -3,7 +3,8 @@ package org.betamc.core.config
 enum class Property(val key: String, var value: Any) {
 
     AUTO_SAVE_TIME("auto-save-time", 300),
-    BROADCAST_FORMAT("format.broadcast-format", "&f[&cBroadcast&f] &a%message%");
+    BROADCAST_FORMAT("format.broadcast-format", "&f[&cBroadcast&f] &a%message%"),
+    MULTIPLE_HOMES("multiple-homes", 10);
 
     override fun toString(): String = value.toString()
 

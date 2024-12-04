@@ -8,7 +8,13 @@ class BMCPlayer(private val uuid: UUID) : PlayerData(uuid) {
 
     fun isOnline(): Boolean = Bukkit.getOnlinePlayers().map { player -> player.uniqueId }.contains(uuid)
 
-    fun getOnlinePlayer(): Player? = Bukkit.getOnlinePlayers().filter { player -> player.uniqueId == uuid }.getOrNull(0)
+    fun getName(): String =
+        when (isOnline()) {
+            true -> getOnlinePlayer().name
+            else -> getUsernameJSON()
+        }
+
+    fun getOnlinePlayer(): Player = Bukkit.getOnlinePlayers().filter { player -> player.uniqueId == uuid }[0]
 
     fun getUUID(): UUID = uuid
 }
