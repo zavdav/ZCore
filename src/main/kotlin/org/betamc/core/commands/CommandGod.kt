@@ -2,7 +2,7 @@ package org.betamc.core.commands
 
 import org.betamc.core.config.Language
 import org.betamc.core.player.PlayerMap
-import org.bukkit.Bukkit
+import org.betamc.core.util.Utils
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
@@ -19,33 +19,31 @@ class CommandGod : Command(
     preprocessor = Preprocessor()) {
 
     override fun execute(event: CommandEvent) {
-        if (event.args.isEmpty()) {
-            if (event.sender !is Player) {
-                sendMessage(event.sender, Language.PLAYER_ONLY)
+        val player = event.sender as Player
+        var bmcPlayer = PlayerMap.getPlayer(player)
+
+        if (event.args.isNotEmpty()) {
+            if (!hasPermission(event.sender, "bmc.god.others")) {
+                sendMessage(event.sender, Language.NO_PERMISSION)
                 return
             }
 
-            val bmcPlayer = PlayerMap.getPlayer(event.sender as Player)
-            bmcPlayer.setGodStatus(!bmcPlayer.getGodStatus())
-            sendMessage(event.sender, if (bmcPlayer.getGodStatus()) Language.GOD_ENABLE_SELF else Language.GOD_DISABLE_SELF)
-        } else if (hasPermission(event.sender, "bmc.god.others")) {
-            val player: Player? = Bukkit.matchPlayer(event.args[0]).getOrNull(0)
-            if (player == null) {
+            val onlinePlayer = Utils.getPlayerFromUsername(event.args[0])
+            if (onlinePlayer == null) {
                 sendMessage(event.sender, Language.PLAYER_NOT_FOUND.msg
                     .replace("%player%", event.args[0]))
                 return
             }
-
-            val bmcPlayer = PlayerMap.getPlayer(player)
-            bmcPlayer.setGodStatus(!bmcPlayer.getGodStatus())
-            if (!event.sender.name.equals(player.name, true)) {
-                sendMessage(event.sender, if (bmcPlayer.getGodStatus())
-                    Language.GOD_ENABLE_PLAYER.msg.replace("%player%", player.name)
-                    else Language.GOD_DISABLE_PLAYER.msg.replace("%player%", player.name))
-            }
-            sendMessage(player, if (bmcPlayer.getGodStatus()) Language.GOD_ENABLE_SELF else Language.GOD_DISABLE_SELF)
-        } else {
-            sendMessage(event.sender, Language.NO_PERMISSION)
+            bmcPlayer = PlayerMap.getPlayer(onlinePlayer)
         }
+
+        val msg = if (bmcPlayer.getGodStatus()) Language.GOD_DISABLE.msg else Language.GOD_ENABLE.msg
+        val isSelf = player.uniqueId == bmcPlayer.getUUID()
+        bmcPlayer.setGodStatus(!bmcPlayer.getGodStatus())
+
+        sendMessage(event.sender, msg
+            .replace("%player%", if (isSelf) "your" else "${bmcPlayer.getName()}'s"))
+        if (!isSelf) sendMessage(bmcPlayer.getOnlinePlayer(), msg
+            .replace("%player%", "your"))
     }
 }
