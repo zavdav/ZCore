@@ -53,7 +53,8 @@ object BMCCore {
             CommandKick(),
             CommandKickAll(),
             CommandList(),
-            CommandSetHome()
+            CommandSetHome(),
+            CommandTP()
         )
 
         Bukkit.getPluginManager().registerEvents(BMCPlayerListener(), plugin)

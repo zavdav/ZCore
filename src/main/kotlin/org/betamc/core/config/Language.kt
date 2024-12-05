@@ -28,7 +28,11 @@ enum class Language(var msg: String) {
     SETHOME_INVALID_NAME("&cError: Home name must only contains characters A-Z,0-9,_,-"),
     SETHOME_MAXIMUM("&cError: You cannot set more than %amount% homes"),
     SETHOME_HOME_EXISTS("&cError: There is already a home with this name"),
-    SETHOME_SUCCESS("&eSet your home &6%home%");
+    SETHOME_SUCCESS("&eSet your home &6%home%"),
+    TP_PLAYER("&eTeleported %player% to %target%"),
+    TP_COORDINATES("&eTeleported %player% to %coords%"),
+    TP_PARSE_ERROR("&cError: Could not parse \"%args%\" into coordinates"),
+    TP_UNSAFE("&cError: Unsafe destination, specify y-coordinate explicitly");
 
     override fun toString(): String = msg
 }
