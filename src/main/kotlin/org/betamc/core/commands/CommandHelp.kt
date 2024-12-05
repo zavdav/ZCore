@@ -8,7 +8,7 @@ import kotlin.math.ceil
 class CommandHelp : Command(
     "help",
     description = "Shows a list of available commands.",
-    usage = "/help",
+    usage = "/help [page/query]",
     permission = "bmc.help",
     preprocessor = Preprocessor()) {
 
@@ -31,7 +31,7 @@ class CommandHelp : Command(
 
             commands = commands.filter { command -> command.name.contains(query, true) || command.description.contains(query, true) }
             if (commands.isEmpty()) {
-                sendMessage(event.sender, Language.HELP_NO_RESULTS)
+                sendMessage(event.sender, Language.NO_MATCHING_RESULTS)
                 return
             }
         }
@@ -42,7 +42,7 @@ class CommandHelp : Command(
     private fun printHelp(sender: CommandSender, page: Int, commands: List<org.bukkit.command.Command>) {
         val pages = ceil(commands.size.toDouble() / 10).toInt()
         if (page > pages) {
-            sendMessage(sender, Language.HELP_PAGE_TOO_HIGH)
+            sendMessage(sender, Language.PAGE_TOO_HIGH)
             return
         }
 
