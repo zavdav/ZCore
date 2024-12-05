@@ -49,6 +49,7 @@ object BMCCore {
             CommandHeal(),
             CommandHelp(),
             CommandHome(),
+            CommandHomes(),
             CommandKick(),
             CommandKickAll(),
             CommandList(),
