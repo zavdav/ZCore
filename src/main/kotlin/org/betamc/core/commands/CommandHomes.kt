@@ -1,6 +1,7 @@
 package org.betamc.core.commands
 
 import org.betamc.core.config.Language
+import org.betamc.core.config.Property
 import org.betamc.core.player.PlayerMap
 import org.betamc.core.util.Utils
 import org.bukkit.command.CommandSender
@@ -68,7 +69,8 @@ class CommandHomes : Command(
     }
 
     private fun printHomes(sender: CommandSender, page: Int, homes: List<String>) {
-        val pages = ceil(homes.size.toDouble() / 50).toInt()
+        val homesPerPage = Property.HOMES_PER_PAGE.toInt()
+        val pages = ceil(homes.size.toDouble() / homesPerPage).toInt()
         if (page > pages) {
             sendMessage(sender, Language.PAGE_TOO_HIGH)
             return
@@ -78,7 +80,7 @@ class CommandHomes : Command(
             .replace("%pages%", "$pages"))
 
         val sb = StringBuilder()
-        for (i in (page * 50 - 50)..<page * 50) {
+        for (i in (page * homesPerPage - homesPerPage)..<page * homesPerPage) {
             if (i >= homes.size) break
             sb.append(Language.HOMES_ENTRY.msg.replace("%home%", homes[i]))
         }
