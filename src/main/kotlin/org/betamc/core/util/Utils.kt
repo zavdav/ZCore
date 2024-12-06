@@ -68,12 +68,12 @@ object Utils {
         val z = floor(loc.z).toInt()
 
         while (isBlockAboveAir(world, x, y, z)) {
-            y += 1
-            if (y >= 127) break
+            y -= 1
+            if (y < 1) break
         }
         while (isBlockUnsafe(world, x, y, z)) {
-            y -= 1
-            if (y < 1) throw Exception()
+            y += 1
+            if (y > 127) throw Exception()
         }
         return y
     }

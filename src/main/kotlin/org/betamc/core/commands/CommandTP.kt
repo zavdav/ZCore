@@ -67,14 +67,14 @@ class CommandTP : Command(
             strings = strings.subList(1, strings.size)
         }
 
-        val coords = processCoordinates(player, target!!, strings) ?: return
+        val coords = parseCoordinates(player, target!!, strings) ?: return
         target.teleport(Location(target.world, coords[0], coords[1], coords[2], target.location.yaw, target.location.pitch))
         sendMessage(player, Language.TP_COORDINATES.msg
             .replace("%player%", if (player == target) "you" else target.name)
             .replace("%coords%", "${coords[0].toFloat()}, ${coords[1].toFloat()}, ${coords[2].toFloat()}"))
     }
 
-    private fun processCoordinates(sender: CommandSender, player: Player, args: List<String>): List<Double>? {
+    private fun parseCoordinates(sender: CommandSender, player: Player, args: List<String>): List<Double>? {
         val loc = player.location
         val coords: MutableList<Double> = mutableListOf()
         val playerCoords = listOf(loc.x, loc.y, loc.z)
