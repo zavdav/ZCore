@@ -1,4 +1,4 @@
-package org.betamc.core.player
+package org.betamc.core.data
 
 import org.betamc.core.BMCCore
 import org.bukkit.Bukkit

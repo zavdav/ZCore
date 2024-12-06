@@ -3,7 +3,8 @@ package org.betamc.core
 import org.betamc.core.commands.*
 import org.betamc.core.config.Language
 import org.betamc.core.config.Property
-import org.betamc.core.listeners.BMCPlayerListener
+import org.betamc.core.data.SpawnData
+import org.betamc.core.listeners.PlayerListener
 import org.betamc.core.player.PlayerMap
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
@@ -54,17 +55,20 @@ object BMCCore {
             CommandKickAll(),
             CommandList(),
             CommandSetHome(),
+            CommandSetSpawn(),
+            CommandSpawn(),
             CommandTP()
         )
 
-        Bukkit.getPluginManager().registerEvents(BMCPlayerListener(), plugin)
+        Bukkit.getPluginManager().registerEvents(PlayerListener(), plugin)
 
         Bukkit.getScheduler().scheduleAsyncRepeatingTask(plugin, {
             PlayerMap.runTasks()
             if (Duration.between(lastAutoSave, LocalDateTime.now()).seconds >= Property.AUTO_SAVE_TIME.toLong()) {
                 lastAutoSave = LocalDateTime.now()
-                logger.info("$prefix Saving player data")
+                logger.info("$prefix Automatically saving data")
                 PlayerMap.saveData()
+                SpawnData.saveData()
             }
         }, 0, 20 * 10)
 
@@ -75,6 +79,7 @@ object BMCCore {
     fun disable() {
         if (!enabled) return
         PlayerMap.saveData()
+        SpawnData.saveData()
 
         enabled = false
         logger.info("$prefix ${plugin.description.name} ${plugin.description.version} has been disabled.")

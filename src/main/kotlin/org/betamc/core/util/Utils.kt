@@ -8,10 +8,45 @@ import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.Player
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.floor
 
 object Utils {
+
+    private val AIR_MATERIALS: MutableSet<Int> = HashSet()
+
+    init {
+        AIR_MATERIALS.add(Material.AIR.id)
+        AIR_MATERIALS.add(Material.SAPLING.id)
+        AIR_MATERIALS.add(Material.POWERED_RAIL.id)
+        AIR_MATERIALS.add(Material.DETECTOR_RAIL.id)
+        AIR_MATERIALS.add(Material.DEAD_BUSH.id)
+        AIR_MATERIALS.add(Material.RAILS.id)
+        AIR_MATERIALS.add(Material.YELLOW_FLOWER.id)
+        AIR_MATERIALS.add(Material.RED_ROSE.id)
+        AIR_MATERIALS.add(Material.RED_MUSHROOM.id)
+        AIR_MATERIALS.add(Material.BROWN_MUSHROOM.id)
+        AIR_MATERIALS.add(Material.SEEDS.id)
+        AIR_MATERIALS.add(Material.SIGN_POST.id)
+        AIR_MATERIALS.add(Material.WALL_SIGN.id)
+        AIR_MATERIALS.add(Material.LADDER.id)
+        AIR_MATERIALS.add(Material.SUGAR_CANE_BLOCK.id)
+        AIR_MATERIALS.add(Material.REDSTONE_WIRE.id)
+        AIR_MATERIALS.add(Material.REDSTONE_TORCH_OFF.id)
+        AIR_MATERIALS.add(Material.REDSTONE_TORCH_ON.id)
+        AIR_MATERIALS.add(Material.TORCH.id)
+        AIR_MATERIALS.add(Material.SOIL.id)
+        AIR_MATERIALS.add(Material.DIODE_BLOCK_OFF.id)
+        AIR_MATERIALS.add(Material.DIODE_BLOCK_ON.id)
+        AIR_MATERIALS.add(Material.TRAP_DOOR.id)
+        AIR_MATERIALS.add(Material.STONE_BUTTON.id)
+        AIR_MATERIALS.add(Material.STONE_PLATE.id)
+        AIR_MATERIALS.add(Material.WOOD_PLATE.id)
+        AIR_MATERIALS.add(Material.IRON_DOOR_BLOCK.id)
+        AIR_MATERIALS.add(Material.WOODEN_DOOR.id)
+        AIR_MATERIALS.add(Material.SNOW.id)
+    }
 
     @JvmStatic fun getPlayerFromUsername(name: String): Player? = Bukkit.matchPlayer(name).getOrNull(0)
 
@@ -57,37 +92,18 @@ object Utils {
         return isBlockAboveAir(world, x, y, z)
     }
 
-    private val AIR_MATERIALS: MutableSet<Int> = HashSet()
+    @JvmStatic fun roundYaw(float: Float): Int {
+        val yaw = if (float < 0) float + 360 else float
+        var closest =  -1
+        var lowestDiff = Float.MAX_VALUE
 
-    init {
-        AIR_MATERIALS.add(Material.AIR.id)
-        AIR_MATERIALS.add(Material.SAPLING.id)
-        AIR_MATERIALS.add(Material.POWERED_RAIL.id)
-        AIR_MATERIALS.add(Material.DETECTOR_RAIL.id)
-        AIR_MATERIALS.add(Material.DEAD_BUSH.id)
-        AIR_MATERIALS.add(Material.RAILS.id)
-        AIR_MATERIALS.add(Material.YELLOW_FLOWER.id)
-        AIR_MATERIALS.add(Material.RED_ROSE.id)
-        AIR_MATERIALS.add(Material.RED_MUSHROOM.id)
-        AIR_MATERIALS.add(Material.BROWN_MUSHROOM.id)
-        AIR_MATERIALS.add(Material.SEEDS.id)
-        AIR_MATERIALS.add(Material.SIGN_POST.id)
-        AIR_MATERIALS.add(Material.WALL_SIGN.id)
-        AIR_MATERIALS.add(Material.LADDER.id)
-        AIR_MATERIALS.add(Material.SUGAR_CANE_BLOCK.id)
-        AIR_MATERIALS.add(Material.REDSTONE_WIRE.id)
-        AIR_MATERIALS.add(Material.REDSTONE_TORCH_OFF.id)
-        AIR_MATERIALS.add(Material.REDSTONE_TORCH_ON.id)
-        AIR_MATERIALS.add(Material.TORCH.id)
-        AIR_MATERIALS.add(Material.SOIL.id)
-        AIR_MATERIALS.add(Material.DIODE_BLOCK_OFF.id)
-        AIR_MATERIALS.add(Material.DIODE_BLOCK_ON.id)
-        AIR_MATERIALS.add(Material.TRAP_DOOR.id)
-        AIR_MATERIALS.add(Material.STONE_BUTTON.id)
-        AIR_MATERIALS.add(Material.STONE_PLATE.id)
-        AIR_MATERIALS.add(Material.WOOD_PLATE.id)
-        AIR_MATERIALS.add(Material.IRON_DOOR_BLOCK.id)
-        AIR_MATERIALS.add(Material.WOODEN_DOOR.id)
-        AIR_MATERIALS.add(Material.SNOW.id)
+        for (i in 0..360 step 90) {
+            val diff = abs(yaw - i)
+            if (diff < lowestDiff) {
+                closest = i
+                lowestDiff = diff
+            }
+        }
+        return if (closest == 360) 0 else closest
     }
 }
