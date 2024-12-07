@@ -3,6 +3,7 @@ package org.betamc.core.commands
 import org.betamc.core.config.Language
 import org.betamc.core.config.Property
 import org.betamc.core.player.PlayerMap
+import org.betamc.core.util.Utils
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
@@ -36,13 +37,11 @@ class CommandSetHome : Command(
         if (!hasPermission(event.sender, "bmc.sethome.unlimited")) {
             if (!hasPermission(event.sender, "bmc.sethome.multiple")) {
                 if (homeCount >= 1) {
-                    sendMessage(event.sender, Language.SETHOME_MAXIMUM.msg
-                        .replace("%amount%", "${1}"))
+                    sendMessage(event.sender, Utils.format(Language.SETHOME_MAXIMUM, 1, "home"))
                     return
                 }
             } else if (homeCount >= limit) {
-                sendMessage(event.sender, Language.SETHOME_MAXIMUM.msg
-                    .replace("%amount%", "$limit"))
+                sendMessage(event.sender, Utils.format(Language.SETHOME_MAXIMUM, limit, "homes"))
                 return
             }
         }
@@ -53,7 +52,6 @@ class CommandSetHome : Command(
         }
 
         bmcPlayer.addHome(homeName, (event.sender as Player).location)
-        sendMessage(event.sender, Language.SETHOME_SUCCESS.msg
-            .replace("%home%", homeName))
+        sendMessage(event.sender, Utils.format(Language.SETHOME_SUCCESS, homeName))
     }
 }

@@ -28,7 +28,7 @@ class PlayerListener : Listener {
     fun onPlayerDamage(event: EntityDamageEvent) {
         if (event.entity !is Player) return
         val player = event.entity as Player
-        if (PlayerMap.getPlayer(player).getGodStatus()) {
+        if (PlayerMap.getPlayer(player).hasGodMode()) {
             player.fireTicks = 0
             player.remainingAir = player.maximumAir
             event.isCancelled = true

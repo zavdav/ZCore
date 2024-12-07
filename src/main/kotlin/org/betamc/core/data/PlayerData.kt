@@ -76,10 +76,7 @@ abstract class PlayerData(private val uuid: UUID) {
 
     fun removeHome(name: String) {
         val homes = json.getOrDefault("homes", JSONObject()) as JSONObject
-        for (homeName in homes.keys) {
-            if (name.equals(homeName.toString(), true)) homes.remove(homeName)
-            break
-        }
+        if (homes.containsKey(name)) homes.remove(name)
         json["homes"] = homes
     }
 
@@ -116,9 +113,9 @@ abstract class PlayerData(private val uuid: UUID) {
     fun getHomes(): List<String> =
         (json.getOrDefault("homes", JSONObject()) as JSONObject).keys.filterIsInstance<String>().toList()
 
-    fun getGodStatus(): Boolean = json.getOrDefault("god", false) as Boolean
+    fun hasGodMode(): Boolean = json.getOrDefault("god", false) as Boolean
 
-    fun setGodStatus(status: Boolean) {
-        json["god"] = status
+    fun setGodMode(god: Boolean) {
+        json["god"] = god
     }
 }

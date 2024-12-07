@@ -22,8 +22,7 @@ class CommandHeal : Command(
         if (event.args.isNotEmpty()) {
             player = Utils.getPlayerFromUsername(event.args[0])
             if (player == null) {
-                sendMessage(event.sender, Language.PLAYER_NOT_FOUND.msg
-                    .replace("%player%", event.args[0]))
+                sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, event.args[0]))
                 return
             }
         }
@@ -36,11 +35,10 @@ class CommandHeal : Command(
         player.health = 20
 
         if (isSelf) {
-            sendMessage(event.sender, Language.HEAL_SELF)
+            sendMessage(event.sender, Utils.format(Language.HEAL_SUCCESS, "You have"))
         } else {
-            sendMessage(event.sender, Language.HEAL_PLAYER.msg
-                .replace("%player%", player.name))
-            sendMessage(player, Language.HEAL_SELF)
+            sendMessage(event.sender, Utils.format(Language.HEAL_SUCCESS, "${player.name} has"))
+            sendMessage(player, Utils.format(Language.HEAL_SUCCESS, "You have"))
         }
     }
 }

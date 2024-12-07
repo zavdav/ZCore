@@ -44,8 +44,7 @@ class CommandHomes : Command(
             val strings = query.split(":")
             val uuid = Utils.getUUIDFromUsername(strings[0])
             if (uuid == null) {
-                sendMessage(event.sender, Language.PLAYER_NOT_FOUND.msg
-                    .replace("%player%", strings[0]))
+                sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, strings[0]))
                 return
             }
             bmcPlayer = PlayerMap.getPlayer(uuid)
@@ -75,14 +74,12 @@ class CommandHomes : Command(
             sendMessage(sender, Language.PAGE_TOO_HIGH)
             return
         }
-        sendMessage(sender, Language.HOMES_HEADER.msg
-            .replace("%page%", "$page")
-            .replace("%pages%", "$pages"))
+        sendMessage(sender, Utils.format(Language.HOMES_HEADER, page, pages))
 
         val sb = StringBuilder()
         for (i in (page * homesPerPage - homesPerPage)..<page * homesPerPage) {
             if (i >= homes.size) break
-            sb.append(Language.HOMES_ENTRY.msg.replace("%home%", homes[i]))
+            sb.append(Utils.format(Language.HOMES_ENTRY, homes[i]))
         }
         sendMessage(sender, sb.substring(0, sb.length - 2))
     }

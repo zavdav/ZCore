@@ -39,8 +39,7 @@ class CommandDelHome : Command(
 
             val uuid = Utils.getUUIDFromUsername(strings[0])
             if (uuid == null) {
-                sendMessage(event.sender, Language.PLAYER_NOT_FOUND.msg
-                    .replace("%player%", strings[0]))
+                sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, strings[0]))
                 return
             }
             bmcPlayer = PlayerMap.getPlayer(uuid)
@@ -54,8 +53,7 @@ class CommandDelHome : Command(
 
         val finalName = bmcPlayer.getFinalHomeName(homeName)
         bmcPlayer.removeHome(finalName)
-        sendMessage(event.sender, Language.DELHOME_SUCCESS.msg
-            .replace("%player%", if (player.uniqueId == bmcPlayer.getUUID()) "your" else "${bmcPlayer.getName()}'s")
-            .replace("%home%", finalName))
+        sendMessage(event.sender, Utils.format(Language.DELHOME_SUCCESS,
+            if (player.uniqueId == bmcPlayer.getUUID()) "Your" else "${bmcPlayer.getName()}'s", finalName))
     }
 }

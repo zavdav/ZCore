@@ -7,7 +7,9 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.Player
-import java.util.*
+import java.text.MessageFormat
+import java.util.UUID
+import kotlin.collections.HashSet
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -47,6 +49,9 @@ object Utils {
         AIR_MATERIALS.add(Material.WOODEN_DOOR.id)
         AIR_MATERIALS.add(Material.SNOW.id)
     }
+
+    @JvmStatic fun format(obj: Any, vararg objects: Any): String =
+        MessageFormat(obj.toString()).format(objects)
 
     @JvmStatic fun getPlayerFromUsername(name: String): Player? = Bukkit.matchPlayer(name).getOrNull(0)
 

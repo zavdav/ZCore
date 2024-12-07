@@ -39,8 +39,7 @@ class CommandHome : Command(
 
             val uuid = Utils.getUUIDFromUsername(strings[0])
             if (uuid == null) {
-                sendMessage(event.sender, Language.PLAYER_NOT_FOUND.msg
-                    .replace("%player%", strings[0]))
+                sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, strings[0]))
                 return
             }
             bmcPlayer = PlayerMap.getPlayer(uuid)
@@ -54,8 +53,8 @@ class CommandHome : Command(
 
         val location = bmcPlayer.getHome(homeName)
         player.teleport(location)
-        sendMessage(event.sender, Language.HOME_SUCCESS.msg
-            .replace("%player%", if (player.uniqueId == bmcPlayer.getUUID()) "your" else "${bmcPlayer.getName()}'s")
-            .replace("%home%", bmcPlayer.getFinalHomeName(homeName)))
+        sendMessage(event.sender, Utils.format(Language.HOME_SUCCESS,
+            if (player.uniqueId == bmcPlayer.getUUID()) "your" else "${bmcPlayer.getName()}'s",
+            bmcPlayer.getFinalHomeName(homeName)))
     }
 }

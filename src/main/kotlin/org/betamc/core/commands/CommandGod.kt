@@ -26,8 +26,7 @@ class CommandGod : Command(
         if (event.args.isNotEmpty()) {
             val onlinePlayer = Utils.getPlayerFromUsername(event.args[0])
             if (onlinePlayer == null) {
-                sendMessage(event.sender, Language.PLAYER_NOT_FOUND.msg
-                    .replace("%player%", event.args[0]))
+                sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, event.args[0]))
                 return
             }
             bmcPlayer = PlayerMap.getPlayer(onlinePlayer)
@@ -38,12 +37,12 @@ class CommandGod : Command(
             sendMessage(event.sender, Language.NO_PERMISSION)
             return
         }
-        bmcPlayer.setGodStatus(!bmcPlayer.getGodStatus())
+        bmcPlayer.setGodMode(!bmcPlayer.hasGodMode())
 
-        val msg = if (bmcPlayer.getGodStatus()) Language.GOD_ENABLE.msg else Language.GOD_DISABLE.msg
-        sendMessage(event.sender, msg
-            .replace("%player%", if (isSelf) "your" else "${bmcPlayer.getName()}'s"))
-        if (!isSelf) sendMessage(bmcPlayer.getOnlinePlayer(), msg
-            .replace("%player%", "your"))
+        sendMessage(event.sender, Utils.format(Language.GOD_TOGGLE,
+            if (isSelf) "Your" else "${bmcPlayer.getName()}'s",
+            if (bmcPlayer.hasGodMode()) "enabled" else "disabled"))
+        if (!isSelf) sendMessage(bmcPlayer.getOnlinePlayer(), Utils.format(Language.GOD_TOGGLE,
+            "Your", if (bmcPlayer.hasGodMode()) "enabled" else "disabled"))
     }
 }

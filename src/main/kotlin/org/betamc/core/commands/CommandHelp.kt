@@ -1,6 +1,7 @@
 package org.betamc.core.commands
 
 import org.betamc.core.config.Language
+import org.betamc.core.util.Utils
 import org.bukkit.command.CommandSender
 import org.poseidonplugins.commandapi.*
 import kotlin.math.ceil
@@ -46,14 +47,11 @@ class CommandHelp : Command(
             return
         }
 
-        sendMessage(sender, Language.HELP_HEADER.msg
-            .replace("%page%", "$page")
-            .replace("%pages%", "$pages"))
-
+        sendMessage(sender, Utils.format(Language.HELP_HEADER, page, pages))
         for (i in (page * 10 - 10)..<page * 10) {
             if (i >= commands.size) break
-            sendMessage(sender, Language.HELP_COMMAND.msg
-                .replace("%command%", commands[i].name).replace("%description%", commands[i].description))
+            sendMessage(sender, Utils.format(Language.HELP_COMMAND,
+                commands[i].name, commands[i].description))
         }
     }
 }
