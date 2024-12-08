@@ -2,11 +2,13 @@ package org.betamc.core.util
 
 import com.projectposeidon.api.PoseidonUUID
 import com.projectposeidon.api.UUIDType
+import org.betamc.core.player.PlayerMap
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.Player
+import org.poseidonplugins.commandapi.hasPermission
 import java.text.MessageFormat
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -64,6 +66,19 @@ object Utils {
             UUIDType.ONLINE -> PoseidonUUID.getPlayerUUIDFromCache(name, true)
             UUIDType.OFFLINE -> PoseidonUUID.getPlayerUUIDFromCache(name, false)
             else -> null
+        }
+    }
+
+    @JvmStatic fun updateVanishedPlayers() {
+        for (target in Bukkit.getOnlinePlayers()) {
+            val bmcPlayer = PlayerMap.getPlayer(target)
+            when (bmcPlayer.isVanished()) {
+                true -> Bukkit.getOnlinePlayers()
+                    .filter { player -> !hasPermission(player, "bmc.vanish.bypass") }
+                    .forEach { player -> player.hidePlayer(target) }
+                false -> Bukkit.getOnlinePlayers()
+                    .forEach { player -> player.showPlayer(target) }
+            }
         }
     }
 

@@ -33,7 +33,8 @@ enum class Language(var msg: String) {
     SPAWN_SUCCESS("&bYou have been teleported to the spawn point of &e{0}"),
     TP_SUCCESS("&d{0} been teleported to {1}"),
     TP_PARSE_ERROR("&cError: Could not parse \"{0}\" into coordinates"),
-    UNSAFE_DESTINATION("&cError: The teleport destination is unsafe");
+    UNSAFE_DESTINATION("&cError: The teleport destination is unsafe"),
+    VANISH_TOGGLE("&7{0} been {1}");
 
     override fun toString(): String = msg
 }

@@ -132,4 +132,10 @@ abstract class PlayerData(private val uuid: UUID) {
     fun setGodMode(god: Boolean) {
         json["god"] = god
     }
+
+    fun isVanished(): Boolean = json.getOrDefault("vanish", false) as Boolean
+
+    fun setVanished(vanish: Boolean) {
+        json["vanish"] = vanish
+    }
 }

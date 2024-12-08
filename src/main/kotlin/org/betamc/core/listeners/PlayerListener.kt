@@ -2,6 +2,7 @@ package org.betamc.core.listeners
 
 import org.betamc.core.data.SpawnData
 import org.betamc.core.player.PlayerMap
+import org.betamc.core.util.Utils
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
@@ -17,7 +18,9 @@ class PlayerListener : Listener {
     fun onPlayerJoin(event: PlayerJoinEvent) {
         val isFirstJoin = !PlayerMap.isPlayerKnown(event.player.uniqueId)
         val bmcPlayer = PlayerMap.getPlayer(event.player)
+
         bmcPlayer.updateOnJoin(event.player.name)
+        Utils.updateVanishedPlayers()
 
         val spawn = SpawnData.getSpawn(event.player.world)
         if (isFirstJoin && spawn != null) {

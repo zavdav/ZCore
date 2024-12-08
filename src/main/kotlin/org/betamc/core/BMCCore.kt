@@ -60,7 +60,8 @@ object BMCCore {
             CommandSetHome(),
             CommandSetSpawn(),
             CommandSpawn(),
-            CommandTP()
+            CommandTP(),
+            CommandVanish()
         )
 
         Bukkit.getPluginManager().registerEvents(PlayerListener(), plugin)
