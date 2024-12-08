@@ -44,6 +44,7 @@ object BMCCore {
 
         cmdManager = CommandManager(plugin)
         cmdManager.registerCommands(
+            CommandBMC(),
             CommandBroadcast(),
             CommandDelHome(),
             CommandGod(),
@@ -54,6 +55,7 @@ object BMCCore {
             CommandKick(),
             CommandKickAll(),
             CommandList(),
+            CommandReload(),
             CommandSetHome(),
             CommandSetSpawn(),
             CommandSpawn(),
