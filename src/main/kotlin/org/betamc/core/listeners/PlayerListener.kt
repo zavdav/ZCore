@@ -8,11 +8,12 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerRespawnEvent
 
 class PlayerListener : Listener {
 
-    @EventHandler(ignoreCancelled = true, priority = Event.Priority.Highest)
+    @EventHandler(priority = Event.Priority.Highest)
     fun onPlayerJoin(event: PlayerJoinEvent) {
         val isFirstJoin = !PlayerMap.isPlayerKnown(event.player.uniqueId)
         val bmcPlayer = PlayerMap.getPlayer(event.player)
@@ -22,6 +23,11 @@ class PlayerListener : Listener {
         if (isFirstJoin && spawn != null) {
             event.player.teleport(spawn)
         }
+    }
+
+    @EventHandler(priority = Event.Priority.Highest)
+    fun onPlayerQuit(event: PlayerQuitEvent) {
+        PlayerMap.getPlayer(event.player).updateOnQuit()
     }
 
     @EventHandler(ignoreCancelled = true, priority = Event.Priority.Highest)

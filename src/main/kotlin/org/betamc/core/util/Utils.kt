@@ -8,8 +8,9 @@ import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.Player
 import java.text.MessageFormat
-import java.util.UUID
-import kotlin.collections.HashSet
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
+import java.util.*
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -110,5 +111,38 @@ object Utils {
             }
         }
         return if (closest == 360) 0 else closest
+    }
+
+    fun formatDateDiff(from: LocalDateTime, to: LocalDateTime): String {
+        var mutFrom = from
+        val sb = StringBuilder()
+
+        val years = ChronoUnit.YEARS.between(mutFrom, to)
+        mutFrom = mutFrom.plusYears(years)
+        val months = ChronoUnit.MONTHS.between(mutFrom, to)
+        mutFrom = mutFrom.plusMonths(months)
+        val days = ChronoUnit.DAYS.between(mutFrom, to)
+        mutFrom = mutFrom.plusDays(days)
+        val hours = ChronoUnit.HOURS.between(mutFrom, to)
+        mutFrom = mutFrom.plusHours(hours)
+        val minutes = ChronoUnit.MINUTES.between(mutFrom, to)
+        mutFrom = mutFrom.plusMinutes(minutes)
+        val seconds = ChronoUnit.SECONDS.between(mutFrom, to)
+
+        val units = listOf(years, months, days, hours, minutes, seconds)
+        val names = listOf(
+            "year", "years",
+            "month", "months",
+            "day", "days",
+            "hour", "hours",
+            "minute", "minutes",
+            "second", "seconds"
+        )
+        for (i in units.indices) {
+            if (units[i] > 0) {
+                sb.append("${units[i]} ${names[i * 2 + if (units[i] > 1) 1 else 0]} ")
+            }
+        }
+        return if (sb.isEmpty()) "0 seconds" else sb.substring(0, sb.length - 1)
     }
 }

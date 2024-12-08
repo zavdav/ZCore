@@ -56,6 +56,7 @@ object BMCCore {
             CommandKickAll(),
             CommandList(),
             CommandReload(),
+            CommandSeen(),
             CommandSetHome(),
             CommandSetSpawn(),
             CommandSpawn(),

@@ -22,6 +22,8 @@ enum class Language(var msg: String) {
     NO_MATCHING_RESULTS("&cError: No matching results"),
     PAGE_TOO_HIGH("&cError: Page number too high"),
     RELOAD_SUCCESS("&e{0} {1} has been reloaded."),
+    SEEN_ONLINE("&e{0} been online for {1}"),
+    SEEN_OFFLINE("&e{0} was last online {1} ago"),
     SETHOME_INVALID_NAME("&cError: Home name must only contains characters A-Z,0-9,_,-"),
     SETHOME_MAXIMUM("&cError: You cannot set more than {0} {1}"),
     SETHOME_HOME_EXISTS("&cError: There is already a home with this name"),

@@ -34,17 +34,25 @@ abstract class PlayerData(private val uuid: UUID) {
     }
 
     fun updateOnJoin(username: String) {
+        val now = LocalDateTime.now().toString()
         json["username"] = username
-        json["lastJoin"] = LocalDateTime.now().toString()
+        json["lastJoin"] = now
+        json["lastSeen"] = now
+    }
+
+    fun updateOnQuit() {
+        json["lastSeen"] = LocalDateTime.now().toString()
     }
 
     private fun initData() {
         json["uuid"] = uuid.toString()
         for (player in Bukkit.getOnlinePlayers()) {
             if (player.uniqueId == uuid) {
+                val now = LocalDateTime.now().toString()
                 json["username"] = player.name
-                json["firstJoin"] = LocalDateTime.now().toString()
-                json["lastJoin"] = LocalDateTime.now().toString()
+                json["firstJoin"] = now
+                json["lastJoin"] = now
+                json["lastSeen"] = now
             }
         }
     }
@@ -59,6 +67,12 @@ abstract class PlayerData(private val uuid: UUID) {
     }
 
     fun getUsernameJSON(): String = json["username"].toString()
+
+    fun getFirstJoin(): LocalDateTime = LocalDateTime.parse(json["firstJoin"].toString())
+
+    fun getLastJoin(): LocalDateTime = LocalDateTime.parse(json["lastJoin"].toString())
+
+    fun getLastSeen(): LocalDateTime = LocalDateTime.parse(json["lastSeen"].toString())
 
     fun addHome(name: String, location: Location) {
         val home = JSONObject()
