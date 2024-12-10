@@ -24,12 +24,12 @@ class CommandGod : Command(
         var bmcPlayer = PlayerMap.getPlayer(player)
 
         if (event.args.isNotEmpty()) {
-            val onlinePlayer = Utils.getPlayerFromUsername(event.args[0])
-            if (onlinePlayer == null) {
+            val target = Utils.getPlayerFromUsername(event.args[0])
+            if (target == null) {
                 sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, event.args[0]))
                 return
             }
-            bmcPlayer = PlayerMap.getPlayer(onlinePlayer)
+            bmcPlayer = PlayerMap.getPlayer(target)
         }
 
         val isSelf = player.uniqueId == bmcPlayer.getUUID()
