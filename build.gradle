@@ -17,6 +17,7 @@ repositories {
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     implementation 'com.legacyminecraft.poseidon:poseidon-craftbukkit:1.1.8'
+    implementation 'com.github.cliftonlabs:json-simple:4.0.1'
     implementation(files('lib/poseidon-commandapi-1.0-SNAPSHOT.jar'))
 }
 

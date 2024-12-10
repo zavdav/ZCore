@@ -1,11 +1,11 @@
 package org.betamc.core.data
 
+import com.github.cliftonlabs.json_simple.JsonException
+import com.github.cliftonlabs.json_simple.JsonObject
+import com.github.cliftonlabs.json_simple.Jsoner
 import org.betamc.core.BMCCore
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import org.json.simple.JSONObject
-import org.json.simple.parser.JSONParser
-import org.json.simple.parser.ParseException
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
@@ -15,7 +15,7 @@ import java.util.UUID
 abstract class PlayerData(private val uuid: UUID) {
 
     private val file: File = File(BMCCore.dataFolder, "${File.separator}userdata${File.separator}$uuid.json")
-    private var json: JSONObject = JSONObject()
+    private var json: JsonObject = JsonObject()
     private var hashCode = json.hashCode()
 
     init {
@@ -24,8 +24,8 @@ abstract class PlayerData(private val uuid: UUID) {
             initData()
         } else {
             try {
-                json = JSONParser().parse(FileReader(file)) as JSONObject
-            } catch (e: ParseException) {
+                json = Jsoner.deserialize(FileReader(file)) as JsonObject
+            } catch (e: JsonException) {
                 BMCCore.logger.severe("${BMCCore.prefix} Could not parse player data for $uuid as it is most likely corrupt, resetting data.")
                 e.printStackTrace()
                 initData()
@@ -61,7 +61,7 @@ abstract class PlayerData(private val uuid: UUID) {
         if (hashCode == json.hashCode()) return
         hashCode = json.hashCode()
         FileWriter(file).use { file ->
-            file.write(json.toJSONString())
+            file.write(Jsoner.prettyPrint(json.toJson()))
             file.flush()
         }
     }
@@ -75,7 +75,7 @@ abstract class PlayerData(private val uuid: UUID) {
     fun getLastSeen(): LocalDateTime = LocalDateTime.parse(json["lastSeen"].toString())
 
     fun addHome(name: String, location: Location) {
-        val home = JSONObject()
+        val home = JsonObject()
         home["world"] = location.world.name
         home["x"] = location.blockX
         home["y"] = location.blockY
@@ -83,13 +83,13 @@ abstract class PlayerData(private val uuid: UUID) {
         home["pitch"] = location.pitch
         home["yaw"] = location.yaw
 
-        val homes = json.getOrDefault("homes", JSONObject()) as JSONObject
+        val homes = json.getOrDefault("homes", JsonObject()) as JsonObject
         homes[name] = home
         json["homes"] = homes
     }
 
     fun removeHome(name: String) {
-        val homes = json.getOrDefault("homes", JSONObject()) as JSONObject
+        val homes = json.getOrDefault("homes", JsonObject()) as JsonObject
         if (homes.containsKey(name)) homes.remove(name)
         json["homes"] = homes
     }
@@ -108,16 +108,16 @@ abstract class PlayerData(private val uuid: UUID) {
         return Location(world, x, y, z, yaw, pitch)
     }
 
-    fun getHomeJSON(name: String): JSONObject? {
-        val homes = json.getOrDefault("homes", JSONObject()) as JSONObject
+    fun getHomeJSON(name: String): JsonObject? {
+        val homes = json.getOrDefault("homes", JsonObject()) as JsonObject
         for (home in homes) {
-            if (name.equals(home.key.toString(), true)) return home.value as JSONObject
+            if (name.equals(home.key.toString(), true)) return home.value as JsonObject
         }
         return null
     }
 
     fun getFinalHomeName(name: String): String {
-        val homes = json.getOrDefault("homes", JSONObject()) as JSONObject
+        val homes = json.getOrDefault("homes", JsonObject()) as JsonObject
         for (homeName in homes.keys) {
             if (name.equals(homeName.toString(), true)) return homeName.toString()
         }
@@ -125,7 +125,7 @@ abstract class PlayerData(private val uuid: UUID) {
     }
 
     fun getHomes(): List<String> =
-        (json.getOrDefault("homes", JSONObject()) as JSONObject).keys.filterIsInstance<String>().toList()
+        (json.getOrDefault("homes", JsonObject()) as JsonObject).keys.filterIsInstance<String>().toList()
 
     fun hasGodMode(): Boolean = json.getOrDefault("god", false) as Boolean
 
