@@ -30,7 +30,13 @@ class PlayerListener : Listener {
 
     @EventHandler(priority = Event.Priority.Highest)
     fun onPlayerQuit(event: PlayerQuitEvent) {
-        PlayerMap.getPlayer(event.player).updateOnQuit()
+        val bmcPlayer = PlayerMap.getPlayer(event.player)
+
+        bmcPlayer.updateOnQuit()
+        if (bmcPlayer.savedInventory != null) {
+            event.player.inventory.contents = bmcPlayer.savedInventory
+            bmcPlayer.savedInventory = null
+        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = Event.Priority.Highest)

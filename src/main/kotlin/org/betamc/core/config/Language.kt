@@ -16,6 +16,8 @@ enum class Language(var msg: String) {
     HOME_SUCCESS("&6You have been teleported to {0} home &b{1}"),
     HOMES_HEADER("&6Homes: Page &b{0} &6of &b{1}"),
     HOMES_ENTRY("&b{0}, "),
+    INVSEE_SUCCESS("&6You are now looking at {0}''s inventory"),
+    INVSEE_RESTORED("&6Your inventory has been restored"),
     KICK_MESSAGE_BROADCAST("&c%sender% kicked %player%: &f%message%"),
     KICK_DEFAULT_MESSAGE("Kicked from server"),
     LIST_HEADER("&eList: &6{0} &eof max. &6{1} &eplayers online"),
