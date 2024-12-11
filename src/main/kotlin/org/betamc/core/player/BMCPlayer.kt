@@ -6,19 +6,19 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.UUID
 
-class BMCPlayer(private val uuid: UUID) : PlayerData(uuid) {
+class BMCPlayer(uuid: UUID) : PlayerData(uuid) {
 
-    var savedInventory: Array<ItemStack>? = null
-
-    fun isOnline(): Boolean = Bukkit.getOnlinePlayers().map { player -> player.uniqueId }.contains(uuid)
-
-    fun getName(): String =
-        when (isOnline()) {
-            true -> getOnlinePlayer().name
-            else -> getUsernameJSON()
+    val name: String
+        get() = when (isOnline) {
+            true -> onlinePlayer.name
+            false -> username
         }
 
-    fun getOnlinePlayer(): Player = Bukkit.getOnlinePlayers().filter { player -> player.uniqueId == uuid }[0]
+    val isOnline: Boolean
+        get() = Bukkit.getOnlinePlayers().map { player -> player.uniqueId }.contains(uuid)
 
-    fun getUUID(): UUID = uuid
+    val onlinePlayer: Player
+        get() = Bukkit.getOnlinePlayers().filter { player -> player.uniqueId == uuid }[0]
+
+    var savedInventory: Array<ItemStack>? = null
 }

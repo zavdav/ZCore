@@ -13,12 +13,14 @@ import java.text.MessageFormat
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
+import java.util.regex.Pattern
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.floor
 
 object Utils {
 
+    val UUID_PATTERN: Pattern = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
     private val AIR_MATERIALS: MutableSet<Int> = HashSet()
 
     init {
@@ -72,7 +74,7 @@ object Utils {
     @JvmStatic fun updateVanishedPlayers() {
         for (target in Bukkit.getOnlinePlayers()) {
             val bmcPlayer = PlayerMap.getPlayer(target)
-            when (bmcPlayer.isVanished()) {
+            when (bmcPlayer.vanished) {
                 true -> Bukkit.getOnlinePlayers()
                     .filter { player -> !hasPermission(player, "bmc.vanish.bypass") }
                     .forEach { player -> player.hidePlayer(target) }
@@ -128,7 +130,7 @@ object Utils {
         return if (closest == 360) 0 else closest
     }
 
-    fun formatDateDiff(from: LocalDateTime, to: LocalDateTime): String {
+    @JvmStatic fun formatDateDiff(from: LocalDateTime, to: LocalDateTime): String {
         var mutFrom = from
         val sb = StringBuilder()
 
@@ -159,5 +161,46 @@ object Utils {
             }
         }
         return if (sb.isEmpty()) "0 seconds" else sb.substring(0, sb.length - 1)
+    }
+
+    @JvmStatic fun parseDateDiff(time: String): LocalDateTime {
+        var dateTime = LocalDateTime.now()
+        val timePattern = Pattern.compile(
+            "(?:([0-9]+)\\s*y[a-z]*[,\\s]*)?"
+                    + "(?:([0-9]+)\\s*mo[a-z]*[,\\s]*)?"
+                    + "(?:([0-9]+)\\s*w[a-z]*[,\\s]*)?"
+                    + "(?:([0-9]+)\\s*d[a-z]*[,\\s]*)?"
+                    + "(?:([0-9]+)\\s*h[a-z]*[,\\s]*)?"
+                    + "(?:([0-9]+)\\s*m[a-z]*[,\\s]*)?"
+                    + "(?:([0-9]+)\\s*(?:s[a-z]*)?)?", Pattern.CASE_INSENSITIVE
+        )
+        val matcher = timePattern.matcher(time)
+        var found = false
+        while (matcher.find()) {
+            if (matcher.group() == null || matcher.group().isEmpty()) continue
+            for (i in 0..<matcher.groupCount()) {
+                if (matcher.group(i) != null && matcher.group(i).isNotEmpty()) {
+                    found = true
+                    break
+                }
+            }
+            if (!found) continue
+            for (i in 1..7) {
+                if (matcher.group(i) != null && matcher.group(i).isNotEmpty()) {
+                    val unit = matcher.group(i).toLong()
+                    when (i) {
+                        1 -> dateTime = dateTime.plusYears(unit)
+                        2 -> dateTime = dateTime.plusMonths(unit)
+                        3 -> dateTime = dateTime.plusWeeks(unit)
+                        4 -> dateTime = dateTime.plusDays(unit)
+                        5 -> dateTime = dateTime.plusHours(unit)
+                        6 -> dateTime = dateTime.plusMinutes(unit)
+                        7 -> dateTime = dateTime.plusSeconds(unit)
+                    }
+                }
+            }
+        }
+        if (!found) throw Exception()
+        return dateTime
     }
 }

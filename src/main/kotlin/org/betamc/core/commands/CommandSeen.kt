@@ -26,14 +26,14 @@ class CommandSeen : Command(
         }
 
         val bmcPlayer = PlayerMap.getPlayer(uuid)
-        if (bmcPlayer.isOnline()) {
-            val isSelf = event.sender is Player && (event.sender as Player).uniqueId == bmcPlayer.getUUID()
+        if (bmcPlayer.isOnline) {
+            val isSelf = event.sender is Player && (event.sender as Player).uniqueId == bmcPlayer.uuid
             sendMessage(event.sender, Utils.format(Language.SEEN_ONLINE,
-                if (isSelf) "You have" else "${bmcPlayer.getName()} has",
-                Utils.formatDateDiff(bmcPlayer.getLastSeen(), LocalDateTime.now())))
+                if (isSelf) "You have" else "${bmcPlayer.name} has",
+                Utils.formatDateDiff(bmcPlayer.lastSeen, LocalDateTime.now())))
         } else {
             sendMessage(event.sender, Utils.format(Language.SEEN_OFFLINE,
-                bmcPlayer.getName(), Utils.formatDateDiff(bmcPlayer.getLastSeen(), LocalDateTime.now())))
+                bmcPlayer.name, Utils.formatDateDiff(bmcPlayer.lastSeen, LocalDateTime.now())))
         }
     }
 }

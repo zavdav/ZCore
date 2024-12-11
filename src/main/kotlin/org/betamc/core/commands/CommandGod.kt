@@ -32,17 +32,17 @@ class CommandGod : Command(
             bmcPlayer = PlayerMap.getPlayer(target)
         }
 
-        val isSelf = player.uniqueId == bmcPlayer.getUUID()
+        val isSelf = player.uniqueId == bmcPlayer.uuid
         if (!isSelf && !hasPermission(event.sender, "bmc.god.others")) {
             sendMessage(event.sender, Language.NO_PERMISSION)
             return
         }
-        bmcPlayer.setGodMode(!bmcPlayer.hasGodMode())
+        bmcPlayer.isGod = !bmcPlayer.isGod
 
         sendMessage(event.sender, Utils.format(Language.GOD_TOGGLE,
-            if (isSelf) "Your" else "${bmcPlayer.getName()}'s",
-            if (bmcPlayer.hasGodMode()) "enabled" else "disabled"))
-        if (!isSelf) sendMessage(bmcPlayer.getOnlinePlayer(), Utils.format(Language.GOD_TOGGLE,
-            "Your", if (bmcPlayer.hasGodMode()) "enabled" else "disabled"))
+            if (isSelf) "Your" else "${bmcPlayer.name}'s",
+            if (bmcPlayer.isGod) "enabled" else "disabled"))
+        if (!isSelf) sendMessage(bmcPlayer.onlinePlayer, Utils.format(Language.GOD_TOGGLE,
+            "Your", if (bmcPlayer.isGod) "enabled" else "disabled"))
     }
 }

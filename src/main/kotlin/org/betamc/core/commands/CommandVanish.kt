@@ -23,26 +23,26 @@ class CommandVanish : Command(
         var bmcPlayer = PlayerMap.getPlayer(player)
 
         if (event.args.isNotEmpty()) {
-            val onlinePlayer = Utils.getPlayerFromUsername(event.args[0])
-            if (onlinePlayer == null) {
+            val target = Utils.getPlayerFromUsername(event.args[0])
+            if (target == null) {
                 sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, event.args[0]))
                 return
             }
-            bmcPlayer = PlayerMap.getPlayer(onlinePlayer)
+            bmcPlayer = PlayerMap.getPlayer(target)
         }
 
-        val isSelf = player.uniqueId == bmcPlayer.getUUID()
+        val isSelf = player.uniqueId == bmcPlayer.uuid
         if (!isSelf && !hasPermission(event.sender, "bmc.vanish.others")) {
             sendMessage(event.sender, Language.NO_PERMISSION)
             return
         }
-        bmcPlayer.setVanished(!bmcPlayer.isVanished())
+        bmcPlayer.vanished = !bmcPlayer.vanished
         Utils.updateVanishedPlayers()
 
         sendMessage(event.sender, Utils.format(Language.VANISH_TOGGLE,
-            if (isSelf) "You have" else "${bmcPlayer.getName()} has",
-            if (bmcPlayer.isVanished()) "vanished" else "unvanished"))
-        if (!isSelf) sendMessage(bmcPlayer.getOnlinePlayer(), Utils.format(Language.VANISH_TOGGLE,
-            "You have", if (bmcPlayer.isVanished()) "vanished" else "unvanished"))
+            if (isSelf) "You have" else "${bmcPlayer.name} has",
+            if (bmcPlayer.vanished) "vanished" else "unvanished"))
+        if (!isSelf) sendMessage(bmcPlayer.onlinePlayer, Utils.format(Language.VANISH_TOGGLE,
+            "You have", if (bmcPlayer.vanished) "vanished" else "unvanished"))
     }
 }

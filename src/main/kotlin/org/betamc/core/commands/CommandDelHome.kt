@@ -54,6 +54,6 @@ class CommandDelHome : Command(
         val finalName = bmcPlayer.getFinalHomeName(homeName)
         bmcPlayer.removeHome(finalName)
         sendMessage(event.sender, Utils.format(Language.DELHOME_SUCCESS,
-            if (player.uniqueId == bmcPlayer.getUUID()) "Your" else "${bmcPlayer.getName()}'s", finalName))
+            if (player.uniqueId == bmcPlayer.uuid) "Your" else "${bmcPlayer.name}'s", finalName))
     }
 }

@@ -54,7 +54,7 @@ class CommandHome : Command(
         val location = bmcPlayer.getHome(homeName)
         player.teleport(location)
         sendMessage(event.sender, Utils.format(Language.HOME_SUCCESS,
-            if (player.uniqueId == bmcPlayer.getUUID()) "your" else "${bmcPlayer.getName()}'s",
+            if (player.uniqueId == bmcPlayer.uuid) "your" else "${bmcPlayer.name}'s",
             bmcPlayer.getFinalHomeName(homeName)))
     }
 }

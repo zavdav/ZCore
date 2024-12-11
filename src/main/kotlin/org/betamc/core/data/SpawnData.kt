@@ -1,34 +1,13 @@
 package org.betamc.core.data
 
-import com.github.cliftonlabs.json_simple.JsonException
 import com.github.cliftonlabs.json_simple.JsonObject
-import com.github.cliftonlabs.json_simple.Jsoner
 import org.betamc.core.BMCCore
 import org.betamc.core.util.Utils
 import org.bukkit.Location
 import org.bukkit.World
 import java.io.File
-import java.io.FileReader
-import java.io.FileWriter
 
-object SpawnData {
-
-    private val file: File = File(BMCCore.dataFolder, "spawns.json")
-    private var json: JsonObject = JsonObject()
-    private var hashCode = json.hashCode()
-
-    init {
-        if (!file.exists()) {
-            file.createNewFile()
-        } else {
-            try {
-                json = Jsoner.deserialize(FileReader(file)) as JsonObject
-            } catch (e: JsonException) {
-                BMCCore.logger.severe("${BMCCore.prefix} Could not parse spawn data as it is most likely corrupt, resetting data.")
-                e.printStackTrace()
-            }
-        }
-    }
+object SpawnData : JsonData(File(BMCCore.dataFolder, "spawns.json")) {
 
     fun setSpawn(world: String, location: Location) {
         val spawn = JsonObject()
@@ -52,14 +31,5 @@ object SpawnData {
         val yaw = spawn["yaw"].toString().toFloat()
 
         return Location(world, x, y, z, yaw, pitch)
-    }
-
-    fun saveData() {
-        if (hashCode == json.hashCode()) return
-        hashCode = json.hashCode()
-        FileWriter(file).use { file ->
-            file.write(Jsoner.prettyPrint(json.toJson()))
-            file.flush()
-        }
     }
 }

@@ -11,6 +11,7 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerRespawnEvent
+import java.time.LocalDateTime
 
 class PlayerListener : Listener {
 
@@ -18,14 +19,15 @@ class PlayerListener : Listener {
     fun onPlayerJoin(event: PlayerJoinEvent) {
         val isFirstJoin = !PlayerMap.isPlayerKnown(event.player.uniqueId)
         val bmcPlayer = PlayerMap.getPlayer(event.player)
+        val spawn = SpawnData.getSpawn(event.player.world)
+
+        if (isFirstJoin) {
+            bmcPlayer.firstJoin = LocalDateTime.now()
+            if (spawn != null) event.player.teleport(spawn)
+        }
 
         bmcPlayer.updateOnJoin(event.player.name)
         Utils.updateVanishedPlayers()
-
-        val spawn = SpawnData.getSpawn(event.player.world)
-        if (isFirstJoin && spawn != null) {
-            event.player.teleport(spawn)
-        }
     }
 
     @EventHandler(priority = Event.Priority.Highest)
@@ -43,7 +45,7 @@ class PlayerListener : Listener {
     fun onPlayerDamage(event: EntityDamageEvent) {
         if (event.entity !is Player) return
         val player = event.entity as Player
-        if (PlayerMap.getPlayer(player).hasGodMode()) {
+        if (PlayerMap.getPlayer(player).isGod) {
             player.fireTicks = 0
             player.remainingAir = player.maximumAir
             event.isCancelled = true

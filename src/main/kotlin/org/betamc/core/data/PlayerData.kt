@@ -1,78 +1,67 @@
 package org.betamc.core.data
 
-import com.github.cliftonlabs.json_simple.JsonException
 import com.github.cliftonlabs.json_simple.JsonObject
-import com.github.cliftonlabs.json_simple.Jsoner
 import org.betamc.core.BMCCore
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import java.io.File
-import java.io.FileReader
-import java.io.FileWriter
 import java.time.LocalDateTime
 import java.util.UUID
 
-abstract class PlayerData(private val uuid: UUID) {
+abstract class PlayerData(val uuid: UUID) : JsonData(
+    File(BMCCore.dataFolder, "${File.separator}userdata${File.separator}$uuid.json")) {
 
-    private val file: File = File(BMCCore.dataFolder, "${File.separator}userdata${File.separator}$uuid.json")
-    private var json: JsonObject = JsonObject()
-    private var hashCode = json.hashCode()
+    protected var username: String
+        get() = json["username"].toString()
+        private set(value) { json["username"] = value }
+
+    var firstJoin: LocalDateTime
+        get() = LocalDateTime.parse(json["firstJoin"].toString())
+        set(value) { json["firstJoin"] = value.toString() }
+
+    var lastJoin: LocalDateTime
+        get() = LocalDateTime.parse(json["lastJoin"].toString())
+        set(value) { json["lastJoin"] = value.toString() }
+
+    var lastSeen: LocalDateTime
+        get() = LocalDateTime.parse(json["lastSeen"].toString())
+        set(value) { json["lastSeen"] = value.toString() }
+
+    var isGod: Boolean
+        get() = json.getOrDefault("god", false) as Boolean
+        set(value) { json["god"] = value }
+
+    var vanished: Boolean
+        get() = json.getOrDefault("vanish", false) as Boolean
+        set(value) { json["vanish"] = value }
 
     init {
-        if (!file.exists()) {
-            file.createNewFile()
-            initData()
-        } else {
-            try {
-                json = Jsoner.deserialize(FileReader(file)) as JsonObject
-            } catch (e: JsonException) {
-                BMCCore.logger.severe("${BMCCore.prefix} Could not parse player data for $uuid as it is most likely corrupt, resetting data.")
-                e.printStackTrace()
-                initData()
-            }
-        }
-    }
-
-    fun updateOnJoin(username: String) {
-        val now = LocalDateTime.now().toString()
-        json["username"] = username
-        json["lastJoin"] = now
-        json["lastSeen"] = now
-    }
-
-    fun updateOnQuit() {
-        json["lastSeen"] = LocalDateTime.now().toString()
+        if (initialize) initData()
     }
 
     private fun initData() {
         json["uuid"] = uuid.toString()
         for (player in Bukkit.getOnlinePlayers()) {
             if (player.uniqueId == uuid) {
-                val now = LocalDateTime.now().toString()
-                json["username"] = player.name
-                json["firstJoin"] = now
-                json["lastJoin"] = now
-                json["lastSeen"] = now
+                val now = LocalDateTime.now()
+                username = player.name
+                firstJoin = now
+                lastJoin = now
+                lastSeen = now
             }
         }
     }
 
-    fun saveData() {
-        if (hashCode == json.hashCode()) return
-        hashCode = json.hashCode()
-        FileWriter(file).use { file ->
-            file.write(Jsoner.prettyPrint(json.toJson()))
-            file.flush()
-        }
+    fun updateOnJoin(username: String) {
+        val now = LocalDateTime.now()
+        this.username = username
+        lastJoin = now
+        lastSeen = now
     }
 
-    fun getUsernameJSON(): String = json["username"].toString()
-
-    fun getFirstJoin(): LocalDateTime = LocalDateTime.parse(json["firstJoin"].toString())
-
-    fun getLastJoin(): LocalDateTime = LocalDateTime.parse(json["lastJoin"].toString())
-
-    fun getLastSeen(): LocalDateTime = LocalDateTime.parse(json["lastSeen"].toString())
+    fun updateOnQuit() {
+        lastSeen = LocalDateTime.now()
+    }
 
     fun addHome(name: String, location: Location) {
         val home = JsonObject()
@@ -126,16 +115,4 @@ abstract class PlayerData(private val uuid: UUID) {
 
     fun getHomes(): List<String> =
         (json.getOrDefault("homes", JsonObject()) as JsonObject).keys.filterIsInstance<String>().toList()
-
-    fun hasGodMode(): Boolean = json.getOrDefault("god", false) as Boolean
-
-    fun setGodMode(god: Boolean) {
-        json["god"] = god
-    }
-
-    fun isVanished(): Boolean = json.getOrDefault("vanish", false) as Boolean
-
-    fun setVanished(vanish: Boolean) {
-        json["vanish"] = vanish
-    }
 }

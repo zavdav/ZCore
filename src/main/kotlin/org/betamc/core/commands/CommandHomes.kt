@@ -51,7 +51,7 @@ class CommandHomes : Command(
             query = strings.getOrNull(1) ?: ""
         }
 
-        if (player.uniqueId != bmcPlayer.getUUID() && !hasPermission(event.sender, "bmc.homes.others")) {
+        if (player.uniqueId != bmcPlayer.uuid && !hasPermission(event.sender, "bmc.homes.others")) {
             sendMessage(event.sender, Language.NO_PERMISSION)
             return
         }
