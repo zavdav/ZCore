@@ -81,7 +81,7 @@ object BMCCore {
                 BanData.saveData()
                 SpawnData.saveData()
             }
-        }, 0, 20 * 10)
+        }, 0, 20)
 
         enabled = true
         logger.info("$prefix ${plugin.description.name} ${plugin.description.version} has been enabled.")

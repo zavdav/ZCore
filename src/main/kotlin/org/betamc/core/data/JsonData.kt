@@ -30,6 +30,7 @@ abstract class JsonData(private val file: File) {
         }
     }
 
+    @Synchronized
     fun saveData() {
         if (hashCode == json.hashCode()) return
         hashCode = json.hashCode()

@@ -37,6 +37,7 @@ object PlayerMap {
 
     fun getPlayer(player: Player): BMCPlayer = getPlayer(player.uniqueId)
 
+    @Synchronized
     fun runTasks() {
         playerMap.entries.removeIf { entry ->
             val bmcPlayer = getPlayer(entry.key)
@@ -50,6 +51,7 @@ object PlayerMap {
 
     fun isPlayerKnown(uuid: UUID): Boolean = knownPlayers.contains(uuid)
 
+    @Synchronized
     fun saveData() {
         for (bmcPlayer in playerMap.values) {
             bmcPlayer.saveData()
