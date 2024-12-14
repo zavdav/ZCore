@@ -8,6 +8,7 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.Player
+import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.commandapi.hasPermission
 import java.text.MessageFormat
 import java.time.LocalDateTime
@@ -21,6 +22,16 @@ import kotlin.math.floor
 object Utils {
 
     val UUID_PATTERN: Pattern = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+    val IPV4_PATTERN: Pattern = Pattern.compile("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")
+    val TIME_PATTERN: Pattern = Pattern.compile(
+        "(?:([0-9]+)\\s*y[a-z]*[,\\s]*)?"
+                + "(?:([0-9]+)\\s*mo[a-z]*[,\\s]*)?"
+                + "(?:([0-9]+)\\s*w[a-z]*[,\\s]*)?"
+                + "(?:([0-9]+)\\s*d[a-z]*[,\\s]*)?"
+                + "(?:([0-9]+)\\s*h[a-z]*[,\\s]*)?"
+                + "(?:([0-9]+)\\s*m[a-z]*[,\\s]*)?"
+                + "(?:([0-9]+)\\s*(?:s[a-z]*)?)?", Pattern.CASE_INSENSITIVE)
+
     private val AIR_MATERIALS: MutableSet<Int> = HashSet()
 
     init {
@@ -58,7 +69,19 @@ object Utils {
     @JvmStatic fun format(obj: Any, vararg objects: Any): String =
         MessageFormat(obj.toString()).format(objects)
 
+    @JvmStatic fun formatColorize(obj: Any, vararg objects: Any): String =
+        MessageFormat(colorize(obj.toString())).format(objects)
+
+    fun String.safeSubstring(startIndex: Int, endIndex: Int): String =
+        if (length <= endIndex) this else substring(startIndex, endIndex)
+
     @JvmStatic fun getPlayerFromUsername(name: String): Player? = Bukkit.matchPlayer(name).getOrNull(0)
+
+    @JvmStatic fun getPlayerFromUUID(uuid: UUID): Player? =
+        Bukkit.getOnlinePlayers().filter { player -> player.uniqueId == uuid }.getOrNull(0)
+
+    @JvmStatic fun getPlayersFromIP(ip: String): List<Player> =
+        Bukkit.getOnlinePlayers().filter { player -> player.address.address.hostAddress == ip }
 
     @JvmStatic fun getUUIDFromUsername(name: String): UUID? {
         val player = getPlayerFromUsername(name)
@@ -131,25 +154,29 @@ object Utils {
     }
 
     @JvmStatic fun formatDateDiff(from: LocalDateTime, to: LocalDateTime): String {
-        var mutFrom = from
+        var mutFrom = from.truncatedTo(ChronoUnit.SECONDS)
+        val finalTo = to.truncatedTo(ChronoUnit.SECONDS)
         val sb = StringBuilder()
 
-        val years = ChronoUnit.YEARS.between(mutFrom, to)
+        val years = ChronoUnit.YEARS.between(mutFrom, finalTo)
         mutFrom = mutFrom.plusYears(years)
-        val months = ChronoUnit.MONTHS.between(mutFrom, to)
+        val months = ChronoUnit.MONTHS.between(mutFrom, finalTo)
         mutFrom = mutFrom.plusMonths(months)
-        val days = ChronoUnit.DAYS.between(mutFrom, to)
+        val weeks = ChronoUnit.WEEKS.between(mutFrom, finalTo)
+        mutFrom = mutFrom.plusWeeks(weeks)
+        val days = ChronoUnit.DAYS.between(mutFrom, finalTo)
         mutFrom = mutFrom.plusDays(days)
-        val hours = ChronoUnit.HOURS.between(mutFrom, to)
+        val hours = ChronoUnit.HOURS.between(mutFrom, finalTo)
         mutFrom = mutFrom.plusHours(hours)
-        val minutes = ChronoUnit.MINUTES.between(mutFrom, to)
+        val minutes = ChronoUnit.MINUTES.between(mutFrom, finalTo)
         mutFrom = mutFrom.plusMinutes(minutes)
-        val seconds = ChronoUnit.SECONDS.between(mutFrom, to)
+        val seconds = ChronoUnit.SECONDS.between(mutFrom, finalTo)
 
-        val units = listOf(years, months, days, hours, minutes, seconds)
+        val units = listOf(years, months, weeks, days, hours, minutes, seconds)
         val names = listOf(
             "year", "years",
             "month", "months",
+            "week", "weeks",
             "day", "days",
             "hour", "hours",
             "minute", "minutes",
@@ -164,43 +191,24 @@ object Utils {
     }
 
     @JvmStatic fun parseDateDiff(time: String): LocalDateTime {
-        var dateTime = LocalDateTime.now()
-        val timePattern = Pattern.compile(
-            "(?:([0-9]+)\\s*y[a-z]*[,\\s]*)?"
-                    + "(?:([0-9]+)\\s*mo[a-z]*[,\\s]*)?"
-                    + "(?:([0-9]+)\\s*w[a-z]*[,\\s]*)?"
-                    + "(?:([0-9]+)\\s*d[a-z]*[,\\s]*)?"
-                    + "(?:([0-9]+)\\s*h[a-z]*[,\\s]*)?"
-                    + "(?:([0-9]+)\\s*m[a-z]*[,\\s]*)?"
-                    + "(?:([0-9]+)\\s*(?:s[a-z]*)?)?", Pattern.CASE_INSENSITIVE
-        )
-        val matcher = timePattern.matcher(time)
-        var found = false
-        while (matcher.find()) {
-            if (matcher.group() == null || matcher.group().isEmpty()) continue
-            for (i in 0..<matcher.groupCount()) {
-                if (matcher.group(i) != null && matcher.group(i).isNotEmpty()) {
-                    found = true
-                    break
-                }
-            }
-            if (!found) continue
-            for (i in 1..7) {
-                if (matcher.group(i) != null && matcher.group(i).isNotEmpty()) {
-                    val unit = matcher.group(i).toLong()
-                    when (i) {
-                        1 -> dateTime = dateTime.plusYears(unit)
-                        2 -> dateTime = dateTime.plusMonths(unit)
-                        3 -> dateTime = dateTime.plusWeeks(unit)
-                        4 -> dateTime = dateTime.plusDays(unit)
-                        5 -> dateTime = dateTime.plusHours(unit)
-                        6 -> dateTime = dateTime.plusMinutes(unit)
-                        7 -> dateTime = dateTime.plusSeconds(unit)
-                    }
-                }
-            }
-        }
-        if (!found) throw Exception()
-        return dateTime
+        val matcher = TIME_PATTERN.matcher(time)
+        if (!matcher.matches()) throw Exception()
+
+        val years = matcher.group(1)?.toLongOrNull() ?: 0
+        val months = matcher.group(2)?.toLongOrNull() ?: 0
+        val weeks = matcher.group(3)?.toLongOrNull() ?: 0
+        val days = matcher.group(4)?.toLongOrNull() ?: 0
+        val hours = matcher.group(5)?.toLongOrNull() ?: 0
+        val minutes = matcher.group(6)?.toLongOrNull() ?: 0
+        val seconds = matcher.group(7)?.toLongOrNull() ?: 0
+
+        return LocalDateTime.now()
+            .plusYears(years)
+            .plusMonths(months)
+            .plusWeeks(weeks)
+            .plusDays(days)
+            .plusHours(hours)
+            .plusMinutes(minutes)
+            .plusSeconds(seconds)
     }
 }

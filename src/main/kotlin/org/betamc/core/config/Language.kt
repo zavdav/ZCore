@@ -6,6 +6,8 @@ enum class Language(var msg: String) {
     PLAYER_ONLY("&cOnly players can run this command."),
     PLAYER_NOT_FOUND("&cError: Could not find player {0}"),
 
+    BAN_SUCCESS("&c{0} has been banned {1}{2}"),
+    BANIP_SUCCESS("&c{0} has been ip-banned {1}{2}"),
     DELHOME_SUCCESS("&6{0} home &b{1} &6has been deleted"),
     GOD_TOGGLE("&b{0} god mode has been {1}"),
     HEAL_SUCCESS("&a{0} been healed"),
@@ -35,6 +37,11 @@ enum class Language(var msg: String) {
     SPAWN_SUCCESS("&bYou have been teleported to the spawn point of &e{0}"),
     TP_SUCCESS("&d{0} been teleported to {1}"),
     TP_PARSE_ERROR("&cError: Could not parse \"{0}\" into coordinates"),
+    UNBAN_NOT_BANNED("&cError: This user is not banned"),
+    UNBAN_SUCCESS("&aYou have unbanned {0}"),
+    UNBANIP_INVALID_IP("&cError: Invalid IP address"),
+    UNBANIP_NOT_BANNED("&cError: This IP is not banned"),
+    UNBANIP_SUCCESS("&aYou have unbanned the IP {0}"),
     UNSAFE_DESTINATION("&cError: The teleport destination is unsafe"),
     VANISH_TOGGLE("&7{0} been {1}");
 

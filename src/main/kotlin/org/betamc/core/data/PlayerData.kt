@@ -27,6 +27,9 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
         get() = LocalDateTime.parse(json["lastSeen"].toString())
         set(value) { json["lastSeen"] = value.toString() }
 
+    val isBanned: Boolean
+        get() = BanData.isBanned(uuid)
+
     var isGod: Boolean
         get() = json.getOrDefault("god", false) as Boolean
         set(value) { json["god"] = value }
