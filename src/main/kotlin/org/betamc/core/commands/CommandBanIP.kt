@@ -8,6 +8,7 @@ import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.joinArgs
 import org.poseidonplugins.commandapi.sendMessage
 import java.time.LocalDateTime
+import java.util.UUID
 import java.util.regex.Pattern
 
 class CommandBanIP : Command(
@@ -20,16 +21,19 @@ class CommandBanIP : Command(
     preprocessor = Preprocessor()) {
 
     override fun execute(event: CommandEvent) {
-        val player = Utils.getPlayerFromUsername(event.args[0])
-        var ip = player?.address?.address?.hostAddress
-        if (ip == null) {
+        val ip =
             if (Utils.IPV4_PATTERN.matcher(event.args[0]).matches()) {
-                ip = event.args[0]
+                event.args[0]
             } else {
-                sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, event.args[0]))
-                return
+                val player = if (Utils.UUID_PATTERN.matcher(event.args[0]).matches())
+                    Utils.getPlayerFromUUID(UUID.fromString(event.args[0]))
+                    else Utils.getPlayerFromUsername(event.args[0])
+                if (player == null) {
+                    sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, event.args[0]))
+                    return
+                }
+                player.address.address.hostAddress
             }
-        }
 
         val subArgs = joinArgs(event.args , 1, event.args.size)
         val matcher = Pattern.compile("^${Utils.TIME_PATTERN.pattern()}").matcher(subArgs)

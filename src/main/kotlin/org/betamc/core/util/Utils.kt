@@ -75,13 +75,13 @@ object Utils {
     fun String.safeSubstring(startIndex: Int, endIndex: Int): String =
         if (length <= endIndex) this else substring(startIndex, endIndex)
 
-    @JvmStatic fun getPlayerFromUsername(name: String): Player? = Bukkit.matchPlayer(name).getOrNull(0)
+    @JvmStatic fun getPlayerFromUsername(name: String): Player? = Bukkit.matchPlayer(name).firstOrNull()
 
     @JvmStatic fun getPlayerFromUUID(uuid: UUID): Player? =
-        Bukkit.getOnlinePlayers().filter { player -> player.uniqueId == uuid }.getOrNull(0)
+        Bukkit.getOnlinePlayers().firstOrNull { player -> player.uniqueId == uuid }
 
-    @JvmStatic fun getPlayersFromIP(ip: String): List<Player> =
-        Bukkit.getOnlinePlayers().filter { player -> player.address.address.hostAddress == ip }
+    @JvmStatic fun getPlayersFromIP(ip: String): Set<Player> =
+        Bukkit.getOnlinePlayers().filter { player -> player.address.address.hostAddress == ip }.toSet()
 
     @JvmStatic fun getUUIDFromUsername(name: String): UUID? {
         val player = getPlayerFromUsername(name)

@@ -27,6 +27,7 @@ class PlayerListener : Listener {
         if (BanData.isIPBanned(event.address.hostAddress)) {
             val ip = event.address.hostAddress
             val ipBan = BanData.getIPBan(ip)!!
+            if (!ipBan.uuids.contains(event.player.uniqueId)) ipBan.addUUID(event.player.uniqueId)
             when (ipBan.until == null) {
                 true -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
                     Utils.formatColorize(Property.IPBAN_PERMANENT, ipBan.reason).safeSubstring(0, 99))

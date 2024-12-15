@@ -6,24 +6,38 @@ import org.betamc.core.util.Utils
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.sendMessage
+import java.util.UUID
 
 class CommandUnbanIP : Command(
     "unbanip",
     listOf("unipban", "pardonip"),
     "Unbans an IP address from the server.",
-    "/unbanip <ip>",
+    "/unbanip <player/ip>",
     "bmc.unbanip",
     minArgs = 1,
     maxArgs = 1,
     preprocessor = Preprocessor()){
 
     override fun execute(event: CommandEvent) {
-        if (!Utils.IPV4_PATTERN.matcher(event.args[0]).matches()) {
-            sendMessage(event.sender, Utils.format(Language.UNBANIP_INVALID_IP))
-            return
-        }
+        val ip =
+            if (Utils.IPV4_PATTERN.matcher(event.args[0]).matches()) {
+                event.args[0]
+            } else {
+                val uuid = if (Utils.UUID_PATTERN.matcher(event.args[0]).matches())
+                    UUID.fromString(event.args[0])
+                    else Utils.getUUIDFromUsername(event.args[0])
+                if (uuid == null) {
+                    sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, event.args[0]))
+                    return
+                }
+                val ipBan = BanData.getIPBan(uuid)
+                if (ipBan == null) {
+                    sendMessage(event.sender, Language.UNBANIP_NOT_BANNED)
+                    return
+                }
+                ipBan.ip
+            }
 
-        val ip = event.args[0]
         if (!BanData.isIPBanned(ip)) {
             sendMessage(event.sender, Language.UNBANIP_NOT_BANNED)
             return

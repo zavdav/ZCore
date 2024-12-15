@@ -1,5 +1,6 @@
 package org.betamc.core.data
 
+import com.github.cliftonlabs.json_simple.JsonArray
 import com.github.cliftonlabs.json_simple.JsonObject
 import org.betamc.core.BMCCore
 import org.betamc.core.config.Property
@@ -14,7 +15,7 @@ import java.util.UUID
 object BanData : JsonData(File(BMCCore.dataFolder, "bans.json")){
 
     private val banMap: MutableMap<UUID, Ban> = mutableMapOf()
-    private val ipBanMap: MutableMap<String, Ban> = mutableMapOf()
+    private val ipBanMap: MutableMap<String, IPBan> = mutableMapOf()
 
     private var bans: JsonObject = json.getOrDefault("bans", JsonObject()) as JsonObject
     private var ipBans: JsonObject = json.getOrDefault("ipBans", JsonObject()) as JsonObject
@@ -22,14 +23,18 @@ object BanData : JsonData(File(BMCCore.dataFolder, "bans.json")){
     init {
         for (entry in bans) {
             val ban = entry.value as JsonObject
-            banMap[UUID.fromString(entry.key)] = Ban(
+            val uuid = UUID.fromString(entry.key)
+            banMap[uuid] = Ban(
+                uuid,
                 if (ban["until"] == "forever") null else LocalDateTime.parse(ban["until"].toString()),
                 ban["reason"].toString()
             )
         }
         for (entry in ipBans) {
             val ipBan = entry.value as JsonObject
-            ipBanMap[entry.key] = Ban(
+            ipBanMap[entry.key] = IPBan(
+                entry.key,
+                (ipBan["uuids"] as JsonArray).map { obj -> UUID.fromString(obj.toString()) }.toSet(),
                 if (ipBan["until"] == "forever") null else LocalDateTime.parse(ipBan["until"].toString()),
                 ipBan["reason"].toString()
             )
@@ -37,9 +42,30 @@ object BanData : JsonData(File(BMCCore.dataFolder, "bans.json")){
     }
 
     class Ban (
+        val uuid: UUID,
         val until: LocalDateTime?,
         val reason: String
     )
+
+    class IPBan (
+        val ip: String,
+        uuids: Set<UUID>,
+        val until: LocalDateTime?,
+        val reason: String
+    ) {
+        var uuids = uuids; private set
+
+        fun addUUID(uuid: UUID) {
+            uuids = uuids.plus(uuid)
+            ipBanMap[ip] = this
+            ipBans[ip] = JsonObject(mapOf(
+                "uuids" to JsonArray(uuids.map { entry -> entry.toString() }),
+                "until" to (until ?: "forever").toString(),
+                "reason" to reason
+            ))
+            json["ipBans"] = ipBans
+        }
+    }
 
     fun ban(uuid: UUID) =
         ban(uuid, Property.BAN_DEFAULT_REASON.toString())
@@ -51,7 +77,7 @@ object BanData : JsonData(File(BMCCore.dataFolder, "bans.json")){
         ban(uuid, until, Property.BAN_DEFAULT_REASON.toString())
 
     fun ban(uuid: UUID, until: LocalDateTime?, reason: String) {
-        banMap[uuid] = Ban(until, reason)
+        banMap[uuid] = Ban(uuid, until, reason)
         bans[uuid.toString()] = JsonObject(mapOf(
             "until" to (until ?: "forever").toString(),
             "reason" to reason
@@ -75,17 +101,21 @@ object BanData : JsonData(File(BMCCore.dataFolder, "bans.json")){
         banIP(ip, until, Property.BAN_DEFAULT_REASON.toString())
 
     fun banIP(ip: String, until: LocalDateTime?, reason: String) {
-        ipBanMap[ip] = Ban(until, reason)
+        val players = Utils.getPlayersFromIP(ip)
+        ipBanMap[ip] = IPBan(
+            ip, players.map { player -> player.uniqueId }.toSet(), until, reason
+        )
         ipBans[ip] = JsonObject(mapOf(
+            "uuids" to JsonArray(players.map { player -> player.uniqueId.toString() }),
             "until" to (until ?: "forever").toString(),
             "reason" to reason
         ))
         json["ipBans"] = ipBans
         when (until == null) {
-            true -> for (player in Utils.getPlayersFromIP(ip)) {
+            true -> for (player in players) {
                 player.kickPlayer(Utils.formatColorize(Property.IPBAN_PERMANENT, reason).safeSubstring(0, 99))
             }
-            false -> for (player in Utils.getPlayersFromIP(ip)) {
+            false -> for (player in players) {
                 player.kickPlayer(Utils.formatColorize(Property.IPBAN_TEMPORARY,
                     until.truncatedTo(ChronoUnit.MINUTES), reason).safeSubstring(0, 99))
             }
@@ -116,9 +146,9 @@ object BanData : JsonData(File(BMCCore.dataFolder, "bans.json")){
     }
 
     fun isIPBanned(ip: String): Boolean {
-        val ban = ipBanMap[ip]
+        val ipBan = ipBanMap[ip]
 
-        if (ban == null || ban.until != null && !ban.until.isAfter(LocalDateTime.now())) {
+        if (ipBan == null || ipBan.until != null && !ipBan.until.isAfter(LocalDateTime.now())) {
             ipBanMap.remove(ip)
             ipBans.remove(ip)
             return false
@@ -130,7 +160,10 @@ object BanData : JsonData(File(BMCCore.dataFolder, "bans.json")){
 
     fun getBan(uuid: UUID): Ban? = banMap[uuid]
 
-    fun getIPBan(player: Player): Ban? = getIPBan(player.address.address.hostAddress)
+    fun getIPBan(player: Player): IPBan? = getIPBan(player.address.address.hostAddress)
 
-    fun getIPBan(ip: String): Ban? = ipBanMap[ip]
+    fun getIPBan(uuid: UUID): IPBan? =
+        ipBanMap.entries.firstOrNull { entry -> entry.value.uuids.contains(uuid) }?.value
+
+    fun getIPBan(ip: String): IPBan? = ipBanMap[ip]
 }
