@@ -2,7 +2,6 @@ package org.betamc.core.commands
 
 import org.betamc.core.config.Language
 import org.betamc.core.util.Utils
-import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.*
 
@@ -15,7 +14,7 @@ class CommandKick : Command(
     preprocessor = Preprocessor()) {
 
     override fun execute(event: CommandEvent) {
-        val player: Player? = Bukkit.matchPlayer(event.args[0]).getOrNull(0)
+        val player: Player? = Utils.getPlayerFromUsername(event.args[0])
         if (player == null) {
             sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, event.args[0]))
             return

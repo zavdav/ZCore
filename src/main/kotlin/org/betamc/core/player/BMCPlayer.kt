@@ -18,7 +18,7 @@ class BMCPlayer(uuid: UUID) : PlayerData(uuid) {
         get() = Bukkit.getOnlinePlayers().map { player -> player.uniqueId }.contains(uuid)
 
     val onlinePlayer: Player
-        get() = Bukkit.getOnlinePlayers().filter { player -> player.uniqueId == uuid }[0]
+        get() = Bukkit.getOnlinePlayers().first { player -> player.uniqueId == uuid }
 
     var savedInventory: Array<ItemStack>? = null
 }
