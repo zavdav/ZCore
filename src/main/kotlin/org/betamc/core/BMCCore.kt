@@ -9,6 +9,7 @@ import org.betamc.core.listeners.PlayerListener
 import org.betamc.core.player.PlayerMap
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
+import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.config.Configuration
 import org.poseidonplugins.commandapi.CommandManager
 import java.io.File
@@ -16,26 +17,26 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.util.logging.Logger
 
-object BMCCore {
+class BMCCore : JavaPlugin() {
 
-    const val prefix = "[BMC-Core]"
-    private var enabled = false
+    companion object {
+        const val prefix = "[BMC-Core]"
 
-    lateinit var plugin: Plugin private set
-    lateinit var dataFolder: File private set
-    lateinit var logger: Logger private set
-    lateinit var cmdManager: CommandManager private set
+        lateinit var plugin: Plugin private set
+        lateinit var dataFolder: File private set
+        lateinit var logger: Logger private set
+        lateinit var cmdManager: CommandManager private set
 
-    lateinit var config: Configuration private set
-    lateinit var language: Configuration private set
+        lateinit var config: Configuration private set
+        lateinit var language: Configuration private set
+    }
 
     private var lastAutoSave: LocalDateTime = LocalDateTime.now()
 
 
-    fun enable(plugin: Plugin) {
-        if (enabled) return
-        this.plugin = plugin
-        dataFolder = plugin.dataFolder
+    override fun onEnable() {
+        plugin = this
+        Companion.dataFolder = plugin.dataFolder
         logger = Bukkit.getLogger()
 
         if (!dataFolder.exists()) dataFolder.mkdirs()
@@ -83,17 +84,14 @@ object BMCCore {
             }
         }, 0, 20)
 
-        enabled = true
         logger.info("$prefix ${plugin.description.name} ${plugin.description.version} has been enabled.")
     }
 
-    fun disable() {
-        if (!enabled) return
+    override fun onDisable() {
         PlayerMap.saveData()
         BanData.saveData()
         SpawnData.saveData()
 
-        enabled = false
         logger.info("$prefix ${plugin.description.name} ${plugin.description.version} has been disabled.")
     }
 
