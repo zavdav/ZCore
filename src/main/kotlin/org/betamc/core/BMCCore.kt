@@ -39,7 +39,6 @@ class BMCCore : JavaPlugin() {
 
         if (!dataFolder.exists()) dataFolder.mkdirs()
         initConfig()
-        language = Configuration(File(dataFolder, "language.yml"))
 
         cmdManager = CommandManager(plugin)
         cmdManager.registerCommands(
@@ -92,7 +91,7 @@ class BMCCore : JavaPlugin() {
         logger.info("$prefix ${plugin.description.name} ${plugin.description.version} has been disabled.")
     }
 
-    private fun initConfig() {
+    fun initConfig() {
         val file = File(dataFolder, "config.yml")
         if (!file.exists()) {
             try {
@@ -107,7 +106,7 @@ class BMCCore : JavaPlugin() {
         }
         config = Configuration(file)
         config.load()
-
-
+        language = Configuration(File(dataFolder, "language.yml"))
+        language.load()
     }
 }

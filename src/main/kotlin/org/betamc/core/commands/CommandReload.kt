@@ -16,8 +16,7 @@ class CommandReload : Command(
     preprocessor = Preprocessor()) {
 
     override fun execute(event: CommandEvent) {
-        BMCCore.plugin.onDisable()
-        BMCCore.plugin.onEnable()
+        (BMCCore.plugin as BMCCore).initConfig()
 
         val desc = BMCCore.plugin.description
         sendMessage(event.sender, Utils.format(Language.RELOAD_SUCCESS, desc.name, desc.version))
