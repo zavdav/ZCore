@@ -18,7 +18,12 @@ enum class Property(val key: String, val default: Any) {
         "&eWelcome, {USERNAME}&e!",
         "&bType /help for a list of commands.",
         "&7Online players: &f{LIST}")),
-    HOMES_PER_PAGE("homes-per-page", 50);
+    HOMES_PER_PAGE("homes-per-page", 50),
+    RULES("rules", mutableListOf(
+        "&c1. Be respectful",
+        "&c2. No griefing",
+        "&c3. No cheating"
+    ));
 
     override fun toString(): String =
         (BMCCore.config.getProperty(key) ?: default).toString()

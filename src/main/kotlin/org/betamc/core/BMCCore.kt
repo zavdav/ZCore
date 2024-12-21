@@ -58,6 +58,7 @@ class BMCCore : JavaPlugin() {
             CommandList(),
             CommandMotd(),
             CommandReload(),
+            CommandRules(),
             CommandSeen(),
             CommandSetHome(),
             CommandSetSpawn(),

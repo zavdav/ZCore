@@ -18,6 +18,13 @@ motd:
   - '&bType /help for a list of commands.'
   - '&7Online players: &f{LIST}'
 
+# Server rules
+# Set to '' to disable
+rules:
+  - '&c1. Be respectful'
+  - '&c2. No griefing'
+  - '&c3. No cheating'
+
 # Kick configuration
 kick:
   # Default kick reason
