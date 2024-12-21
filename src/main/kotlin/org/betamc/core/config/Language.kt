@@ -25,6 +25,7 @@ enum class Language(val default: String) {
     KICK_SUCCESS("&c{0} has been kicked, reason: {1}"),
     KICKALL_SUCCESS("&cAll players have been kicked, reason: {0}"),
     LIST_HEADER("&eList: &6{0} &eof max. &6{1} &eplayers online"),
+    MOTD_NOT_SET("&cError: Message of the day has not been set"),
     NO_MATCHING_RESULTS("&cError: No matching results"),
     PAGE_TOO_HIGH("&cError: Page number too high"),
     RELOAD_SUCCESS("&e{0} {1} has been reloaded."),

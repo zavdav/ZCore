@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerRespawnEvent
+import org.poseidonplugins.commandapi.hasPermission
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -60,6 +61,11 @@ class PlayerListener : Listener {
 
         bmcPlayer.updateOnJoin(event.player.name)
         Utils.updateVanishedPlayers()
+
+        if (Property.MOTD.toString().isNotEmpty() &&
+            hasPermission(event.player, "bmc.motd")) {
+            event.player.performCommand("motd")
+        }
     }
 
     @EventHandler(priority = Event.Priority.Highest)

@@ -14,6 +14,10 @@ enum class Property(val key: String, val default: Any) {
     KICK_FORMAT("kick.format", "&cYou have been kicked, reason: {0}"),
     BROADCAST_FORMAT("format.broadcast-format", "&d[Broadcast] %message%"),
     MULTIPLE_HOMES("multiple-homes", 10),
+    MOTD("motd", mutableListOf(
+        "&eWelcome, {USERNAME}&e!",
+        "&bType /help for a list of commands.",
+        "&7Online players: &f{LIST}")),
     HOMES_PER_PAGE("homes-per-page", 50);
 
     override fun toString(): String =
@@ -30,4 +34,12 @@ enum class Property(val key: String, val default: Any) {
     fun toDouble(): Double = toString().toDouble()
 
     fun toBoolean(): Boolean = toString().toBoolean()
+
+    fun toList(): MutableList<String> {
+        return try {
+            (BMCCore.config.getProperty(key) as List<String>).toMutableList()
+        } catch (e: Exception) {
+            default as MutableList<String>
+        }
+    }
 }

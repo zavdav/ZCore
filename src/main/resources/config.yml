@@ -11,6 +11,13 @@ auto-save-time: 300
 format:
   broadcast-format: '&d[Broadcast] %message%'
 
+# Message of the day
+# Set to '' to disable
+motd:
+  - '&eWelcome, {USERNAME}&e!'
+  - '&bType /help for a list of commands.'
+  - '&7Online players: &f{LIST}'
+
 # Kick configuration
 kick:
   # Default kick reason
