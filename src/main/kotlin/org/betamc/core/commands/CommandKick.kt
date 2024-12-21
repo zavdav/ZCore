@@ -1,6 +1,7 @@
 package org.betamc.core.commands
 
 import org.betamc.core.config.Language
+import org.betamc.core.config.Property
 import org.betamc.core.util.Utils
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.*
@@ -19,11 +20,10 @@ class CommandKick : Command(
             sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, event.args[0]))
             return
         }
-        val message = if (event.args.size > 1) colorize(joinArgs(event.args, 1)) else Language.KICK_DEFAULT_MESSAGE.msg
-        player.kickPlayer(message)
-        broadcastMessage(Language.KICK_MESSAGE_BROADCAST.msg
-            .replace("%sender%", event.sender.name)
-            .replace("%player%", player.name)
-            .replace("%message%", message), "bmc.kick.see-messages")
+        val reason = colorize(if (event.args.size > 1) joinArgs(event.args, 1)
+            else Property.KICK_DEFAULT_REASON.toString())
+
+        player.kickPlayer(Utils.format(Property.KICK_FORMAT, reason))
+        sendMessage(event.sender, Utils.format(Language.KICK_SUCCESS, player.name, reason))
     }
 }

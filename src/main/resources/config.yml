@@ -1,0 +1,37 @@
+##############################################
+# ┌────────────────────────────────────────┐ #
+# │                BMC-Core                │ #
+# └────────────────────────────────────────┘ #
+##############################################
+
+# In what interval should data be automatically saved
+auto-save-time: 300
+
+# Message formats
+format:
+  broadcast-format: '&d[Broadcast] %message%'
+
+# Kick configuration
+kick:
+  # Default kick reason
+  default-reason: 'Kicked from server'
+
+  # Message format
+  format: '&cYou have been kicked, reason: {0}'
+
+# Ban configuration
+ban:
+  # Default ban reason
+  default-reason: 'The ban hammer has spoken!'
+
+  # Messages
+  permanent-ban: '&cYou have been permanently banned, reason: {0}'
+  temporary-ban: '&cYou have been banned until {0}, reason: {1}'
+  permanent-ipban: '&cYour IP has been permanently banned, reason: {0}'
+  temporary-ipban: '&cYour IP has been banned until {0}, reason: {1}'
+
+# How many homes are players with bmc.sethome.multiple allowed to have
+multiple-homes: 10
+
+# How many homes should be shown on a page in /homes
+homes-per-page: 50

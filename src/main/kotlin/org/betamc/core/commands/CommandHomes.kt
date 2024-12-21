@@ -68,7 +68,7 @@ class CommandHomes : Command(
     }
 
     private fun printHomes(sender: CommandSender, page: Int, homes: List<String>) {
-        val homesPerPage = Property.HOMES_PER_PAGE.toInt()
+        val homesPerPage = Property.HOMES_PER_PAGE.toUInt()
         val pages = ceil(homes.size.toDouble() / homesPerPage).toInt()
         if (page > pages) {
             sendMessage(sender, Language.PAGE_TOO_HIGH)

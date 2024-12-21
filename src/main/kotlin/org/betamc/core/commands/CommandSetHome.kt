@@ -31,7 +31,7 @@ class CommandSetHome : Command(
         }
 
         val bmcPlayer = PlayerMap.getPlayer(event.sender as Player)
-        val limit = Property.MULTIPLE_HOMES.toInt()
+        val limit = Property.MULTIPLE_HOMES.toUInt()
         val homeCount = bmcPlayer.getHomes().size
 
         if (!hasPermission(event.sender, "bmc.sethome.unlimited")) {

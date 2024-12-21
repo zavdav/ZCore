@@ -1,6 +1,8 @@
 package org.betamc.core.config
 
-enum class Language(var msg: String) {
+import org.betamc.core.BMCCore
+
+enum class Language(val default: String) {
 
     NO_PERMISSION("&cYou don't have permission to do that."),
     PLAYER_ONLY("&cOnly players can run this command."),
@@ -20,8 +22,8 @@ enum class Language(var msg: String) {
     HOMES_ENTRY("&b{0}, "),
     INVSEE_SUCCESS("&6You are now looking at {0}''s inventory"),
     INVSEE_RESTORED("&6Your inventory has been restored"),
-    KICK_MESSAGE_BROADCAST("&c%sender% kicked %player%: &f%message%"),
-    KICK_DEFAULT_MESSAGE("Kicked from server"),
+    KICK_SUCCESS("&c{0} has been kicked, reason: {1}"),
+    KICKALL_SUCCESS("&cAll players have been kicked, reason: {0}"),
     LIST_HEADER("&eList: &6{0} &eof max. &6{1} &eplayers online"),
     NO_MATCHING_RESULTS("&cError: No matching results"),
     PAGE_TOO_HIGH("&cError: Page number too high"),
@@ -39,11 +41,11 @@ enum class Language(var msg: String) {
     TP_PARSE_ERROR("&cError: Could not parse \"{0}\" into coordinates"),
     UNBAN_NOT_BANNED("&cError: This user is not banned"),
     UNBAN_SUCCESS("&aYou have unbanned {0}"),
-    UNBANIP_INVALID_IP("&cError: Invalid IP address"),
     UNBANIP_NOT_BANNED("&cError: This IP is not banned"),
     UNBANIP_SUCCESS("&aYou have unbanned the IP {0}"),
     UNSAFE_DESTINATION("&cError: The teleport destination is unsafe"),
     VANISH_TOGGLE("&7{0} been {1}");
 
-    override fun toString(): String = msg
+    override fun toString(): String =
+        (BMCCore.language.getProperty(name) ?: default).toString()
 }

@@ -1,6 +1,8 @@
 package org.betamc.core.config
 
-enum class Property(val key: String, var value: Any) {
+import org.betamc.core.BMCCore
+
+enum class Property(val key: String, val default: Any) {
 
     AUTO_SAVE_TIME("auto-save-time", 300),
     BAN_DEFAULT_REASON("ban.default-reason", "The ban hammer has spoken!"),
@@ -8,15 +10,22 @@ enum class Property(val key: String, var value: Any) {
     BAN_TEMPORARY("ban.temporary-ban", "&cYou have been banned until {0}, reason: {1}"),
     IPBAN_PERMANENT("ban.permanent-ipban", "&cYour IP has been permanently banned, reason: {0}"),
     IPBAN_TEMPORARY("ban.temporary-ipban", "&cYour IP has been banned until {0}, reason: {1}"),
+    KICK_DEFAULT_REASON("kick.default-reason", "Kicked from server"),
+    KICK_FORMAT("kick.format", "&cYou have been kicked, reason: {0}"),
     BROADCAST_FORMAT("format.broadcast-format", "&d[Broadcast] %message%"),
     MULTIPLE_HOMES("multiple-homes", 10),
     HOMES_PER_PAGE("homes-per-page", 50);
 
-    override fun toString(): String = value.toString()
+    override fun toString(): String =
+        (BMCCore.config.getProperty(key) ?: default).toString()
 
-    fun toInt(): Int = toString().toInt()
+    fun toInt(): Int = toString().toIntOrNull() ?: default.toString().toInt()
 
-    fun toLong(): Long = toString().toLong()
+    fun toUInt(): Int = toInt().coerceAtLeast(0)
+
+    fun toLong(): Long = toString().toLongOrNull() ?: default.toString().toLong()
+
+    fun toULong(): Long = toLong().coerceAtLeast(0)
 
     fun toDouble(): Double = toString().toDouble()
 
