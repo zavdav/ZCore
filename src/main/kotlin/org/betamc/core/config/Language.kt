@@ -24,6 +24,7 @@ enum class Language(val default: String) {
     INVSEE_RESTORED("&6Your inventory has been restored"),
     KICK_SUCCESS("&c{0} has been kicked, reason: {1}"),
     KICKALL_SUCCESS("&cAll players have been kicked, reason: {0}"),
+    KILL_SUCCESS("&c{0} been killed"),
     LIST_HEADER("&eList: &6{0} &eof max. &6{1} &eplayers online"),
     MOTD_NOT_SET("&cError: Message of the day has not been set"),
     NO_MATCHING_RESULTS("&cError: No matching results"),

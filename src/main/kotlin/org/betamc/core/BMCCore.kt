@@ -55,6 +55,7 @@ class BMCCore : JavaPlugin() {
             CommandInvSee(),
             CommandKick(),
             CommandKickAll(),
+            CommandKill(),
             CommandList(),
             CommandMotd(),
             CommandReload(),
