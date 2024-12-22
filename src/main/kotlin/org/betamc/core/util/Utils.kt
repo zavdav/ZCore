@@ -2,6 +2,7 @@ package org.betamc.core.util
 
 import com.projectposeidon.api.PoseidonUUID
 import com.projectposeidon.api.UUIDType
+import org.betamc.core.config.Property
 import org.betamc.core.player.PlayerMap
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -10,7 +11,6 @@ import org.bukkit.World
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.commandapi.hasPermission
-import java.text.MessageFormat
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
@@ -19,7 +19,28 @@ import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.floor
 
+fun getMessage(key: String): String = Utils.bundle.getString(key)
+
+fun format(key: String, vararg pairs: Pair<String, Any>, color: Boolean = true): String =
+    formatString(getMessage(key), *pairs, color = color)
+
+fun format(property: Property, vararg pairs: Pair<String, Any>, color: Boolean = true): String =
+    formatString(property.toString(), *pairs, color = color)
+
+fun formatError(key: String, vararg pairs: Pair<String, Any>): String =
+    format("errorMessage", "message" to format(key, *pairs))
+
+fun formatString(string: String, vararg pairs: Pair<String, Any>, color: Boolean = true): String {
+    var message = if (color) colorize(string) else string
+    for (pair in pairs) {
+        message = message.replace("{${pair.first.uppercase()}}", pair.second.toString())
+    }
+    return message
+}
+
 object Utils {
+
+    val bundle: ResourceBundle = ResourceBundle.getBundle("messages")
 
     val UUID_PATTERN: Pattern = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
     val IPV4_PATTERN: Pattern = Pattern.compile("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")
@@ -32,45 +53,9 @@ object Utils {
                 + "(?:([0-9]+)\\s*m[a-z]*[,\\s]*)?"
                 + "(?:([0-9]+)\\s*(?:s[a-z]*)?)?", Pattern.CASE_INSENSITIVE)
 
-    private val AIR_MATERIALS: MutableSet<Int> = HashSet()
-
-    init {
-        AIR_MATERIALS.add(Material.AIR.id)
-        AIR_MATERIALS.add(Material.SAPLING.id)
-        AIR_MATERIALS.add(Material.POWERED_RAIL.id)
-        AIR_MATERIALS.add(Material.DETECTOR_RAIL.id)
-        AIR_MATERIALS.add(Material.DEAD_BUSH.id)
-        AIR_MATERIALS.add(Material.RAILS.id)
-        AIR_MATERIALS.add(Material.YELLOW_FLOWER.id)
-        AIR_MATERIALS.add(Material.RED_ROSE.id)
-        AIR_MATERIALS.add(Material.RED_MUSHROOM.id)
-        AIR_MATERIALS.add(Material.BROWN_MUSHROOM.id)
-        AIR_MATERIALS.add(Material.SEEDS.id)
-        AIR_MATERIALS.add(Material.SIGN_POST.id)
-        AIR_MATERIALS.add(Material.WALL_SIGN.id)
-        AIR_MATERIALS.add(Material.LADDER.id)
-        AIR_MATERIALS.add(Material.SUGAR_CANE_BLOCK.id)
-        AIR_MATERIALS.add(Material.REDSTONE_WIRE.id)
-        AIR_MATERIALS.add(Material.REDSTONE_TORCH_OFF.id)
-        AIR_MATERIALS.add(Material.REDSTONE_TORCH_ON.id)
-        AIR_MATERIALS.add(Material.TORCH.id)
-        AIR_MATERIALS.add(Material.SOIL.id)
-        AIR_MATERIALS.add(Material.DIODE_BLOCK_OFF.id)
-        AIR_MATERIALS.add(Material.DIODE_BLOCK_ON.id)
-        AIR_MATERIALS.add(Material.TRAP_DOOR.id)
-        AIR_MATERIALS.add(Material.STONE_BUTTON.id)
-        AIR_MATERIALS.add(Material.STONE_PLATE.id)
-        AIR_MATERIALS.add(Material.WOOD_PLATE.id)
-        AIR_MATERIALS.add(Material.IRON_DOOR_BLOCK.id)
-        AIR_MATERIALS.add(Material.WOODEN_DOOR.id)
-        AIR_MATERIALS.add(Material.SNOW.id)
-    }
-
-    @JvmStatic fun format(obj: Any, vararg objects: Any): String =
-        MessageFormat(obj.toString()).format(objects)
-
-    @JvmStatic fun formatColorize(obj: Any, vararg objects: Any): String =
-        MessageFormat(colorize(obj.toString())).format(objects)
+    private val AIR_MATERIALS: Set<Int> = setOf(
+        0, 6, 27, 28, 32, 37, 38, 39, 40, 50, 55, 60, 63, 64, 65,
+        66, 68, 70, 71, 72, 75, 76, 77, 78, 83, 93, 94, 96, 136)
 
     fun String.safeSubstring(startIndex: Int, endIndex: Int): String =
         if (length <= endIndex) this else substring(startIndex, endIndex)
@@ -93,6 +78,8 @@ object Utils {
             else -> null
         }
     }
+
+    fun Player.isSelf(other: Player) = uniqueId == other.uniqueId
 
     @JvmStatic fun updateVanishedPlayers() {
         for (target in Bukkit.getOnlinePlayers()) {

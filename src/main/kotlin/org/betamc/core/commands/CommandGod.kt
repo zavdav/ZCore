@@ -1,8 +1,9 @@
 package org.betamc.core.commands
 
-import org.betamc.core.config.Language
 import org.betamc.core.player.PlayerMap
 import org.betamc.core.util.Utils
+import org.betamc.core.util.format
+import org.betamc.core.util.formatError
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
@@ -26,7 +27,8 @@ class CommandGod : Command(
         if (event.args.isNotEmpty()) {
             val target = Utils.getPlayerFromUsername(event.args[0])
             if (target == null) {
-                sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, event.args[0]))
+                sendMessage(event.sender, formatError("playerNotFound",
+                    "player" to event.args[0]))
                 return
             }
             bmcPlayer = PlayerMap.getPlayer(target)
@@ -34,15 +36,21 @@ class CommandGod : Command(
 
         val isSelf = player.uniqueId == bmcPlayer.uuid
         if (!isSelf && !hasPermission(event.sender, "bmc.god.others")) {
-            sendMessage(event.sender, Language.NO_PERMISSION)
+            sendMessage(event.sender, format("noPermission"))
             return
         }
         bmcPlayer.isGod = !bmcPlayer.isGod
 
-        sendMessage(event.sender, Utils.format(Language.GOD_TOGGLE,
-            if (isSelf) "Your" else "${bmcPlayer.name}'s",
-            if (bmcPlayer.isGod) "enabled" else "disabled"))
-        if (!isSelf) sendMessage(bmcPlayer.onlinePlayer, Utils.format(Language.GOD_TOGGLE,
-            "Your", if (bmcPlayer.isGod) "enabled" else "disabled"))
+        if (isSelf) {
+            sendMessage(event.sender, if (bmcPlayer.isGod)
+                format("godEnabled") else format("godDisabled"))
+        } else {
+            sendMessage(event.sender, if (bmcPlayer.isGod)
+                format("godEnabledOther", "player" to bmcPlayer.name)
+                else format("godDisabledOther", "player" to bmcPlayer.name))
+
+            sendMessage(bmcPlayer.onlinePlayer, if (bmcPlayer.isGod)
+                format("godEnabled") else format("godDisabled"))
+        }
     }
 }

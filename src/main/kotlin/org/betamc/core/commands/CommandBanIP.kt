@@ -1,8 +1,10 @@
 package org.betamc.core.commands
 
-import org.betamc.core.config.Language
+import org.betamc.core.config.Property
 import org.betamc.core.data.BanData
 import org.betamc.core.util.Utils
+import org.betamc.core.util.format
+import org.betamc.core.util.formatError
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.joinArgs
@@ -29,7 +31,8 @@ class CommandBanIP : Command(
                     Utils.getPlayerFromUUID(UUID.fromString(event.args[0]))
                     else Utils.getPlayerFromUsername(event.args[0])
                 if (player == null) {
-                    sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, event.args[0]))
+                    sendMessage(event.sender, formatError("playerNotFound",
+                        "player" to event.args[0]))
                     return
                 }
                 player.address.address.hostAddress
@@ -52,27 +55,32 @@ class CommandBanIP : Command(
             0 -> when (reason.length) {
                 0 -> {
                     BanData.banIP(ip)
-                    sendMessage(event.sender, Utils.format(Language.BANIP_SUCCESS,
-                        ip, "permanently", ""))
+                    sendMessage(event.sender, format("permanentIpBan",
+                        "ip" to ip,
+                        "reason" to Property.BAN_DEFAULT_REASON))
                 }
                 else -> {
                     BanData.banIP(ip, reason)
-                    sendMessage(event.sender, Utils.format(Language.BANIP_SUCCESS,
-                        ip, "permanently", ", reason: $reason"))
+                    sendMessage(event.sender, format("permanentIpBan",
+                        "ip" to ip, "reason" to reason))
                 }
             }
             else -> when (reason.length) {
                 0 -> {
                     val until = Utils.parseDateDiff(duration)
                     BanData.banIP(ip, until)
-                    sendMessage(event.sender, Utils.format(Language.BANIP_SUCCESS,
-                        ip, "for ${Utils.formatDateDiff(LocalDateTime.now(), until)}", ""))
+                    sendMessage(event.sender, format("temporaryIpBan",
+                        "ip" to ip,
+                        "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
+                        "reason" to Property.BAN_DEFAULT_REASON))
                 }
                 else -> {
                     val until = Utils.parseDateDiff(duration)
                     BanData.banIP(ip, until, reason)
-                    sendMessage(event.sender, Utils.format(Language.BANIP_SUCCESS,
-                        ip, "for ${Utils.formatDateDiff(LocalDateTime.now(), until)}", ", reason: $reason"))
+                    sendMessage(event.sender, format("temporaryIpBan",
+                        "ip" to ip,
+                        "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
+                        "reason" to reason))
                 }
             }
         }

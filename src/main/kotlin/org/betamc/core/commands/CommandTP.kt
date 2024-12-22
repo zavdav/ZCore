@@ -1,7 +1,8 @@
 package org.betamc.core.commands
 
-import org.betamc.core.config.Language
 import org.betamc.core.util.Utils
+import org.betamc.core.util.format
+import org.betamc.core.util.formatError
 import org.bukkit.Location
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -36,20 +37,26 @@ class CommandTP : Command(
             player = Utils.getPlayerFromUsername(args[0])
             target = Utils.getPlayerFromUsername(args[1])
             if (player == null) {
-                sendMessage(sender, Utils.format(Language.PLAYER_NOT_FOUND, args[0]))
+                sendMessage(sender, formatError("playerNotFound",
+                    "player" to args[0]))
                 return
             }
         }
         if (target == null) {
-            sendMessage(sender, Utils.format(Language.PLAYER_NOT_FOUND,
-                if (args.size == 2) args[1] else args[0]))
+            sendMessage(sender, formatError("playerNotFound",
+                "player" to if (args.size == 2) args[1] else args[0]))
             return
         }
 
         player!!.teleport(target)
-        sendMessage(sender, Utils.format(Language.TP_SUCCESS,
-            if (sender == player) "You have" else "${player.name} has",
-            if (sender == target) "you" else target.name))
+        if (sender == player) {
+            sendMessage(sender, format("teleportedToPlayer", "player" to target.name))
+        } else {
+            sendMessage(sender, if (sender == target)
+                format("teleportedPlayer", "player" to player.name)
+                else format("teleportedPlayerToPlayer",
+                    "player" to player, "other" to target))
+        }
     }
 
     private fun teleportPlayerToCoordinates(player: Player, args: List<String>) {
@@ -59,7 +66,8 @@ class CommandTP : Command(
         if (strings.size == 4) {
             target = Utils.getPlayerFromUsername(strings[0])
             if (target == null) {
-                sendMessage(player, Utils.format(Language.PLAYER_NOT_FOUND, strings[0]))
+                sendMessage(player, formatError("playerNotFound",
+                    "player" to strings[0]))
                 return
             }
             strings = strings.subList(1, strings.size)
@@ -67,9 +75,12 @@ class CommandTP : Command(
 
         val coords = parseCoordinates(player, target!!, strings) ?: return
         target.teleport(Location(target.world, coords[0], coords[1], coords[2], target.location.yaw, target.location.pitch))
-        sendMessage(player, Utils.format(Language.TP_SUCCESS,
-            if (player == target) "You have" else "${target.name} has",
-            "${coords[0].toFloat()}, ${coords[1].toFloat()}, ${coords[2].toFloat()}"))
+
+        val coordinates = "${coords[0].toFloat()}, ${coords[1].toFloat()}, ${coords[2].toFloat()}"
+        sendMessage(player, if (player == target)
+            format("teleportedToCoordinates", "coordinates" to coordinates)
+            else format("teleportedPlayerToCoordinates",
+                "player" to target.name, "coordinates" to coordinates))
     }
 
     private fun parseCoordinates(sender: CommandSender, player: Player, args: List<String>): List<Double>? {
@@ -91,8 +102,8 @@ class CommandTP : Command(
                         coords.add(loc.y)
                         computeY = true
                     } else {
-                        sendMessage(sender, Utils.format(Language.TP_PARSE_ERROR,
-                            args.joinToString(" ")))
+                        sendMessage(sender, formatError("errorParsingCoordinates",
+                            "string" to args.joinToString(" ")))
                         return null
                     }
                 }
@@ -103,7 +114,7 @@ class CommandTP : Command(
             try {
                 coords[1] = Utils.getSafeHeight(Location(loc.world, coords[0], coords[1], coords[2])).toDouble()
             } catch (e: Exception) {
-                sendMessage(sender, Language.UNSAFE_DESTINATION)
+                sendMessage(sender, formatError("unsafeDestination"))
                 return null
             }
         }

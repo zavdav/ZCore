@@ -1,7 +1,7 @@
 package org.betamc.core.commands
 
-import org.betamc.core.config.Language
-import org.betamc.core.util.Utils
+import org.betamc.core.util.format
+import org.betamc.core.util.formatError
 import org.bukkit.command.CommandSender
 import org.poseidonplugins.commandapi.*
 import kotlin.math.ceil
@@ -32,7 +32,7 @@ class CommandHelp : Command(
 
             commands = commands.filter { command -> command.name.contains(query, true) || command.description.contains(query, true) }
             if (commands.isEmpty()) {
-                sendMessage(event.sender, Language.NO_MATCHING_RESULTS)
+                sendMessage(event.sender, formatError("noMatchingResults"))
                 return
             }
         }
@@ -43,15 +43,17 @@ class CommandHelp : Command(
     private fun printHelp(sender: CommandSender, page: Int, commands: List<org.bukkit.command.Command>) {
         val pages = ceil(commands.size.toDouble() / 10).toInt()
         if (page > pages) {
-            sendMessage(sender, Language.PAGE_TOO_HIGH)
+            sendMessage(sender, formatError("pageTooHigh"))
             return
         }
 
-        sendMessage(sender, Utils.format(Language.HELP_HEADER, page, pages))
+        sendMessage(sender, format("helpPage",
+            "page" to page, "pages" to pages))
         for (i in (page * 10 - 10)..<page * 10) {
             if (i >= commands.size) break
-            sendMessage(sender, Utils.format(Language.HELP_COMMAND,
-                commands[i].name, commands[i].description))
+            sendMessage(sender, format("helpEntry",
+                "command" to commands[i].name,
+                "description" to commands[i].description))
         }
     }
 }

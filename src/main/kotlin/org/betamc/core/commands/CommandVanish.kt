@@ -1,8 +1,9 @@
 package org.betamc.core.commands
 
-import org.betamc.core.config.Language
 import org.betamc.core.player.PlayerMap
 import org.betamc.core.util.Utils
+import org.betamc.core.util.format
+import org.betamc.core.util.formatError
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
@@ -25,7 +26,8 @@ class CommandVanish : Command(
         if (event.args.isNotEmpty()) {
             val target = Utils.getPlayerFromUsername(event.args[0])
             if (target == null) {
-                sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, event.args[0]))
+                sendMessage(event.sender, formatError("playerNotFound",
+                    "player" to event.args[0]))
                 return
             }
             bmcPlayer = PlayerMap.getPlayer(target)
@@ -33,16 +35,22 @@ class CommandVanish : Command(
 
         val isSelf = player.uniqueId == bmcPlayer.uuid
         if (!isSelf && !hasPermission(event.sender, "bmc.vanish.others")) {
-            sendMessage(event.sender, Language.NO_PERMISSION)
+            sendMessage(event.sender, format("noPermission"))
             return
         }
         bmcPlayer.vanished = !bmcPlayer.vanished
         Utils.updateVanishedPlayers()
 
-        sendMessage(event.sender, Utils.format(Language.VANISH_TOGGLE,
-            if (isSelf) "You have" else "${bmcPlayer.name} has",
-            if (bmcPlayer.vanished) "vanished" else "unvanished"))
-        if (!isSelf) sendMessage(bmcPlayer.onlinePlayer, Utils.format(Language.VANISH_TOGGLE,
-            "You have", if (bmcPlayer.vanished) "vanished" else "unvanished"))
+        if (isSelf) {
+            sendMessage(event.sender, if (bmcPlayer.vanished)
+                format("vanishEnabled") else format("vanishDisabled"))
+        } else {
+            sendMessage(event.sender, if (bmcPlayer.vanished)
+                format("vanishEnabledOther", "player" to bmcPlayer.name)
+                else format("vanishDisabledOther", "player" to bmcPlayer.name))
+
+            sendMessage(bmcPlayer.onlinePlayer, if (bmcPlayer.vanished)
+                format("vanishEnabled") else format("vanishDisabled"))
+        }
     }
 }

@@ -1,8 +1,7 @@
 package org.betamc.core.commands
 
 import org.betamc.core.BMCCore
-import org.betamc.core.config.Language
-import org.betamc.core.util.Utils
+import org.betamc.core.util.format
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.sendMessage
@@ -19,6 +18,8 @@ class CommandReload : Command(
         (BMCCore.plugin as BMCCore).initConfig()
 
         val desc = BMCCore.plugin.description
-        sendMessage(event.sender, Utils.format(Language.RELOAD_SUCCESS, desc.name, desc.version))
+        sendMessage(event.sender, format("pluginReloaded",
+            "plugin" to desc.name,
+            "version" to desc.version))
     }
 }

@@ -1,8 +1,9 @@
 package org.betamc.core.commands
 
-import org.betamc.core.config.Language
 import org.betamc.core.player.PlayerMap
 import org.betamc.core.util.Utils
+import org.betamc.core.util.format
+import org.betamc.core.util.formatError
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
@@ -24,18 +25,19 @@ class CommandInvSee : Command(
         if (event.args.isNotEmpty()) {
             val target = Utils.getPlayerFromUsername(event.args[0])
             if (target == null) {
-                sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, event.args[0]))
+                sendMessage(event.sender, formatError("playerNotFound",
+                    "player" to event.args[0]))
                 return
             }
             if (bmcPlayer.savedInventory == null) bmcPlayer.savedInventory = player.inventory.contents
             player.inventory.contents = PlayerMap.getPlayer(target).savedInventory ?: target.inventory.contents
-            sendMessage(event.sender, Utils.format(Language.INVSEE_SUCCESS, target.name))
+            sendMessage(event.sender, format("lookingAtInventory", "player" to target.name))
         } else {
             if (bmcPlayer.savedInventory != null) {
                 player.inventory.contents = bmcPlayer.savedInventory
                 bmcPlayer.savedInventory = null
             }
-            sendMessage(event.sender, Language.INVSEE_RESTORED)
+            sendMessage(event.sender, format("inventoryRestored"))
         }
     }
 }

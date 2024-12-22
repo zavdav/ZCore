@@ -9,7 +9,7 @@ auto-save-time: 300
 
 # Message formats
 format:
-  broadcast-format: '&d[Broadcast] %message%'
+  broadcast-format: '&d[Broadcast] {MESSAGE}'
 
 # Message of the day
 # Set to '' to disable
@@ -31,7 +31,7 @@ kick:
   default-reason: 'Kicked from server'
 
   # Message format
-  format: '&cYou have been kicked, reason: {0}'
+  format: '&cYou have been kicked: {REASON}'
 
 # Ban configuration
 ban:
@@ -39,10 +39,10 @@ ban:
   default-reason: 'The ban hammer has spoken!'
 
   # Messages
-  permanent-ban: '&cYou have been permanently banned, reason: {0}'
-  temporary-ban: '&cYou have been banned until {0}, reason: {1}'
-  permanent-ipban: '&cYour IP has been permanently banned, reason: {0}'
-  temporary-ipban: '&cYour IP has been banned until {0}, reason: {1}'
+  permanent-ban: '&cYou have been permanently banned: {REASON}'
+  temporary-ban: '&cYou have been banned until {DATETIME}: {REASON}'
+  permanent-ipban: '&cYour IP has been permanently banned: {REASON}'
+  temporary-ipban: '&cYour IP has been banned until {DATETIME}: {REASON}'
 
 # How many homes are players with bmc.sethome.multiple allowed to have
 multiple-homes: 10

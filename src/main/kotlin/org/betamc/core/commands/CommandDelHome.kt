@@ -1,8 +1,9 @@
 package org.betamc.core.commands
 
-import org.betamc.core.config.Language
 import org.betamc.core.player.PlayerMap
 import org.betamc.core.util.Utils
+import org.betamc.core.util.format
+import org.betamc.core.util.formatError
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
@@ -27,19 +28,20 @@ class CommandDelHome : Command(
 
         if (homeName.contains(":")) {
             if (!hasPermission(event.sender, "bmc.delhome.others")) {
-                sendMessage(event.sender, Language.NO_PERMISSION)
+                sendMessage(event.sender, format("noPermission"))
                 return
             }
 
             val strings = event.args[0].split(":")
             if (strings.size < 2) {
-                sendMessage(event.sender, Language.HOME_NOT_SPECIFIED)
+                sendMessage(event.sender, formatError("noHomeSpecified"))
                 return
             }
 
             val uuid = Utils.getUUIDFromUsername(strings[0])
             if (uuid == null) {
-                sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, strings[0]))
+                sendMessage(event.sender, formatError("playerNotFound",
+                    "player" to strings[0]))
                 return
             }
             bmcPlayer = PlayerMap.getPlayer(uuid)
@@ -47,13 +49,20 @@ class CommandDelHome : Command(
         }
 
         if (!bmcPlayer.homeExists(homeName)) {
-            sendMessage(event.sender, Language.HOME_DOES_NOT_EXIST)
+            sendMessage(event.sender, formatError("homeDoesNotExist"))
             return
         }
 
         val finalName = bmcPlayer.getFinalHomeName(homeName)
         bmcPlayer.removeHome(finalName)
-        sendMessage(event.sender, Utils.format(Language.DELHOME_SUCCESS,
-            if (player.uniqueId == bmcPlayer.uuid) "Your" else "${bmcPlayer.name}'s", finalName))
+
+        if (player.uniqueId == bmcPlayer.uuid) {
+            sendMessage(event.sender, format("homeDeleted",
+                "home" to finalName))
+        } else {
+            sendMessage(event.sender, format("homeDeletedOther",
+                "user" to bmcPlayer.name,
+                "home" to finalName))
+        }
     }
 }

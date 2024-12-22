@@ -1,9 +1,10 @@
 package org.betamc.core.commands
 
-import org.betamc.core.config.Language
 import org.betamc.core.config.Property
 import org.betamc.core.player.PlayerMap
 import org.betamc.core.util.Utils
+import org.betamc.core.util.format
+import org.betamc.core.util.formatError
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
@@ -44,7 +45,8 @@ class CommandHomes : Command(
             val strings = query.split(":")
             val uuid = Utils.getUUIDFromUsername(strings[0])
             if (uuid == null) {
-                sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, strings[0]))
+                sendMessage(event.sender, formatError("playerNotFound",
+                    "player" to strings[0]))
                 return
             }
             bmcPlayer = PlayerMap.getPlayer(uuid)
@@ -52,7 +54,7 @@ class CommandHomes : Command(
         }
 
         if (player.uniqueId != bmcPlayer.uuid && !hasPermission(event.sender, "bmc.homes.others")) {
-            sendMessage(event.sender, Language.NO_PERMISSION)
+            sendMessage(event.sender, format("noPermission"))
             return
         }
 
@@ -60,7 +62,7 @@ class CommandHomes : Command(
         if (page < 1) page = 1
         if (query != "") homes = homes.filter { home -> home.startsWith(query, true) }
         if (homes.isEmpty()) {
-            sendMessage(event.sender, Language.NO_MATCHING_RESULTS)
+            sendMessage(event.sender, formatError("noMatchingResults"))
             return
         }
 
@@ -71,15 +73,16 @@ class CommandHomes : Command(
         val homesPerPage = Property.HOMES_PER_PAGE.toUInt()
         val pages = ceil(homes.size.toDouble() / homesPerPage).toInt()
         if (page > pages) {
-            sendMessage(sender, Language.PAGE_TOO_HIGH)
+            sendMessage(sender, formatError("pageTooHigh"))
             return
         }
-        sendMessage(sender, Utils.format(Language.HOMES_HEADER, page, pages))
+        sendMessage(sender, format("homesPage",
+            "page" to page, "pages" to pages))
 
         val sb = StringBuilder()
         for (i in (page * homesPerPage - homesPerPage)..<page * homesPerPage) {
             if (i >= homes.size) break
-            sb.append(Utils.format(Language.HOMES_ENTRY, homes[i]))
+            sb.append(format("homesEntry", "home" to homes[i]) + " ")
         }
         sendMessage(sender, sb.substring(0, sb.length - 2))
     }

@@ -6,6 +6,7 @@ import org.betamc.core.data.SpawnData
 import org.betamc.core.player.PlayerMap
 import org.betamc.core.util.Utils
 import org.betamc.core.util.Utils.safeSubstring
+import org.betamc.core.util.format
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
@@ -31,19 +32,21 @@ class PlayerListener : Listener {
             if (!ipBan.uuids.contains(event.player.uniqueId)) ipBan.addUUID(event.player.uniqueId)
             when (ipBan.until == null) {
                 true -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    Utils.formatColorize(Property.IPBAN_PERMANENT, ipBan.reason).safeSubstring(0, 99))
+                    format(Property.IPBAN_PERMANENT, "reason" to ipBan.reason).safeSubstring(0, 99))
                 false -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    Utils.formatColorize(Property.IPBAN_TEMPORARY,
-                    ipBan.until.truncatedTo(ChronoUnit.MINUTES), ipBan.reason).safeSubstring(0, 99))
+                    format(Property.IPBAN_TEMPORARY,
+                        "datetime" to ipBan.until.truncatedTo(ChronoUnit.MINUTES),
+                        "reason" to ipBan.reason).safeSubstring(0, 99))
             }
         } else if (bmcPlayer.isBanned) {
             val ban = BanData.getBan(event.player.uniqueId)!!
             when (ban.until == null) {
                 true -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    Utils.formatColorize(Property.BAN_PERMANENT, ban.reason).safeSubstring(0, 99))
+                    format(Property.BAN_PERMANENT, "reason" to ban.reason).safeSubstring(0, 99))
                 false -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    Utils.formatColorize(Property.BAN_TEMPORARY,
-                    ban.until.truncatedTo(ChronoUnit.MINUTES), ban.reason).safeSubstring(0, 99))
+                    format(Property.BAN_TEMPORARY,
+                        "datetime" to ban.until.truncatedTo(ChronoUnit.MINUTES),
+                        "reason" to ban.reason).safeSubstring(0, 99))
             }
         }
     }

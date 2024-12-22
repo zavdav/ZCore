@@ -1,6 +1,7 @@
 package org.betamc.core.commands
 
 import org.betamc.core.config.Property
+import org.betamc.core.util.format
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.broadcastMessage
@@ -16,7 +17,7 @@ class CommandBroadcast : Command(
     preprocessor = Preprocessor()) {
 
     override fun execute(event: CommandEvent) {
-        broadcastMessage(Property.BROADCAST_FORMAT.toString()
-            .replace("%message%", joinArgs(event.args, 0)))
+        broadcastMessage(format(Property.BROADCAST_FORMAT,
+            "message" to joinArgs(event.args, 0)))
     }
 }

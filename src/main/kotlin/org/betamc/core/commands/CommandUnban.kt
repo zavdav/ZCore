@@ -1,9 +1,10 @@
 package org.betamc.core.commands
 
-import org.betamc.core.config.Language
 import org.betamc.core.data.BanData
 import org.betamc.core.player.PlayerMap
 import org.betamc.core.util.Utils
+import org.betamc.core.util.format
+import org.betamc.core.util.formatError
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.sendMessage
@@ -24,17 +25,18 @@ class CommandUnban : Command(
             UUID.fromString(event.args[0]) else Utils.getUUIDFromUsername(event.args[0])
 
         if (uuid == null) {
-            sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, event.args[0]))
+            sendMessage(event.sender, formatError("playerNotFound",
+                "player" to event.args[0]))
             return
         }
 
         val name = if (PlayerMap.isPlayerKnown(uuid)) PlayerMap.getPlayer(uuid).name else uuid
         if (!BanData.isBanned(uuid)) {
-            sendMessage(event.sender, Language.UNBAN_NOT_BANNED)
+            sendMessage(event.sender, formatError("userNotBanned"))
             return
         }
 
         BanData.unban(uuid)
-        sendMessage(event.sender, Utils.format(Language.UNBAN_SUCCESS, name))
+        sendMessage(event.sender, format("userUnbanned", "user" to name))
     }
 }

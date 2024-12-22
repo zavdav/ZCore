@@ -1,8 +1,9 @@
 package org.betamc.core.commands
 
-import org.betamc.core.config.Language
 import org.betamc.core.data.SpawnData
 import org.betamc.core.util.Utils
+import org.betamc.core.util.format
+import org.betamc.core.util.formatError
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
@@ -26,10 +27,11 @@ class CommandSpawn : Command(
         try {
             loc.y = Utils.getSafeHeight(loc).toDouble()
         } catch (e: Exception) {
-            sendMessage(event.sender, Language.UNSAFE_DESTINATION)
+            sendMessage(event.sender, formatError("unsafeDestination"))
             return
         }
         player.teleport(loc)
-        sendMessage(player, Utils.format(Language.SPAWN_SUCCESS, loc.world.name))
+        sendMessage(player, format("teleportedToSpawn",
+            "world" to loc.world.name))
     }
 }

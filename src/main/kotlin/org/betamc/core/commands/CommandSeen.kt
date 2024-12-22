@@ -1,8 +1,9 @@
 package org.betamc.core.commands
 
-import org.betamc.core.config.Language
 import org.betamc.core.player.PlayerMap
 import org.betamc.core.util.Utils
+import org.betamc.core.util.format
+import org.betamc.core.util.formatError
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
@@ -21,19 +22,24 @@ class CommandSeen : Command(
     override fun execute(event: CommandEvent) {
         val uuid = Utils.getUUIDFromUsername(event.args[0])
         if (uuid == null || !PlayerMap.isPlayerKnown(uuid)) {
-            sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, event.args[0]))
+            sendMessage(event.sender, formatError("playerNotFound",
+                "player" to event.args[0]))
             return
         }
 
         val bmcPlayer = PlayerMap.getPlayer(uuid)
         if (bmcPlayer.isOnline) {
             val isSelf = event.sender is Player && (event.sender as Player).uniqueId == bmcPlayer.uuid
-            sendMessage(event.sender, Utils.format(Language.SEEN_ONLINE,
-                if (isSelf) "You have" else "${bmcPlayer.name} has",
-                Utils.formatDateDiff(bmcPlayer.lastSeen, LocalDateTime.now())))
+            val duration = Utils.formatDateDiff(bmcPlayer.lastSeen, LocalDateTime.now())
+            sendMessage(event.sender, if (isSelf)
+                format("seenOnline", "duration" to duration)
+                else format("seenOnlineOther",
+                    "player" to bmcPlayer.name,
+                    "duration" to duration))
         } else {
-            sendMessage(event.sender, Utils.format(Language.SEEN_OFFLINE,
-                bmcPlayer.name, Utils.formatDateDiff(bmcPlayer.lastSeen, LocalDateTime.now())))
+            sendMessage(event.sender, format("seenOffline",
+                "user" to bmcPlayer.name,
+                "duration" to Utils.formatDateDiff(bmcPlayer.lastSeen, LocalDateTime.now())))
         }
     }
 }

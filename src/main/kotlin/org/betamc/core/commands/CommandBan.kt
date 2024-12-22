@@ -1,9 +1,11 @@
 package org.betamc.core.commands
 
-import org.betamc.core.config.Language
+import org.betamc.core.config.Property
 import org.betamc.core.data.BanData
 import org.betamc.core.player.PlayerMap
 import org.betamc.core.util.Utils
+import org.betamc.core.util.format
+import org.betamc.core.util.formatError
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.joinArgs
@@ -26,7 +28,8 @@ class CommandBan: Command(
             UUID.fromString(event.args[0]) else Utils.getUUIDFromUsername(event.args[0])
 
         if (uuid == null) {
-            sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, event.args[0]))
+            sendMessage(event.sender, formatError("playerNotFound",
+                "player" to event.args[0]))
             return
         }
 
@@ -48,27 +51,32 @@ class CommandBan: Command(
             0 -> when (reason.length) {
                 0 -> {
                     BanData.ban(uuid)
-                    sendMessage(event.sender, Utils.format(Language.BAN_SUCCESS,
-                        name, "permanently", ""))
+                    sendMessage(event.sender, format("permanentBan",
+                        "user" to name,
+                        "reason" to Property.BAN_DEFAULT_REASON))
                 }
                 else -> {
                     BanData.ban(uuid, reason)
-                    sendMessage(event.sender, Utils.format(Language.BAN_SUCCESS,
-                        name, "permanently", ", reason: $reason"))
+                    sendMessage(event.sender, format("permanentBan",
+                        "user" to name, "reason" to reason))
                 }
             }
             else -> when (reason.length) {
                 0 -> {
                     val until = Utils.parseDateDiff(duration)
                     BanData.ban(uuid, until)
-                    sendMessage(event.sender, Utils.format(Language.BAN_SUCCESS,
-                        name, "for ${Utils.formatDateDiff(LocalDateTime.now(), until)}", ""))
+                    sendMessage(event.sender, format("temporaryBan",
+                        "user" to name,
+                        "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
+                        "reason" to Property.BAN_DEFAULT_REASON))
                 }
                 else -> {
                     val until = Utils.parseDateDiff(duration)
                     BanData.ban(uuid, until, reason)
-                    sendMessage(event.sender, Utils.format(Language.BAN_SUCCESS,
-                        name, "for ${Utils.formatDateDiff(LocalDateTime.now(), until)}", ", reason: $reason"))
+                    sendMessage(event.sender, format("temporaryBan",
+                        "user" to name,
+                        "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
+                        "reason" to reason))
                 }
             }
         }

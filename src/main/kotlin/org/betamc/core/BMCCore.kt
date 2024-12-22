@@ -20,14 +20,11 @@ class BMCCore : JavaPlugin() {
 
     companion object {
         const val prefix = "[BMC-Core]"
-
         lateinit var plugin: Plugin; private set
         lateinit var dataFolder: File; private set
         lateinit var logger: Logger; private set
         lateinit var cmdManager: CommandManager; private set
-
         lateinit var config: Configuration; private set
-        lateinit var language: Configuration; private set
     }
 
     private var lastAutoSave: LocalDateTime = LocalDateTime.now()
@@ -109,7 +106,5 @@ class BMCCore : JavaPlugin() {
         }
         config = Configuration(file)
         config.load()
-        language = Configuration(File(dataFolder, "language.yml"))
-        language.load()
     }
 }

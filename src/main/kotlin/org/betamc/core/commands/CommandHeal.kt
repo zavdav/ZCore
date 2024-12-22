@@ -1,7 +1,9 @@
 package org.betamc.core.commands
 
-import org.betamc.core.config.Language
 import org.betamc.core.util.Utils
+import org.betamc.core.util.Utils.isSelf
+import org.betamc.core.util.format
+import org.betamc.core.util.formatError
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
@@ -22,23 +24,25 @@ class CommandHeal : Command(
         if (event.args.isNotEmpty()) {
             target = Utils.getPlayerFromUsername(event.args[0])
             if (target == null) {
-                sendMessage(event.sender, Utils.format(Language.PLAYER_NOT_FOUND, event.args[0]))
+                sendMessage(event.sender, formatError("playerNotFound",
+                    "player" to event.args[0]))
                 return
             }
         }
 
-        val isSelf = (event.sender as Player).uniqueId == target!!.uniqueId
+        val isSelf = (event.sender as Player).isSelf(target!!)
         if (!isSelf && !hasPermission(event.sender, "bmc.heal.others")) {
-            sendMessage(event.sender, Language.NO_PERMISSION)
+            sendMessage(event.sender, format("noPermission"))
             return
         }
         target.health = 20
 
         if (isSelf) {
-            sendMessage(event.sender, Utils.format(Language.HEAL_SUCCESS, "You have"))
+            sendMessage(event.sender, format("healed"))
         } else {
-            sendMessage(event.sender, Utils.format(Language.HEAL_SUCCESS, "${target.name} has"))
-            sendMessage(target, Utils.format(Language.HEAL_SUCCESS, "You have"))
+            sendMessage(event.sender, format("healedOther",
+                "player" to target.name))
+            sendMessage(target, format("healed"))
         }
     }
 }
