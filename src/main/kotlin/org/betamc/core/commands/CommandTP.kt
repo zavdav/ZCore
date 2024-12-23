@@ -1,5 +1,6 @@
 package org.betamc.core.commands
 
+import org.betamc.core.util.UnsafeDestinationException
 import org.betamc.core.util.Utils
 import org.betamc.core.util.format
 import org.betamc.core.util.formatError
@@ -113,12 +114,11 @@ class CommandTP : Command(
         if (computeY) {
             try {
                 coords[1] = Utils.getSafeHeight(Location(loc.world, coords[0], coords[1], coords[2])).toDouble()
-            } catch (e: Exception) {
+            } catch (e: UnsafeDestinationException) {
                 sendMessage(sender, formatError("unsafeDestination"))
                 return null
             }
         }
-
         return coords.toList()
     }
 }

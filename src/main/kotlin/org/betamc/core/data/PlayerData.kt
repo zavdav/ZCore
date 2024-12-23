@@ -2,11 +2,13 @@ package org.betamc.core.data
 
 import com.github.cliftonlabs.json_simple.JsonObject
 import org.betamc.core.BMCCore
+import org.betamc.core.util.Utils
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import java.io.File
 import java.time.LocalDateTime
 import java.util.UUID
+import kotlin.math.floor
 
 abstract class PlayerData(val uuid: UUID) : JsonData(
     File(BMCCore.dataFolder, "${File.separator}userdata${File.separator}$uuid.json")) {
@@ -92,9 +94,10 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
     fun getHome(name: String): Location? {
         val home = getHomeJSON(name) ?: return null
         val world = Bukkit.getWorld(home["world"].toString()) ?: Bukkit.getWorlds()[0]
-        val x = home["x"].toString().toDouble()
-        val y = home["y"].toString().toDouble()
-        val z = home["z"].toString().toDouble()
+        val x = floor(home["x"].toString().toDouble()) + 0.5
+        var y = home["y"].toString().toDouble()
+        val z = floor(home["z"].toString().toDouble()) + 0.5
+        y = Utils.getSafeHeight(Location(world, x, y, z)).toDouble()
         val pitch = home["pitch"].toString().toFloat()
         val yaw = home["yaw"].toString().toFloat()
         return Location(world, x, y, z, yaw, pitch)

@@ -17,7 +17,6 @@ import java.util.*
 import java.util.regex.Pattern
 import kotlin.math.abs
 import kotlin.math.ceil
-import kotlin.math.floor
 
 fun getMessage(key: String): String = Utils.bundle.getString(key)
 
@@ -37,6 +36,8 @@ fun formatString(string: String, vararg pairs: Pair<String, Any>, color: Boolean
     }
     return message
 }
+
+class UnsafeDestinationException : Exception()
 
 object Utils {
 
@@ -96,9 +97,9 @@ object Utils {
 
     @JvmStatic fun getSafeHeight(loc: Location): Int {
         val world = loc.world
-        val x = floor(loc.x).toInt()
+        val x = loc.blockX
         var y = ceil(loc.y).toInt()
-        val z = floor(loc.z).toInt()
+        val z = loc.blockZ
 
         while (isBlockAboveAir(world, x, y, z)) {
             y -= 1
@@ -106,7 +107,7 @@ object Utils {
         }
         while (isBlockUnsafe(world, x, y, z)) {
             y += 1
-            if (y > 127) throw Exception()
+            if (y > 127) throw UnsafeDestinationException()
         }
         return y
     }

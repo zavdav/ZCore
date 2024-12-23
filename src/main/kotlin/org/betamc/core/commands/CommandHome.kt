@@ -1,6 +1,7 @@
 package org.betamc.core.commands
 
 import org.betamc.core.player.PlayerMap
+import org.betamc.core.util.UnsafeDestinationException
 import org.betamc.core.util.Utils
 import org.betamc.core.util.format
 import org.betamc.core.util.formatError
@@ -32,8 +33,8 @@ class CommandHome : Command(
                 return
             }
 
-            val strings = event.args[0].split(":")
-            if (strings.size < 2) {
+            val strings = event.args[0].split(":", limit = 2)
+            if (strings[1].isEmpty()) {
                 sendMessage(event.sender, formatError("noHomeSpecified"))
                 return
             }
@@ -53,8 +54,13 @@ class CommandHome : Command(
             return
         }
 
-        val location = bmcPlayer.getHome(homeName)
-        player.teleport(location)
+        try {
+            val location = bmcPlayer.getHome(homeName)
+            player.teleport(location)
+        } catch (e: UnsafeDestinationException) {
+            sendMessage(event.sender, formatError("unsafeDestination"))
+            return
+        }
 
         val finalName = bmcPlayer.getFinalHomeName(homeName)
         if (player.uniqueId == bmcPlayer.uuid) {

@@ -1,6 +1,7 @@
 package org.betamc.core.commands
 
 import org.betamc.core.data.SpawnData
+import org.betamc.core.util.UnsafeDestinationException
 import org.betamc.core.util.Utils
 import org.betamc.core.util.format
 import org.betamc.core.util.formatError
@@ -26,7 +27,7 @@ class CommandSpawn : Command(
         loc = SpawnData.getSpawn(player.world) ?: loc
         try {
             loc.y = Utils.getSafeHeight(loc).toDouble()
-        } catch (e: Exception) {
+        } catch (e: UnsafeDestinationException) {
             sendMessage(event.sender, formatError("unsafeDestination"))
             return
         }
