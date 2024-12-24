@@ -1,4 +1,5 @@
-name: BMC-Core
-main: org.betamc.core.BMCCore
+name: ZCore
+main: org.poseidonplugins.zcore.ZCore
 version: 1.0-SNAPSHOT
-description: BetaMC Core Plugin
+description: Provides core functionality and many commands
+author: zavdav

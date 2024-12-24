@@ -1,8 +1,8 @@
-##############################################
-# ┌────────────────────────────────────────┐ #
-# │                BMC-Core                │ #
-# └────────────────────────────────────────┘ #
-##############################################
+###############################################
+# ┌─────────────────────────────────────────┐ #
+# │                  ZCore                  │ #
+# └─────────────────────────────────────────┘ #
+###############################################
 
 # In what interval should data be automatically saved
 auto-save-time: 300
@@ -44,7 +44,7 @@ ban:
   permanent-ipban: '&cYour IP has been permanently banned: {REASON}'
   temporary-ipban: '&cYour IP has been banned until {DATETIME}: {REASON}'
 
-# How many homes are players with bmc.sethome.multiple allowed to have
+# How many homes are players with zcore.sethome.multiple allowed to have
 multiple-homes: 10
 
 # How many homes should be shown on a page in /homes

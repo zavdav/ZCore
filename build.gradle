@@ -4,7 +4,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
-group = 'org.betamc.core'
+group = 'org.poseidonplugins.zcore'
 version = '1.0-SNAPSHOT'
 
 repositories {
@@ -28,7 +28,6 @@ shadowJar {
     dependencies {
         exclude(dependency('com.legacyminecraft.poseidon:poseidon-craftbukkit:1.1.8'))
     }
-    archiveBaseName.set('BMC-Core')
-    archiveVersion.set('1.0-SNAPSHOT')
+    archiveBaseName.set('ZCore')
     archiveClassifier.set('')
 }

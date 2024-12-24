@@ -1,0 +1,45 @@
+package org.poseidonplugins.zcore.commands
+
+import org.bukkit.entity.Player
+import org.poseidonplugins.commandapi.Command
+import org.poseidonplugins.commandapi.CommandEvent
+import org.poseidonplugins.commandapi.sendMessage
+import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.util.Utils
+import org.poseidonplugins.zcore.util.format
+import org.poseidonplugins.zcore.util.formatError
+import java.time.LocalDateTime
+
+class CommandSeen : Command(
+    "seen",
+    description = "Shows when a player was last online.",
+    usage = "/seen <player>",
+    permission = "zcore.seen",
+    minArgs = 1,
+    maxArgs = 1,
+    preprocessor = Preprocessor()) {
+
+    override fun execute(event: CommandEvent) {
+        val uuid = Utils.getUUIDFromUsername(event.args[0])
+        if (uuid == null || !PlayerMap.isPlayerKnown(uuid)) {
+            sendMessage(event.sender, formatError("playerNotFound",
+                "player" to event.args[0]))
+            return
+        }
+
+        val zPlayer = PlayerMap.getPlayer(uuid)
+        if (zPlayer.isOnline) {
+            val isSelf = event.sender is Player && (event.sender as Player).uniqueId == zPlayer.uuid
+            val duration = Utils.formatDateDiff(zPlayer.lastSeen, LocalDateTime.now())
+            sendMessage(event.sender, if (isSelf)
+                format("seenOnline", "duration" to duration)
+                else format("seenOnlineOther",
+                    "player" to zPlayer.name,
+                    "duration" to duration))
+        } else {
+            sendMessage(event.sender, format("seenOffline",
+                "user" to zPlayer.name,
+                "duration" to Utils.formatDateDiff(zPlayer.lastSeen, LocalDateTime.now())))
+        }
+    }
+}
