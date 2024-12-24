@@ -11,7 +11,7 @@ import java.io.FileWriter
 abstract class JsonData(private val file: File) {
 
     protected var json: JsonObject = JsonObject()
-    private var hashCode: Int = json.hashCode()
+    private var hashCode: Int = -1
     protected var initialize = false
 
     init {
