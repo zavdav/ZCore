@@ -6,7 +6,7 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.sendMessage
-import org.poseidonplugins.zcore.util.UnsafeDestinationException
+import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.format
 import org.poseidonplugins.zcore.util.formatError
@@ -31,25 +31,18 @@ class CommandTP : Command(
     }
 
     private fun teleportPlayerToPlayer(sender: Player, args: List<String>) {
-        var player: Player? = sender
-        var target: Player? = Utils.getPlayerFromUsername(args[0])
+        val player: Player
+        val target: Player
 
         if (args.size == 2) {
             player = Utils.getPlayerFromUsername(args[0])
             target = Utils.getPlayerFromUsername(args[1])
-            if (player == null) {
-                sendMessage(sender, formatError("playerNotFound",
-                    "player" to args[0]))
-                return
-            }
-        }
-        if (target == null) {
-            sendMessage(sender, formatError("playerNotFound",
-                "player" to if (args.size == 2) args[1] else args[0]))
-            return
+        } else {
+            player = sender
+            target = Utils.getPlayerFromUsername(args[0])
         }
 
-        player!!.teleport(target)
+        player.teleport(target)
         if (sender == player) {
             sendMessage(sender, format("teleportedToPlayer", "player" to target.name))
         } else {
@@ -62,19 +55,14 @@ class CommandTP : Command(
 
     private fun teleportPlayerToCoordinates(player: Player, args: List<String>) {
         var strings = args
-        var target: Player? = player
+        var target = player
 
         if (strings.size == 4) {
             target = Utils.getPlayerFromUsername(strings[0])
-            if (target == null) {
-                sendMessage(player, formatError("playerNotFound",
-                    "player" to strings[0]))
-                return
-            }
             strings = strings.subList(1, strings.size)
         }
 
-        val coords = parseCoordinates(player, target!!, strings) ?: return
+        val coords = parseCoordinates(player, target, strings) ?: return
         target.teleport(Location(target.world, coords[0], coords[1], coords[2], target.location.yaw, target.location.pitch))
 
         val coordinates = "${coords[0].toFloat()}, ${coords[1].toFloat()}, ${coords[2].toFloat()}"

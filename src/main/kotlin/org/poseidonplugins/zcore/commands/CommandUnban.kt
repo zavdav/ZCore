@@ -8,7 +8,6 @@ import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.format
 import org.poseidonplugins.zcore.util.formatError
-import java.util.UUID
 
 class CommandUnban : Command(
     "unban",
@@ -21,15 +20,7 @@ class CommandUnban : Command(
     preprocessor = Preprocessor()) {
 
     override fun execute(event: CommandEvent) {
-        val uuid = if (Utils.UUID_PATTERN.matcher(event.args[0]).matches())
-            UUID.fromString(event.args[0]) else Utils.getUUIDFromUsername(event.args[0])
-
-        if (uuid == null) {
-            sendMessage(event.sender, formatError("playerNotFound",
-                "player" to event.args[0]))
-            return
-        }
-
+        val uuid = Utils.getUUIDFromString(event.args[0])
         val name = if (PlayerMap.isPlayerKnown(uuid)) PlayerMap.getPlayer(uuid).name else uuid
         if (!BanData.isBanned(uuid)) {
             sendMessage(event.sender, formatError("userNotBanned"))

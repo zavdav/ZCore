@@ -6,7 +6,7 @@ import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.player.PlayerMap
-import org.poseidonplugins.zcore.util.UnsafeDestinationException
+import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.format
 import org.poseidonplugins.zcore.util.formatError
@@ -34,17 +34,12 @@ class CommandHome : Command(
             }
 
             val strings = event.args[0].split(":", limit = 2)
+            val uuid = Utils.getUUIDFromUsername(strings[0])
             if (strings[1].isEmpty()) {
                 sendMessage(event.sender, formatError("noHomeSpecified"))
                 return
             }
 
-            val uuid = Utils.getUUIDFromUsername(strings[0])
-            if (uuid == null) {
-                sendMessage(event.sender, formatError("playerNotFound",
-                    "player" to strings[0]))
-                return
-            }
             zPlayer = PlayerMap.getPlayer(uuid)
             homeName = strings[1]
         }

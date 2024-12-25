@@ -39,11 +39,6 @@ class CommandDelHome : Command(
             }
 
             val uuid = Utils.getUUIDFromUsername(strings[0])
-            if (uuid == null) {
-                sendMessage(event.sender, formatError("playerNotFound",
-                    "player" to strings[0]))
-                return
-            }
             zPlayer = PlayerMap.getPlayer(uuid)
             homeName = strings[1]
         }

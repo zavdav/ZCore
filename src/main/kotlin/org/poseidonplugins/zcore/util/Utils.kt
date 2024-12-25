@@ -10,6 +10,8 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Property
+import org.poseidonplugins.zcore.exceptions.PlayerNotFoundException
+import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
 import org.poseidonplugins.zcore.player.PlayerMap
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -37,8 +39,6 @@ fun formatString(string: String, vararg pairs: Pair<String, Any>, color: Boolean
     return message
 }
 
-class UnsafeDestinationException : Exception()
-
 object Utils {
 
     val bundle: ResourceBundle = ResourceBundle.getBundle("messages")
@@ -61,24 +61,35 @@ object Utils {
     fun String.safeSubstring(startIndex: Int, endIndex: Int): String =
         if (length <= endIndex) this else substring(startIndex, endIndex)
 
-    @JvmStatic fun getPlayerFromUsername(name: String): Player? = Bukkit.matchPlayer(name).firstOrNull()
+    @JvmStatic fun getPlayerFromUsername(name: String): Player {
+        if (name.isEmpty()) throw PlayerNotFoundException(name)
+        return Bukkit.matchPlayer(name).firstOrNull() ?: throw PlayerNotFoundException(name)
+    }
 
     @JvmStatic fun getPlayerFromUUID(uuid: UUID): Player? =
         Bukkit.getOnlinePlayers().firstOrNull { player -> player.uniqueId == uuid }
 
+    @JvmStatic fun getPlayerFromString(string: String): Player =
+        getPlayerFromUUID(getUUIDFromString(string)) ?: throw PlayerNotFoundException(string)
+
     @JvmStatic fun getPlayersFromIP(ip: String): Set<Player> =
         Bukkit.getOnlinePlayers().filter { player -> player.address.address.hostAddress == ip }.toSet()
 
-    @JvmStatic fun getUUIDFromUsername(name: String): UUID? {
-        val player = getPlayerFromUsername(name)
-        if (player != null) return player.uniqueId
+    @JvmStatic fun getUUIDFromUsername(name: String): UUID {
+        try {
+            return getPlayerFromUsername(name).uniqueId
+        } catch (_: PlayerNotFoundException) {}
 
         return when (PoseidonUUID.getPlayerUUIDCacheStatus(name)) {
             UUIDType.ONLINE -> PoseidonUUID.getPlayerUUIDFromCache(name, true)
             UUIDType.OFFLINE -> PoseidonUUID.getPlayerUUIDFromCache(name, false)
-            else -> null
+            else -> throw PlayerNotFoundException(name)
         }
     }
+
+    @JvmStatic fun getUUIDFromString(string: String): UUID =
+        if (UUID_PATTERN.matcher(string).matches())
+            UUID.fromString(string) else getUUIDFromUsername(string)
 
     fun Player.isSelf(other: Player) = uniqueId == other.uniqueId
 

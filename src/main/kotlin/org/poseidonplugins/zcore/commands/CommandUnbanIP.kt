@@ -7,7 +7,6 @@ import org.poseidonplugins.zcore.data.BanData
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.format
 import org.poseidonplugins.zcore.util.formatError
-import java.util.UUID
 
 class CommandUnbanIP : Command(
     "unbanip",
@@ -24,14 +23,7 @@ class CommandUnbanIP : Command(
             if (Utils.IPV4_PATTERN.matcher(event.args[0]).matches()) {
                 event.args[0]
             } else {
-                val uuid = if (Utils.UUID_PATTERN.matcher(event.args[0]).matches())
-                    UUID.fromString(event.args[0])
-                    else Utils.getUUIDFromUsername(event.args[0])
-                if (uuid == null) {
-                    sendMessage(event.sender, formatError("playerNotFound",
-                        "player" to event.args[0]))
-                    return
-                }
+                val uuid = Utils.getUUIDFromString(event.args[0])
                 val ipBan = BanData.getIPBan(uuid)
                 if (ipBan == null) {
                     sendMessage(event.sender, formatError("ipNotBanned"))

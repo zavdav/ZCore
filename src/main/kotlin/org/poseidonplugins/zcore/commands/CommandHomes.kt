@@ -44,11 +44,6 @@ class CommandHomes : Command(
         if (query.contains(":")) {
             val strings = query.split(":")
             val uuid = Utils.getUUIDFromUsername(strings[0])
-            if (uuid == null) {
-                sendMessage(event.sender, formatError("playerNotFound",
-                    "player" to strings[0]))
-                return
-            }
             zPlayer = PlayerMap.getPlayer(uuid)
             query = strings.getOrNull(1) ?: ""
         }

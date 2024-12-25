@@ -5,7 +5,7 @@ import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.data.SpawnData
-import org.poseidonplugins.zcore.util.UnsafeDestinationException
+import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.format
 import org.poseidonplugins.zcore.util.formatError

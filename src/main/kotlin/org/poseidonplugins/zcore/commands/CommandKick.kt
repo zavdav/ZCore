@@ -5,7 +5,6 @@ import org.poseidonplugins.zcore.config.Property
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.safeSubstring
 import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatError
 
 class CommandKick : Command(
     "kick",
@@ -17,11 +16,6 @@ class CommandKick : Command(
 
     override fun execute(event: CommandEvent) {
         val target = Utils.getPlayerFromUsername(event.args[0])
-        if (target == null) {
-            sendMessage(event.sender, formatError("playerNotFound",
-                "player" to event.args[0]))
-            return
-        }
         val reason = colorize(if (event.args.size > 1) joinArgs(event.args, 1)
             else Property.KICK_DEFAULT_REASON.toString())
 

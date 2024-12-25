@@ -8,7 +8,6 @@ import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatError
 
 class CommandGod : Command(
     "god",
@@ -26,11 +25,6 @@ class CommandGod : Command(
 
         if (event.args.isNotEmpty()) {
             val target = Utils.getPlayerFromUsername(event.args[0])
-            if (target == null) {
-                sendMessage(event.sender, formatError("playerNotFound",
-                    "player" to event.args[0]))
-                return
-            }
             zPlayer = PlayerMap.getPlayer(target)
         }
 

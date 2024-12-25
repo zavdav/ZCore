@@ -7,7 +7,6 @@ import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatError
 
 class CommandInvSee : Command(
     "invsee",
@@ -24,11 +23,6 @@ class CommandInvSee : Command(
 
         if (event.args.isNotEmpty()) {
             val target = Utils.getPlayerFromUsername(event.args[0])
-            if (target == null) {
-                sendMessage(event.sender, formatError("playerNotFound",
-                    "player" to event.args[0]))
-                return
-            }
             if (zPlayer.savedInventory == null) zPlayer.savedInventory = player.inventory.contents
             player.inventory.contents = PlayerMap.getPlayer(target).savedInventory ?: target.inventory.contents
             sendMessage(event.sender, format("lookingAtInventory", "player" to target.name))

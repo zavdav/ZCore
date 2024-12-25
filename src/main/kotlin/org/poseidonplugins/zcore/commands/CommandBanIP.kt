@@ -8,9 +8,7 @@ import org.poseidonplugins.zcore.config.Property
 import org.poseidonplugins.zcore.data.BanData
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatError
 import java.time.LocalDateTime
-import java.util.UUID
 import java.util.regex.Pattern
 
 class CommandBanIP : Command(
@@ -27,14 +25,7 @@ class CommandBanIP : Command(
             if (Utils.IPV4_PATTERN.matcher(event.args[0]).matches()) {
                 event.args[0]
             } else {
-                val player = if (Utils.UUID_PATTERN.matcher(event.args[0]).matches())
-                    Utils.getPlayerFromUUID(UUID.fromString(event.args[0]))
-                    else Utils.getPlayerFromUsername(event.args[0])
-                if (player == null) {
-                    sendMessage(event.sender, formatError("playerNotFound",
-                        "player" to event.args[0]))
-                    return
-                }
+                val player = Utils.getPlayerFromString(event.args[0])
                 player.address.address.hostAddress
             }
 

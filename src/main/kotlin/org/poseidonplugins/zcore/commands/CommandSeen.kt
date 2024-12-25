@@ -4,10 +4,10 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.sendMessage
+import org.poseidonplugins.zcore.exceptions.PlayerNotFoundException
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatError
 import java.time.LocalDateTime
 
 class CommandSeen : Command(
@@ -21,10 +21,8 @@ class CommandSeen : Command(
 
     override fun execute(event: CommandEvent) {
         val uuid = Utils.getUUIDFromUsername(event.args[0])
-        if (uuid == null || !PlayerMap.isPlayerKnown(uuid)) {
-            sendMessage(event.sender, formatError("playerNotFound",
-                "player" to event.args[0]))
-            return
+        if (!PlayerMap.isPlayerKnown(uuid)) {
+            throw PlayerNotFoundException(event.args[0])
         }
 
         val zPlayer = PlayerMap.getPlayer(uuid)
