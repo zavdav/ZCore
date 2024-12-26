@@ -22,14 +22,14 @@ import java.time.temporal.ChronoUnit
 
 class PlayerListener : Listener {
 
-    @EventHandler(priority = Event.Priority.Highest)
+    @EventHandler(priority = Event.Priority.High)
     fun onPlayerLogin(event: PlayerLoginEvent) {
-        val zPlayer = PlayerMap.getPlayer(event.player)
+        val player = event.player
 
         if (BanData.isIPBanned(event.address.hostAddress)) {
             val ip = event.address.hostAddress
             val ipBan = BanData.getIPBan(ip)!!
-            if (!ipBan.uuids.contains(event.player.uniqueId)) ipBan.addUUID(event.player.uniqueId)
+            if (!ipBan.uuids.contains(player.uniqueId)) ipBan.addUUID(player.uniqueId)
             when (ipBan.until == null) {
                 true -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
                     format(Property.IPBAN_PERMANENT, "reason" to ipBan.reason).safeSubstring(0, 99))
@@ -38,8 +38,8 @@ class PlayerListener : Listener {
                         "datetime" to ipBan.until.truncatedTo(ChronoUnit.MINUTES),
                         "reason" to ipBan.reason).safeSubstring(0, 99))
             }
-        } else if (zPlayer.isBanned) {
-            val ban = BanData.getBan(event.player.uniqueId)!!
+        } else if (BanData.isBanned(player.uniqueId)) {
+            val ban = BanData.getBan(player.uniqueId)!!
             when (ban.until == null) {
                 true -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
                     format(Property.BAN_PERMANENT, "reason" to ban.reason).safeSubstring(0, 99))
@@ -51,7 +51,7 @@ class PlayerListener : Listener {
         }
     }
 
-    @EventHandler(priority = Event.Priority.Highest)
+    @EventHandler(priority = Event.Priority.Low)
     fun onPlayerJoin(event: PlayerJoinEvent) {
         val isFirstJoin = !PlayerMap.isPlayerKnown(event.player.uniqueId)
         val zPlayer = PlayerMap.getPlayer(event.player)
@@ -71,7 +71,7 @@ class PlayerListener : Listener {
         }
     }
 
-    @EventHandler(priority = Event.Priority.Highest)
+    @EventHandler(priority = Event.Priority.Low)
     fun onPlayerQuit(event: PlayerQuitEvent) {
         val zPlayer = PlayerMap.getPlayer(event.player)
 
@@ -82,7 +82,7 @@ class PlayerListener : Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true, priority = Event.Priority.Highest)
+    @EventHandler(ignoreCancelled = true, priority = Event.Priority.High)
     fun onPlayerDamage(event: EntityDamageEvent) {
         if (event.entity !is Player) return
         val player = event.entity as Player
@@ -93,7 +93,7 @@ class PlayerListener : Listener {
         }
     }
 
-    @EventHandler(priority = Event.Priority.Highest)
+    @EventHandler(priority = Event.Priority.Low)
     fun onPlayerRespawn(event: PlayerRespawnEvent) {
         event.respawnLocation = SpawnData.getSpawn(event.respawnLocation.world) ?: return
     }
