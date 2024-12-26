@@ -6,8 +6,10 @@ import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.Preprocessor
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.commandapi.sendMessage
-import org.poseidonplugins.zcore.exceptions.PlayerNotFoundException
-import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
+import org.poseidonplugins.zcore.api.Economy
+import org.poseidonplugins.zcore.config.Property
+import org.poseidonplugins.zcore.exceptions.*
+import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.format
 import org.poseidonplugins.zcore.util.formatError
 
@@ -24,9 +26,17 @@ class Preprocessor : Preprocessor() {
             Bukkit.getPluginManager().callEvent(event)
             try {
                 if (!event.isCancelled) event.command.execute(event)
-            } catch (e0: PlayerNotFoundException) {
-                sendMessage(event.sender, formatError("playerNotFound", "player" to e0.username))
-            } catch (e1: UnsafeDestinationException) {
+            } catch (e: PlayerNotFoundException) {
+                sendMessage(event.sender, formatError("playerNotFound", "player" to e.username))
+            } catch (e: UnknownUserException) {
+                sendMessage(event.sender, formatError("unknownUser", "uuid" to e.uuid))
+            } catch (e: NoFundsException) {
+                sendMessage(event.sender, formatError("noFunds"))
+            } catch (e: BalanceOutOfBoundsException) {
+                sendMessage(event.sender, formatError("balanceOutOfBounds",
+                    "user" to PlayerMap.getPlayer(e.uuid).name,
+                    "amount" to Economy.formatBalance(Property.MAX_BALANCE.toDouble())))
+            } catch (e: UnsafeDestinationException) {
                 sendMessage(event.sender, formatError("unsafeDestination"))
             }
         }

@@ -4,6 +4,7 @@ import com.github.cliftonlabs.json_simple.JsonObject
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.poseidonplugins.zcore.ZCore
+import org.poseidonplugins.zcore.config.Property
 import org.poseidonplugins.zcore.util.Utils
 import java.io.File
 import java.time.LocalDateTime
@@ -29,6 +30,10 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
         get() = LocalDateTime.parse(json["lastSeen"].toString())
         set(value) { json["lastSeen"] = value.toString() }
 
+    var balance: Double
+        get() = json["balance"].toString().toDouble()
+        set(value) { json["balance"] = value }
+
     val isBanned: Boolean
         get() = BanData.isBanned(uuid)
 
@@ -42,10 +47,12 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
 
     init {
         if (initialize) initData()
+        balance = balance.coerceAtMost(Property.MAX_BALANCE.toDouble())
     }
 
     private fun initData() {
         json["uuid"] = uuid.toString()
+        balance = 0.0
         for (player in Bukkit.getOnlinePlayers()) {
             if (player.uniqueId == uuid) {
                 val now = LocalDateTime.now()

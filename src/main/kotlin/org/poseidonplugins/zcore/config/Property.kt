@@ -13,6 +13,7 @@ enum class Property(val key: String, val default: Any) {
     KICK_DEFAULT_REASON("kick.default-reason", "Kicked from server"),
     KICK_FORMAT("kick.format", "&cYou have been kicked: {REASON}"),
     BROADCAST_FORMAT("format.broadcast-format", "&d[Broadcast] {MESSAGE}"),
+    MAX_BALANCE("max-balance", 10000000000000),
     MULTIPLE_HOMES("multiple-homes", 10),
     MOTD("motd", mutableListOf(
         "&eWelcome, {USERNAME}&e!",

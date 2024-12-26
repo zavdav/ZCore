@@ -44,6 +44,10 @@ ban:
   permanent-ipban: '&cYour IP has been permanently banned: {REASON}'
   temporary-ipban: '&cYour IP has been banned until {DATETIME}: {REASON}'
 
+# The highest balance a player can have
+# This value is hard-capped to 10,000,000,000,000
+max-balance: 10000000000000
+
 # How many homes are players with zcore.sethome.multiple allowed to have
 multiple-homes: 10
 

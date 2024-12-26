@@ -13,12 +13,13 @@ import org.poseidonplugins.zcore.config.Property
 import org.poseidonplugins.zcore.exceptions.PlayerNotFoundException
 import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
 import org.poseidonplugins.zcore.player.PlayerMap
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.regex.Pattern
-import kotlin.math.abs
-import kotlin.math.ceil
+import kotlin.math.*
 
 fun getMessage(key: String): String = Utils.bundle.getString(key)
 
@@ -43,6 +44,7 @@ object Utils {
 
     val bundle: ResourceBundle = ResourceBundle.getBundle("messages")
 
+    private val df: DecimalFormat = DecimalFormat("#0.00", DecimalFormatSymbols.getInstance(Locale.US))
     val UUID_PATTERN: Pattern = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
     val IPV4_PATTERN: Pattern = Pattern.compile("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")
     val TIME_PATTERN: Pattern = Pattern.compile(
@@ -210,4 +212,15 @@ object Utils {
             .plusMinutes(minutes)
             .plusSeconds(seconds)
     }
+
+    @JvmStatic fun formatBalance(amount: Double): String {
+        val string = "$${df.format(amount)}"
+        return if (string.endsWith(".00")) string.substring(0, string.length - 3) else string
+    }
+
+    @JvmStatic fun Double.roundTo(digits: Int): Double {
+        if (digits < 0) throw RuntimeException()
+        return (this * 10.0.pow(digits)).roundToLong() / 10.0.pow(digits)
+    }
+
 }

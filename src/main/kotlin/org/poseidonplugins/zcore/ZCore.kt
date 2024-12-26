@@ -39,10 +39,12 @@ class ZCore : JavaPlugin() {
 
         cmdManager = CommandManager(plugin)
         cmdManager.registerCommands(
+            CommandBalance(),
             CommandBan(),
             CommandBanIP(),
             CommandBroadcast(),
             CommandDelHome(),
+            CommandEconomy(),
             CommandGod(),
             CommandHeal(),
             CommandHelp(),
@@ -54,6 +56,7 @@ class ZCore : JavaPlugin() {
             CommandKill(),
             CommandList(),
             CommandMotd(),
+            CommandPay(),
             CommandReload(),
             CommandRules(),
             CommandSeen(),
