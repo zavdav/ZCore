@@ -5,10 +5,12 @@ import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.player.PlayerChatEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerRespawnEvent
+import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.BanData
@@ -79,6 +81,15 @@ class PlayerListener : Listener {
             event.player.inventory.contents = zPlayer.savedInventory
             zPlayer.savedInventory = null
         }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun onPlayerChat(event: PlayerChatEvent) {
+        if (hasPermission(event.player, "zcore.chat.color")) {
+            event.message = colorize(event.message)
+        }
+        event.format = formatString(colorize(Config.getString("chatFormat")),
+            "displayname" to "%1\$s", "message" to "%2\$s", color = false)
     }
 
     @EventHandler(ignoreCancelled = true, priority = Event.Priority.High)

@@ -56,9 +56,10 @@ object Config {
 
     private val defaults: Map<String, Any> = mapOf(
         "autoSaveTime" to 300,
-        "broadcastFormat" to "&d[Broadcast] {MESSAGE}",
         "motd" to mutableListOf("&eWelcome, {USERNAME}&e!", "&bType /help for a list of commands.", "&7Online players: &f{LIST}"),
         "rules" to mutableListOf("&c1. Be respectful", "&c2. No griefing", "&c3. No cheating"),
+        "chatFormat" to "{DISPLAYNAME}&f: {MESSAGE}",
+        "broadcastFormat" to "&d[Broadcast] {MESSAGE}",
         "maxBalance" to 10000000000000,
         "multipleHomes" to 10,
         "homesPerPage" to 50,

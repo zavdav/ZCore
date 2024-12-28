@@ -11,8 +11,6 @@
 # In what interval should data be automatically saved
 autoSaveTime: 300
 
-broadcastFormat: '&d[Broadcast] {MESSAGE}'
-
 # Message of the day
 # Set to '' to disable
 motd:
@@ -24,6 +22,14 @@ rules:
   - '&c1. Be respectful'
   - '&c2. No griefing'
   - '&c3. No cheating'
+
+# ┌───────────────────────────┐
+# │           Chat            │
+# └───────────────────────────┘
+
+chatFormat: '{DISPLAYNAME}&f: {MESSAGE}'
+
+broadcastFormat: '&d[Broadcast] {MESSAGE}'
 
 # ┌───────────────────────────┐
 # │          Economy          │
