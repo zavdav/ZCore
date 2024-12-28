@@ -1,10 +1,11 @@
 package org.poseidonplugins.zcore.commands
 
 import org.poseidonplugins.commandapi.*
-import org.poseidonplugins.zcore.config.Property
+import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.safeSubstring
 import org.poseidonplugins.zcore.util.format
+import org.poseidonplugins.zcore.util.formatString
 
 class CommandKick : Command(
     "kick",
@@ -17,9 +18,9 @@ class CommandKick : Command(
     override fun execute(event: CommandEvent) {
         val target = Utils.getPlayerFromUsername(event.args[0])
         val reason = colorize(if (event.args.size > 1) joinArgs(event.args, 1)
-            else Property.KICK_DEFAULT_REASON.toString())
+            else Config.getString("defaultKickReason"))
 
-        target.kickPlayer(format(Property.KICK_FORMAT,
+        target.kickPlayer(formatString(Config.getString("kickFormat"),
             "reason" to reason).safeSubstring(0, 99))
         sendMessage(event.sender, format("playerKicked",
             "player" to target.name,

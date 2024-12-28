@@ -4,7 +4,7 @@ import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.joinArgs
 import org.poseidonplugins.commandapi.sendMessage
-import org.poseidonplugins.zcore.config.Property
+import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.BanData
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
@@ -42,7 +42,7 @@ class CommandBan: Command(
                     BanData.ban(uuid)
                     sendMessage(event.sender, format("permanentBan",
                         "user" to name,
-                        "reason" to Property.BAN_DEFAULT_REASON))
+                        "reason" to Config.getString("defaultBanReason")))
                 }
                 else -> {
                     BanData.ban(uuid, reason)
@@ -57,7 +57,7 @@ class CommandBan: Command(
                     sendMessage(event.sender, format("temporaryBan",
                         "user" to name,
                         "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
-                        "reason" to Property.BAN_DEFAULT_REASON))
+                        "reason" to Config.getString("defaultBanReason")))
                 }
                 else -> {
                     val until = Utils.parseDateDiff(duration)

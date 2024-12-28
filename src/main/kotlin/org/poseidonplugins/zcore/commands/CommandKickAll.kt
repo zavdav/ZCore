@@ -3,9 +3,10 @@ package org.poseidonplugins.zcore.commands
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.*
-import org.poseidonplugins.zcore.config.Property
+import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.util.Utils.safeSubstring
 import org.poseidonplugins.zcore.util.format
+import org.poseidonplugins.zcore.util.formatString
 
 class CommandKickAll : Command(
     "kickall",
@@ -16,15 +17,14 @@ class CommandKickAll : Command(
 
     override fun execute(event: CommandEvent) {
         val reason = colorize(if (event.args.isNotEmpty()) joinArgs(event.args, 0)
-            else Property.KICK_DEFAULT_REASON.toString())
+            else Config.getString("defaultKickReason"))
 
         for (player in Bukkit.getOnlinePlayers()) {
             if (event.sender !is Player || !player.equals(event.sender as Player)) {
-                player.kickPlayer(format(Property.KICK_FORMAT,
+                player.kickPlayer(formatString(Config.getString("kickFormat"),
                     "reason" to reason).safeSubstring(0, 99))
             }
         }
-        sendMessage(event.sender, format("allKicked",
-            "reason" to reason))
+        sendMessage(event.sender, format("allKicked", "reason" to reason))
     }
 }

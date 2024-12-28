@@ -4,7 +4,7 @@ import com.github.cliftonlabs.json_simple.JsonObject
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.poseidonplugins.zcore.ZCore
-import org.poseidonplugins.zcore.config.Property
+import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.util.Utils
 import java.io.File
 import java.time.LocalDateTime
@@ -34,9 +34,6 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
         get() = json["balance"].toString().toDouble()
         set(value) { json["balance"] = value }
 
-    val isBanned: Boolean
-        get() = BanData.isBanned(uuid)
-
     var isGod: Boolean
         get() = json.getOrDefault("god", false) as Boolean
         set(value) { json["god"] = value }
@@ -47,7 +44,7 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
 
     init {
         if (initialize) initData()
-        balance = balance.coerceAtMost(Property.MAX_BALANCE.toDouble())
+        balance = balance.coerceAtMost(Config.getDouble("maxBalance", 0.0, 10000000000000.0))
     }
 
     private fun initData() {

@@ -7,7 +7,7 @@ import org.poseidonplugins.commandapi.Preprocessor
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.api.Economy
-import org.poseidonplugins.zcore.config.Property
+import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.exceptions.*
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.format
@@ -35,7 +35,7 @@ class Preprocessor : Preprocessor() {
             } catch (e: BalanceOutOfBoundsException) {
                 sendMessage(event.sender, formatError("balanceOutOfBounds",
                     "user" to PlayerMap.getPlayer(e.uuid).name,
-                    "amount" to Economy.formatBalance(Property.MAX_BALANCE.toDouble())))
+                    "amount" to Economy.formatBalance(Config.getDouble("maxBalance", 0.0, 10000000000000.0))))
             } catch (e: UnsafeDestinationException) {
                 sendMessage(event.sender, formatError("unsafeDestination"))
             }

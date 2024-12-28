@@ -4,12 +4,14 @@
 # └─────────────────────────────────────────┘ #
 ###############################################
 
-# In what interval should data be automatically saved
-auto-save-time: 300
+# ┌───────────────────────────┐
+# │          General          │
+# └───────────────────────────┘
 
-# Message formats
-format:
-  broadcast-format: '&d[Broadcast] {MESSAGE}'
+# In what interval should data be automatically saved
+autoSaveTime: 300
+
+broadcastFormat: '&d[Broadcast] {MESSAGE}'
 
 # Message of the day
 # Set to '' to disable
@@ -18,38 +20,40 @@ motd:
   - '&bType /help for a list of commands.'
   - '&7Online players: &f{LIST}'
 
-# Server rules
-# Set to '' to disable
 rules:
   - '&c1. Be respectful'
   - '&c2. No griefing'
   - '&c3. No cheating'
 
-# Kick configuration
-kick:
-  # Default kick reason
-  default-reason: 'Kicked from server'
-
-  # Message format
-  format: '&cYou have been kicked: {REASON}'
-
-# Ban configuration
-ban:
-  # Default ban reason
-  default-reason: 'The ban hammer has spoken!'
-
-  # Messages
-  permanent-ban: '&cYou have been permanently banned: {REASON}'
-  temporary-ban: '&cYou have been banned until {DATETIME}: {REASON}'
-  permanent-ipban: '&cYour IP has been permanently banned: {REASON}'
-  temporary-ipban: '&cYour IP has been banned until {DATETIME}: {REASON}'
+# ┌───────────────────────────┐
+# │          Economy          │
+# └───────────────────────────┘
 
 # The highest balance a player can have
 # This value is hard-capped to 10,000,000,000,000
-max-balance: 10000000000000
+maxBalance: 10000000000000
+
+# ┌───────────────────────────┐
+# │           Homes           │
+# └───────────────────────────┘
 
 # How many homes are players with zcore.sethome.multiple allowed to have
-multiple-homes: 10
+multipleHomes: 10
 
 # How many homes should be shown on a page in /homes
-homes-per-page: 50
+homesPerPage: 50
+
+# ┌───────────────────────────┐
+# │        Punishments        │
+# └───────────────────────────┘
+
+# Kicks
+defaultKickReason: 'Kicked from server'
+kickFormat: '&cYou have been kicked: {REASON}'
+
+# Bans
+defaultBanReason: 'The ban hammer has spoken!'
+permBanFormat: '&cYou have been permanently banned: {REASON}'
+tempBanFormat: '&cYou have been banned until {DATETIME}: {REASON}'
+permIpBanFormat: '&cYour IP has been permanently banned: {REASON}'
+tempIpBanFormat: '&cYour IP has been banned until {DATETIME}: {REASON}'

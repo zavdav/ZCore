@@ -4,8 +4,8 @@ import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.broadcastMessage
 import org.poseidonplugins.commandapi.joinArgs
-import org.poseidonplugins.zcore.config.Property
-import org.poseidonplugins.zcore.util.format
+import org.poseidonplugins.zcore.config.Config
+import org.poseidonplugins.zcore.util.formatString
 
 class CommandBroadcast : Command(
     "broadcast",
@@ -17,7 +17,7 @@ class CommandBroadcast : Command(
     preprocessor = Preprocessor()) {
 
     override fun execute(event: CommandEvent) {
-        broadcastMessage(format(Property.BROADCAST_FORMAT,
+        broadcastMessage(formatString(Config.getString("broadcastFormat"),
             "message" to joinArgs(event.args, 0)))
     }
 }

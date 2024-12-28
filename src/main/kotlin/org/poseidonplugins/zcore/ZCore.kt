@@ -2,16 +2,14 @@ package org.poseidonplugins.zcore
 
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.util.config.Configuration
 import org.poseidonplugins.commandapi.CommandManager
 import org.poseidonplugins.zcore.commands.*
-import org.poseidonplugins.zcore.config.Property
+import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.BanData
 import org.poseidonplugins.zcore.data.SpawnData
 import org.poseidonplugins.zcore.listeners.PlayerListener
 import org.poseidonplugins.zcore.player.PlayerMap
 import java.io.File
-import java.nio.file.Files
 import java.time.Duration
 import java.time.LocalDateTime
 import java.util.logging.Logger
@@ -24,7 +22,6 @@ class ZCore : JavaPlugin() {
         lateinit var dataFolder: File; private set
         lateinit var logger: Logger; private set
         lateinit var cmdManager: CommandManager; private set
-        lateinit var config: Configuration; private set
     }
 
     private var lastAutoSave: LocalDateTime = LocalDateTime.now()
@@ -35,7 +32,7 @@ class ZCore : JavaPlugin() {
         logger = server.logger
 
         if (!dataFolder.exists()) dataFolder.mkdirs()
-        initConfig()
+        Config.load()
 
         cmdManager = CommandManager(plugin)
         cmdManager.registerCommands(
@@ -74,7 +71,7 @@ class ZCore : JavaPlugin() {
 
         server.scheduler.scheduleAsyncRepeatingTask(plugin, {
             PlayerMap.runTasks()
-            if (Duration.between(lastAutoSave, LocalDateTime.now()).seconds >= Property.AUTO_SAVE_TIME.toULong()) {
+            if (Duration.between(lastAutoSave, LocalDateTime.now()).seconds >= Config.getLong("autoSaveTime", 1)) {
                 lastAutoSave = LocalDateTime.now()
                 logger.info("$prefix Automatically saving data")
                 PlayerMap.saveData()
@@ -92,22 +89,5 @@ class ZCore : JavaPlugin() {
         SpawnData.saveData()
 
         logger.info("$prefix ${plugin.description.name} ${plugin.description.version} has been disabled.")
-    }
-
-    fun initConfig() {
-        val file = File(dataFolder, "config.yml")
-        if (!file.exists()) {
-            try {
-                val stream = this::class.java.getResourceAsStream("/config.yml")!!
-                file.parentFile.mkdirs()
-                Files.copy(stream, file.toPath())
-            } catch (e: Exception) {
-                logger.severe("$prefix Failed to create config.")
-                logger.severe("$prefix If the issue persists, unzip the plugin JAR and copy config.yml to ${dataFolder.path}")
-                throw e
-            }
-        }
-        config = Configuration(file)
-        config.load()
     }
 }

@@ -6,7 +6,7 @@ import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.commandapi.sendMessage
-import org.poseidonplugins.zcore.config.Property
+import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.format
@@ -65,7 +65,7 @@ class CommandHomes : Command(
     }
 
     private fun printHomes(sender: CommandSender, page: Int, homes: List<String>) {
-        val homesPerPage = Property.HOMES_PER_PAGE.toUInt()
+        val homesPerPage = Config.getInt("homesPerPage", 1)
         val pages = ceil(homes.size.toDouble() / homesPerPage).toInt()
         if (page > pages) {
             sendMessage(sender, formatError("pageTooHigh"))

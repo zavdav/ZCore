@@ -1,6 +1,6 @@
 package org.poseidonplugins.zcore.api
 
-import org.poseidonplugins.zcore.config.Property
+import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.exceptions.BalanceOutOfBoundsException
 import org.poseidonplugins.zcore.exceptions.NoFundsException
 import org.poseidonplugins.zcore.exceptions.UnknownUserException
@@ -43,7 +43,7 @@ object Economy {
     fun hasEnough(uuid: UUID, amount: Double): Boolean =
         getBalance(uuid) >= amount
 
-    fun isOutOfBounds(amount: Double) = amount > Property.MAX_BALANCE.toDouble()
+    fun isOutOfBounds(amount: Double) = amount > Config.getDouble("maxBalance", 0.0, 10000000000000.0)
 
     fun formatBalance(amount: Double): String = Utils.formatBalance(amount)
 }

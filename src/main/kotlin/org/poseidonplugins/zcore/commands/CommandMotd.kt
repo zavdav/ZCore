@@ -6,8 +6,8 @@ import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.commandapi.sendMessage
-import org.poseidonplugins.zcore.config.Property
-import org.poseidonplugins.zcore.util.format
+import org.poseidonplugins.zcore.config.Config
+import org.poseidonplugins.zcore.util.formatError
 import org.poseidonplugins.zcore.util.formatString
 
 class CommandMotd : Command(
@@ -20,12 +20,12 @@ class CommandMotd : Command(
     preprocessor = Preprocessor()) {
 
     override fun execute(event: CommandEvent) {
-        if (Property.MOTD.toString().isEmpty()) {
-            sendMessage(event.sender, format("noMotdSet"))
+        if (Config.isEmpty("motd")) {
+            sendMessage(event.sender, formatError("noMotdSet"))
             return
         }
         val player = event.sender as Player
-        val motd = Property.MOTD.toList()
+        val motd = Config.getList("motd").toMutableList()
         for (i in motd.indices) {
             motd[i] = formatString(colorize(motd[i]),
                 "username" to player.name,

@@ -9,7 +9,6 @@ import org.bukkit.World
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.commandapi.hasPermission
-import org.poseidonplugins.zcore.config.Property
 import org.poseidonplugins.zcore.exceptions.PlayerNotFoundException
 import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
 import org.poseidonplugins.zcore.player.PlayerMap
@@ -21,13 +20,8 @@ import java.util.*
 import java.util.regex.Pattern
 import kotlin.math.*
 
-fun getMessage(key: String): String = Utils.bundle.getString(key)
-
 fun format(key: String, vararg pairs: Pair<String, Any>, color: Boolean = true): String =
-    formatString(getMessage(key), *pairs, color = color)
-
-fun format(property: Property, vararg pairs: Pair<String, Any>, color: Boolean = true): String =
-    formatString(property.toString(), *pairs, color = color)
+    formatString(Utils.bundle.getString(key), *pairs, color = color)
 
 fun formatError(key: String, vararg pairs: Pair<String, Any>): String =
     format("errorMessage", "message" to format(key, *pairs))
@@ -62,6 +56,12 @@ object Utils {
 
     fun String.safeSubstring(startIndex: Int, endIndex: Int): String =
         if (length <= endIndex) this else substring(startIndex, endIndex)
+
+    fun String.toIntOrDefault(default: Int) = toIntOrNull() ?: default
+
+    fun String.toLongOrDefault(default: Long) = toLongOrNull() ?: default
+
+    fun String.toDoubleOrDefault(default: Double) = toDoubleOrNull() ?: default
 
     @JvmStatic fun getPlayerFromUsername(name: String): Player {
         if (name.isEmpty()) throw PlayerNotFoundException(name)

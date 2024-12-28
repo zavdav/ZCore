@@ -4,10 +4,10 @@ import com.github.cliftonlabs.json_simple.JsonArray
 import com.github.cliftonlabs.json_simple.JsonObject
 import org.bukkit.entity.Player
 import org.poseidonplugins.zcore.ZCore
-import org.poseidonplugins.zcore.config.Property
+import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.safeSubstring
-import org.poseidonplugins.zcore.util.format
+import org.poseidonplugins.zcore.util.formatString
 import java.io.File
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -69,13 +69,13 @@ object BanData : JsonData(File(ZCore.dataFolder, "bans.json")){
     }
 
     fun ban(uuid: UUID) =
-        ban(uuid, Property.BAN_DEFAULT_REASON.toString())
+        ban(uuid, Config.getString("defaultBanReason"))
 
     fun ban(uuid: UUID, reason: String) =
         ban(uuid, null, reason)
 
     fun ban(uuid: UUID, until: LocalDateTime) =
-        ban(uuid, until, Property.BAN_DEFAULT_REASON.toString())
+        ban(uuid, until, Config.getString("defaultBanReason"))
 
     fun ban(uuid: UUID, until: LocalDateTime?, reason: String) {
         banMap[uuid] = Ban(uuid, until, reason)
@@ -87,22 +87,22 @@ object BanData : JsonData(File(ZCore.dataFolder, "bans.json")){
 
         val player = Utils.getPlayerFromUUID(uuid) ?: return
         when (until == null) {
-            true -> player.kickPlayer(format(Property.BAN_PERMANENT,
+            true -> player.kickPlayer(formatString(Config.getString("permBanFormat"),
                 "reason" to reason).safeSubstring(0, 99))
-            false -> player.kickPlayer(format(Property.BAN_TEMPORARY,
+            false -> player.kickPlayer(formatString(Config.getString("tempBanFormat"),
                 "datetime" to until.truncatedTo(ChronoUnit.MINUTES),
                 "reason" to reason).safeSubstring(0, 99))
         }
     }
 
     fun banIP(ip: String) =
-        banIP(ip, Property.BAN_DEFAULT_REASON.toString())
+        banIP(ip, Config.getString("defaultBanReason"))
 
     fun banIP(ip: String, reason: String) =
         banIP(ip, null, reason)
 
     fun banIP(ip: String, until: LocalDateTime) =
-        banIP(ip, until, Property.BAN_DEFAULT_REASON.toString())
+        banIP(ip, until, Config.getString("defaultBanReason"))
 
     fun banIP(ip: String, until: LocalDateTime?, reason: String) {
         val players = Utils.getPlayersFromIP(ip)
@@ -118,11 +118,11 @@ object BanData : JsonData(File(ZCore.dataFolder, "bans.json")){
 
         when (until == null) {
             true -> for (player in players) {
-                player.kickPlayer(format(Property.IPBAN_PERMANENT,
+                player.kickPlayer(formatString(Config.getString("permIpBanFormat"),
                     "reason" to reason).safeSubstring(0, 99))
             }
             false -> for (player in players) {
-                player.kickPlayer(format(Property.IPBAN_TEMPORARY,
+                player.kickPlayer(formatString(Config.getString("tempIpBanFormat"),
                     "datetime" to until.truncatedTo(ChronoUnit.MINUTES),
                     "reason" to reason).safeSubstring(0, 99))
             }

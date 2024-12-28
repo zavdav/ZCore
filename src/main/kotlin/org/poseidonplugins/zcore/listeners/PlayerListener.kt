@@ -10,13 +10,13 @@ import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerRespawnEvent
 import org.poseidonplugins.commandapi.hasPermission
-import org.poseidonplugins.zcore.config.Property
+import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.BanData
 import org.poseidonplugins.zcore.data.SpawnData
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.safeSubstring
-import org.poseidonplugins.zcore.util.format
+import org.poseidonplugins.zcore.util.formatString
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -32,9 +32,9 @@ class PlayerListener : Listener {
             if (!ipBan.uuids.contains(player.uniqueId)) ipBan.addUUID(player.uniqueId)
             when (ipBan.until == null) {
                 true -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    format(Property.IPBAN_PERMANENT, "reason" to ipBan.reason).safeSubstring(0, 99))
+                    formatString(Config.getString("permIpBanFormat"), "reason" to ipBan.reason).safeSubstring(0, 99))
                 false -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    format(Property.IPBAN_TEMPORARY,
+                    formatString(Config.getString("tempIpBanFormat"),
                         "datetime" to ipBan.until.truncatedTo(ChronoUnit.MINUTES),
                         "reason" to ipBan.reason).safeSubstring(0, 99))
             }
@@ -42,9 +42,9 @@ class PlayerListener : Listener {
             val ban = BanData.getBan(player.uniqueId)!!
             when (ban.until == null) {
                 true -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    format(Property.BAN_PERMANENT, "reason" to ban.reason).safeSubstring(0, 99))
+                    formatString(Config.getString("permBanFormat"), "reason" to ban.reason).safeSubstring(0, 99))
                 false -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    format(Property.BAN_TEMPORARY,
+                    formatString(Config.getString("tempBanFormat"),
                         "datetime" to ban.until.truncatedTo(ChronoUnit.MINUTES),
                         "reason" to ban.reason).safeSubstring(0, 99))
             }
@@ -65,8 +65,7 @@ class PlayerListener : Listener {
         zPlayer.updateOnJoin(event.player.name)
         Utils.updateVanishedPlayers()
 
-        if (Property.MOTD.toString().isNotEmpty() &&
-            hasPermission(event.player, "zcore.motd")) {
+        if (!Config.isEmpty("motd") && hasPermission(event.player, "zcore.motd")) {
             event.player.performCommand("motd")
         }
     }
