@@ -20,8 +20,10 @@ import java.util.*
 import java.util.regex.Pattern
 import kotlin.math.*
 
+fun getMessage(key: String) = Utils.bundle.getString(key)
+
 fun format(key: String, vararg pairs: Pair<String, Any>, color: Boolean = true): String =
-    formatString(Utils.bundle.getString(key), *pairs, color = color)
+    formatString(getMessage(key), *pairs, color = color)
 
 fun formatError(key: String, vararg pairs: Pair<String, Any>): String =
     format("errorMessage", "message" to format(key, *pairs))

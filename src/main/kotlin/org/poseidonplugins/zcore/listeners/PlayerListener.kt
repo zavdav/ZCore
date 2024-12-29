@@ -65,6 +65,7 @@ class PlayerListener : Listener {
         }
 
         zPlayer.updateOnJoin(event.player.name)
+        event.player.displayName = "§f${colorize(Config.getString("nickPrefix"))}${zPlayer.nickname}"
         Utils.updateVanishedPlayers()
 
         if (!Config.isEmpty("motd") && hasPermission(event.player, "zcore.motd")) {

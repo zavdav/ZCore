@@ -34,6 +34,10 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
         get() = json["balance"].toString().toDouble()
         set(value) { json["balance"] = value }
 
+    var nickname: String
+        get() = if (json.containsKey("nickname")) json["nickname"].toString() else username
+        set(value) { json["nickname"] = value }
+
     var isGod: Boolean
         get() = json.getOrDefault("god", false) as Boolean
         set(value) { json["god"] = value }
@@ -125,4 +129,6 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
 
     fun getHomes(): List<String> =
         (json.getOrDefault("homes", JsonObject()) as JsonObject).keys.filterIsInstance<String>().toList()
+
+    fun resetNickname() = json.remove("nickname")
 }

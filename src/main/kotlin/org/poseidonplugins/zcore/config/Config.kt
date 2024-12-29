@@ -60,6 +60,7 @@ object Config {
         "rules" to mutableListOf("&c1. Be respectful", "&c2. No griefing", "&c3. No cheating"),
         "chatFormat" to "{DISPLAYNAME}&f: {MESSAGE}",
         "broadcastFormat" to "&d[Broadcast] {MESSAGE}",
+        "nickPrefix" to "~",
         "maxBalance" to 10000000000000,
         "multipleHomes" to 10,
         "homesPerPage" to 50,
