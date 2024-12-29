@@ -91,6 +91,12 @@ class PlayerListener : Listener {
         }
         event.format = formatString(colorize(Config.getString("chatFormat")),
             "displayname" to "%1\$s", "message" to "%2\$s", color = false)
+
+        val radius = Config.getInt("chatRadius", 0)
+        if (radius == 0) return
+        event.recipients.removeIf { player ->
+            player.world != event.player.world || event.player.location.distance(player.location) > radius
+        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = Event.Priority.High)

@@ -34,6 +34,10 @@ broadcastFormat: '&d[Broadcast] {MESSAGE}'
 # The prefix to add to nicknames to differentiate them from real names
 nickPrefix: '~'
 
+# How far away a player will be heard from when chatting
+# Set to 0 to make chat global
+chatRadius: 0
+
 # ┌───────────────────────────┐
 # │          Economy          │
 # └───────────────────────────┘
