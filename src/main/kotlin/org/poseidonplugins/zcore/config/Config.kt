@@ -61,6 +61,7 @@ object Config {
         "chatFormat" to "{DISPLAYNAME}&f: {MESSAGE}",
         "broadcastFormat" to "&d[Broadcast] {MESSAGE}",
         "nickPrefix" to "~",
+        "currency" to "$",
         "maxBalance" to 10000000000000,
         "multipleHomes" to 10,
         "homesPerPage" to 50,

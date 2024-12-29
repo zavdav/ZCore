@@ -9,18 +9,18 @@ import org.bukkit.World
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.commandapi.hasPermission
+import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.exceptions.PlayerNotFoundException
 import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
 import org.poseidonplugins.zcore.player.PlayerMap
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
+import java.text.NumberFormat
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.regex.Pattern
 import kotlin.math.*
 
-fun getMessage(key: String) = Utils.bundle.getString(key)
+fun getMessage(key: String): String = Utils.bundle.getString(key)
 
 fun format(key: String, vararg pairs: Pair<String, Any>, color: Boolean = true): String =
     formatString(getMessage(key), *pairs, color = color)
@@ -40,7 +40,7 @@ object Utils {
 
     val bundle: ResourceBundle = ResourceBundle.getBundle("messages")
 
-    private val df: DecimalFormat = DecimalFormat("#0.00", DecimalFormatSymbols.getInstance(Locale.US))
+    private val nf: NumberFormat = NumberFormat.getNumberInstance(Locale.US)
     val UUID_PATTERN: Pattern = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
     val IPV4_PATTERN: Pattern = Pattern.compile("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")
     val TIME_PATTERN: Pattern = Pattern.compile(
@@ -216,7 +216,7 @@ object Utils {
     }
 
     @JvmStatic fun formatBalance(amount: Double): String {
-        val string = "$${df.format(amount)}"
+        val string = "${Config.getString("currency")}${nf.format(amount)}"
         return if (string.endsWith(".00")) string.substring(0, string.length - 3) else string
     }
 
