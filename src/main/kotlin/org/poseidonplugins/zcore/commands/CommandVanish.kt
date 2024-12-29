@@ -35,16 +35,12 @@ class CommandVanish : Command(
         zPlayer.vanished = !zPlayer.vanished
         Utils.updateVanishedPlayers()
 
-        if (isSelf) {
-            sendMessage(event.sender, if (zPlayer.vanished)
-                format("vanishEnabled") else format("vanishDisabled"))
-        } else {
+        if (!isSelf) {
             sendMessage(event.sender, if (zPlayer.vanished)
                 format("vanishEnabledOther", "player" to zPlayer.name)
-                else format("vanishDisabledOther", "player" to zPlayer.name))
-
-            sendMessage(zPlayer.onlinePlayer, if (zPlayer.vanished)
-                format("vanishEnabled") else format("vanishDisabled"))
+            else format("vanishDisabledOther", "player" to zPlayer.name))
         }
+        sendMessage(zPlayer.onlinePlayer, if (zPlayer.vanished)
+            format("vanishEnabled") else format("vanishDisabled"))
     }
 }

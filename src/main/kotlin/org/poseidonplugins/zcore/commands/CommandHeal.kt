@@ -29,14 +29,11 @@ class CommandHeal : Command(
             sendMessage(event.sender, format("noPermission"))
             return
         }
-        target.health = 20
 
-        if (isSelf) {
-            sendMessage(event.sender, format("healed"))
-        } else {
-            sendMessage(event.sender, format("healedOther",
-                "player" to target.name))
-            sendMessage(target, format("healed"))
+        target.health = 20
+        if (!isSelf) {
+            sendMessage(event.sender, format("healedOther", "player" to target.name))
         }
+        sendMessage(target, format("healed"))
     }
 }
