@@ -7,6 +7,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.player.PlayerChatEvent
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerKickEvent
 import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerRespawnEvent
@@ -71,6 +72,8 @@ class PlayerListener : Listener {
         if (!Config.isEmpty("motd") && hasPermission(event.player, "zcore.motd")) {
             event.player.performCommand("motd")
         }
+        event.joinMessage = formatString(Config.getString("joinMsgFormat"),
+            "player" to event.player.name)
     }
 
     @EventHandler(priority = Event.Priority.Low)
@@ -82,6 +85,16 @@ class PlayerListener : Listener {
             event.player.inventory.contents = zPlayer.savedInventory
             zPlayer.savedInventory = null
         }
+        event.quitMessage = formatString(Config.getString("leaveMsgFormat"),
+            "player" to event.player.name)
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = Event.Priority.Low)
+    fun onPlayerKick(event: PlayerKickEvent) {
+        val isBanned = BanData.isBanned(event.player.uniqueId)
+                    || BanData.isIPBanned(event.player.address.address.hostAddress)
+        event.leaveMessage = formatString(Config.getString(if (isBanned)
+            "banMsgFormat" else "kickMsgFormat"), "player" to event.player.name)
     }
 
     @EventHandler(ignoreCancelled = true)
