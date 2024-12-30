@@ -67,6 +67,7 @@ object Config {
         "chatRadius" to 0,
         "currency" to "$",
         "maxBalance" to 10000000000000,
+        "balancesPerPage" to 10,
         "multipleHomes" to 10,
         "homesPerPage" to 50,
         "defaultKickReason" to "Kicked from server",

@@ -37,6 +37,7 @@ class ZCore : JavaPlugin() {
         cmdManager = CommandManager(plugin)
         cmdManager.registerCommands(
             CommandBalance(),
+            CommandBalanceTop(),
             CommandBan(),
             CommandBanIP(),
             CommandBroadcast(),

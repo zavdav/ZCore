@@ -49,6 +49,15 @@ object PlayerMap {
 
     fun getPlayer(player: Player): ZPlayer = getPlayer(player.uniqueId)
 
+    fun getAllPlayers(): Set<ZPlayer> {
+        if (precacheAll) return playerMap.values.toSet()
+        val players = mutableSetOf<ZPlayer>()
+        for (uuid in knownPlayers) {
+            players.add(playerMap[uuid] ?: ZPlayer(uuid))
+        }
+        return players.toSet()
+    }
+
     @Synchronized
     fun runTasks() {
         playerMap.entries.removeIf { entry ->

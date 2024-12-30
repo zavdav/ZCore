@@ -54,6 +54,9 @@ currency: '$'
 # This value is hard-capped to 10,000,000,000,000
 maxBalance: 10000000000000
 
+# How many balances should be shown on a page in /balancetop
+balancesPerPage: 10
+
 # ┌───────────────────────────┐
 # │           Homes           │
 # └───────────────────────────┘
