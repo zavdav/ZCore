@@ -2,6 +2,7 @@ package org.poseidonplugins.zcore.config
 
 import org.bukkit.util.config.Configuration
 import org.poseidonplugins.zcore.ZCore
+import org.poseidonplugins.zcore.util.Utils.toBooleanOrDefault
 import org.poseidonplugins.zcore.util.Utils.toDoubleOrDefault
 import org.poseidonplugins.zcore.util.Utils.toIntOrDefault
 import org.poseidonplugins.zcore.util.Utils.toLongOrDefault
@@ -44,7 +45,7 @@ object Config {
         getString(key).toDoubleOrDefault(defaults[key].toString().toDouble()).coerceIn(min, max)
 
     fun getBoolean(key: String): Boolean =
-        getString(key).toBooleanStrict()
+        getString(key).toBooleanOrDefault(defaults[key].toString().toBooleanStrict())
 
     fun getList(key: String): List<String> =
         try { yaml.getProperty(key) as List<String> }
@@ -56,6 +57,7 @@ object Config {
 
     private val defaults: Map<String, Any> = mapOf(
         "autoSaveTime" to 300,
+        "precacheAllPlayers" to false,
         "motd" to mutableListOf("&eWelcome, {USERNAME}&e!", "&bType /help for a list of commands.", "&7Online players: &f{LIST}"),
         "rules" to mutableListOf("&c1. Be respectful", "&c2. No griefing", "&c3. No cheating"),
         "chatFormat" to "{DISPLAYNAME}&f: {MESSAGE}",

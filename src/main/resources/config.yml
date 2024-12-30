@@ -11,6 +11,9 @@
 # In what interval should data be automatically saved
 autoSaveTime: 300
 
+# If all players should be precached when ZCore loads
+precacheAllPlayers: false
+
 # Message of the day
 # Set to '' to disable
 motd:

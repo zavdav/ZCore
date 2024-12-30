@@ -2,14 +2,18 @@ package org.poseidonplugins.zcore.player
 
 import org.bukkit.entity.Player
 import org.poseidonplugins.zcore.ZCore
+import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.util.Utils
 import java.io.File
+import java.time.Duration
+import java.time.LocalDateTime
 import java.util.UUID
 
 object PlayerMap {
 
     private val playerMap: MutableMap<UUID, ZPlayer> = mutableMapOf()
     private val knownPlayers: MutableSet<UUID> = mutableSetOf()
+    private val precacheAll: Boolean
 
     init {
         val dataFolder = File(ZCore.dataFolder, "userdata")
@@ -23,6 +27,14 @@ object PlayerMap {
                 continue
             }
             knownPlayers.add(UUID.fromString(uuid))
+        }
+
+        precacheAll = Config.getBoolean("precacheAllPlayers")
+        if (precacheAll) {
+            for (uuid in knownPlayers) {
+                getPlayer(uuid)
+            }
+            ZCore.logger.info("${ZCore.prefix} Precached ${playerMap.size} player(s).")
         }
     }
 
@@ -41,7 +53,8 @@ object PlayerMap {
     fun runTasks() {
         playerMap.entries.removeIf { entry ->
             val zPlayer = getPlayer(entry.key)
-            if (!zPlayer.isOnline) {
+            if (!precacheAll && !zPlayer.isOnline
+                && Duration.between(zPlayer.lastSeen, LocalDateTime.now()).seconds >= 600) {
                 zPlayer.saveData()
                 true
             }

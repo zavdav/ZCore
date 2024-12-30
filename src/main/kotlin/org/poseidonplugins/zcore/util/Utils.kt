@@ -65,6 +65,8 @@ object Utils {
 
     fun String.toDoubleOrDefault(default: Double) = toDoubleOrNull() ?: default
 
+    fun String.toBooleanOrDefault(default: Boolean) = toBooleanStrictOrNull() ?: default
+
     @JvmStatic fun getPlayerFromUsername(name: String): Player {
         if (name.isEmpty()) throw PlayerNotFoundException(name)
         return Bukkit.matchPlayer(name).firstOrNull() ?: throw PlayerNotFoundException(name)
