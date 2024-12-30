@@ -24,6 +24,15 @@ class ZPlayer(uuid: UUID) : PlayerData(uuid) {
     val onlinePlayer: Player
         get() = Bukkit.getOnlinePlayers().first { player -> player.uniqueId == uuid }
 
+    val displayName: String
+        get() {
+            val nickname = if (nickname == username) username
+                else "${colorize(Config.getString("nickPrefix"))}$nickname"
+            val displayName = formatString(colorize(Config.getString("nickFormat")),
+                "prefix" to prefix, "nickname" to nickname, "suffix" to suffix)
+            return "§f${displayName.trim()}§f"
+        }
+
     val prefix: String
         get() = PermissionHandler.getPrefix(this)
 
@@ -33,10 +42,6 @@ class ZPlayer(uuid: UUID) : PlayerData(uuid) {
     var savedInventory: Array<ItemStack>? = null
 
     fun updateDisplayName() {
-        val nickname = if (nickname == username) username
-            else "${colorize(Config.getString("nickPrefix"))}$nickname"
-        val displayName = formatString(colorize(Config.getString("nickFormat")),
-            "prefix" to prefix, "nickname" to nickname, "suffix" to suffix)
-        onlinePlayer.displayName = "§f${displayName.trim()}§f"
+        onlinePlayer.displayName = displayName
     }
 }
