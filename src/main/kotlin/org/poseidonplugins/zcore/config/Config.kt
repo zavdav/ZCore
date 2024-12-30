@@ -61,6 +61,7 @@ object Config {
         "chatFormat" to "{DISPLAYNAME}&f: {MESSAGE}",
         "broadcastFormat" to "&d[Broadcast] {MESSAGE}",
         "nickPrefix" to "~",
+        "nickFormat" to "{PREFIX} &f{NICKNAME}&f {SUFFIX}",
         "chatRadius" to 0,
         "currency" to "$",
         "maxBalance" to 10000000000000,

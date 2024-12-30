@@ -35,25 +35,21 @@ class CommandNick : Command(
             return
         }
 
-        val reset = nickname.equals("reset", true)
+        val reset = nickname.equals("reset", true) || nickname.equals(target.name, true)
         if (hasPermission(event.sender, "zcore.nick.color")) nickname = colorize(nickname)
-        if (reset) {
-            target.displayName = target.name
-            PlayerMap.getPlayer(target).resetNickname()
-        } else {
-            target.displayName = "§f${colorize(Config.getString("nickPrefix"))}$nickname"
-            PlayerMap.getPlayer(target).nickname = nickname
-        }
+        val zPlayer = PlayerMap.getPlayer(target)
 
+        if (reset) zPlayer.resetNickname() else zPlayer.nickname = nickname
+        zPlayer.updateDisplayName()
         if (!isSelf) {
             event.sender.sendMessage(if (reset)
                 format("resetNickOther", "player" to target.name)
                 else formatString(colorize(getMessage("setNickOther")),
-                    "player" to target.name, "nickname" to target.displayName, color = false)
-            )
+                    "player" to target.name,
+                    "nickname" to "${colorize(Config.getString("nickPrefix"))}$nickname", color = false))
         }
         target.sendMessage(if (reset) format("resetNick")
             else formatString(colorize(getMessage("setNick")),
-                "nickname" to target.displayName, color = false))
+                "nickname" to "${colorize(Config.getString("nickPrefix"))}$nickname", color = false))
     }
 }
