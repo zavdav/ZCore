@@ -1,5 +1,6 @@
 package org.poseidonplugins.zcore.data
 
+import com.github.cliftonlabs.json_simple.JsonArray
 import com.github.cliftonlabs.json_simple.JsonObject
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -37,6 +38,11 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
     var nickname: String
         get() = if (json.containsKey("nickname")) json["nickname"].toString() else username
         set(value) { json["nickname"] = value }
+
+    var ignores: Set<UUID>
+        get() { return ((json["ignores"] ?: return setOf()) as JsonArray)
+                .map { UUID.fromString(it.toString()) }.toSet() }
+        set(value) { json["ignores"] = JsonArray(value.map { it.toString() }) }
 
     var isGod: Boolean
         get() = json.getOrDefault("god", false) as Boolean
@@ -131,4 +137,10 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
         (json.getOrDefault("homes", JsonObject()) as JsonObject).keys.filterIsInstance<String>().toList()
 
     fun resetNickname() = json.remove("nickname")
+
+    fun setIgnored(uuid: UUID, ignore: Boolean) {
+        val ignores = ignores.toMutableSet()
+        if (ignore) ignores.add(uuid) else ignores.remove(uuid)
+        this.ignores = ignores
+    }
 }

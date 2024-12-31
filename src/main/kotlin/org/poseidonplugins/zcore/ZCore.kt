@@ -48,6 +48,7 @@ class ZCore : JavaPlugin() {
             CommandHelp(),
             CommandHome(),
             CommandHomes(),
+            CommandIgnore(),
             CommandInvSee(),
             CommandKick(),
             CommandKickAll(),

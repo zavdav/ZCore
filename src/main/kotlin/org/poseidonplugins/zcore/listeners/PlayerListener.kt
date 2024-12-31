@@ -106,9 +106,14 @@ class PlayerListener : Listener {
             "displayname" to "%1\$s", "message" to "%2\$s", color = false)
 
         val radius = Config.getInt("chatRadius", 0)
-        if (radius == 0) return
-        event.recipients.removeIf { player ->
-            player.world != event.player.world || event.player.location.distance(player.location) > radius
+        if (radius != 0) {
+            event.recipients.removeIf { player ->
+                player.world != event.player.world || event.player.location.distance(player.location) > radius
+            }
+        }
+        event.recipients.removeIf {
+            event.player.uniqueId in PlayerMap.getPlayer(it).ignores
+            && !hasPermission(event.player, "zcore.ignore.exempt")
         }
     }
 
