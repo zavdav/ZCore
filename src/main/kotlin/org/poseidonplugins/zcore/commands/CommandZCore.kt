@@ -13,7 +13,7 @@ class CommandZCore : Command(
 
     override fun execute(event: CommandEvent) {
         val desc = ZCore.plugin.description
-        event.sender.sendMessage("&e${desc.name} v${desc.version}")
-        event.sender.sendMessage("&eType /help for a list of commands.")
+        event.sender.sendMessage("§e${desc.name} v${desc.version}")
+        event.sender.sendMessage("§eType /help for a list of commands.")
     }
 }

@@ -30,9 +30,7 @@ class CommandSeen : Command(
             val duration = Utils.formatDateDiff(zPlayer.lastSeen, LocalDateTime.now())
             event.sender.sendMessage(if (isSelf)
                 format("seenOnline", "duration" to duration)
-                else format("seenOnlineOther",
-                    "player" to zPlayer.name,
-                    "duration" to duration))
+                else format("seenOnlineOther", zPlayer.onlinePlayer, "duration" to duration))
         } else {
             event.sender.sendMessage(format("seenOffline",
                 "user" to zPlayer.name,

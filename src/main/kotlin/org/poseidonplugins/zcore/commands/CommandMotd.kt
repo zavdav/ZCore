@@ -26,10 +26,10 @@ class CommandMotd : Command(
         val motd = Config.getList("motd").toMutableList()
         for (i in motd.indices) {
             motd[i] = formatString(motd[i],
-                "username" to player.name,
+                "name" to player.name,
                 "displayname" to player.displayName,
-                "list" to Bukkit.getOnlinePlayers()
-                    .map { p: Player -> p.name }.sorted().joinToString(", "))
+                "playerlist" to Bukkit.getOnlinePlayers()
+                    .map { p: Player -> p.displayName }.sorted().joinToString(", "))
 
             player.sendMessage(motd[i])
         }

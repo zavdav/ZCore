@@ -5,14 +5,7 @@ import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageEvent
-import org.bukkit.event.player.PlayerChatEvent
-import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.player.PlayerKickEvent
-import org.bukkit.event.player.PlayerLoginEvent
-import org.bukkit.event.player.PlayerMoveEvent
-import org.bukkit.event.player.PlayerQuitEvent
-import org.bukkit.event.player.PlayerRespawnEvent
-import org.poseidonplugins.commandapi.broadcastMessage
+import org.bukkit.event.player.*
 import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
@@ -22,7 +15,6 @@ import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.safeSubstring
-import org.poseidonplugins.zcore.util.format
 import org.poseidonplugins.zcore.util.formatProperty
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -85,7 +77,6 @@ class PlayerListener : Listener {
         val zPlayer = PlayerMap.getPlayer(event.player)
 
         zPlayer.updateOnQuit()
-        zPlayer.isAFK = false
         if (zPlayer.savedInventory != null) {
             event.player.inventory.contents = zPlayer.savedInventory
             zPlayer.savedInventory = null
@@ -121,10 +112,7 @@ class PlayerListener : Listener {
 
         val zPlayer = PlayerMap.getPlayer(event.player)
         zPlayer.updateActivity()
-        if (zPlayer.isAFK) {
-            zPlayer.isAFK = false
-            broadcastMessage(format("noLongerAfk", "player" to zPlayer.name))
-        }
+        if (zPlayer.isAFK) zPlayer.isAFK = false
     }
 
     @EventHandler(ignoreCancelled = true, priority = Event.Priority.High)
@@ -164,8 +152,13 @@ class PlayerListener : Listener {
             event.to = from
         } else {
             zPlayer.isAFK = false
-            broadcastMessage(format("noLongerAfk", "player" to zPlayer.name))
         }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun onPlayerPickupItem(event: PlayerPickupItemEvent) {
+        val zPlayer = PlayerMap.getPlayer(event.player)
+        if (zPlayer.isAFK || zPlayer.vanished) event.isCancelled = true
     }
 
     @EventHandler(priority = Event.Priority.Low)

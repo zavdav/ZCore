@@ -24,7 +24,7 @@ class CommandInvSee : Command(
             val target = Utils.getPlayerFromUsername(event.args[0])
             if (zPlayer.savedInventory == null) zPlayer.savedInventory = player.inventory.contents
             player.inventory.contents = PlayerMap.getPlayer(target).savedInventory ?: target.inventory.contents
-            event.sender.sendMessage(format("lookingAtInventory", "player" to target.name))
+            event.sender.sendMessage(format("lookingAtInventory", target))
         } else {
             if (zPlayer.savedInventory != null) {
                 player.inventory.contents = zPlayer.savedInventory

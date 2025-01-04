@@ -35,11 +35,9 @@ class CommandGod : Command(
 
         zPlayer.isGod = !zPlayer.isGod
         if (!isSelf) {
-            event.sender.sendMessage(if (zPlayer.isGod)
-                format("godEnabledOther", "player" to zPlayer.name)
-            else format("godDisabledOther", "player" to zPlayer.name))
+            event.sender.sendMessage(format(if (zPlayer.isGod)
+                "godEnabledOther" else "godDisabledOther", zPlayer.onlinePlayer))
         }
-        zPlayer.onlinePlayer.sendMessage(if (zPlayer.isGod)
-            format("godEnabled") else format("godDisabled"))
+        zPlayer.onlinePlayer.sendMessage(format(if (zPlayer.isGod) "godEnabled" else "godDisabled"))
     }
 }

@@ -28,12 +28,10 @@ class CommandIgnore : Command(
 
         if (uuid in zPlayer.ignores) {
             zPlayer.setIgnored(uuid, false)
-            event.sender.sendMessage(format("notIgnoringPlayer",
-                "player" to PlayerMap.getPlayer(uuid).name))
+            event.sender.sendMessage(format("notIgnoringPlayer", "name" to PlayerMap.getPlayer(uuid).name))
         } else {
             zPlayer.setIgnored(uuid, true)
-            event.sender.sendMessage(format("ignoringPlayer",
-                "player" to PlayerMap.getPlayer(uuid).name))
+            event.sender.sendMessage(format("ignoringPlayer", "name" to PlayerMap.getPlayer(uuid).name))
         }
     }
 }

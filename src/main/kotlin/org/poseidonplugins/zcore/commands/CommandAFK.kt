@@ -33,21 +33,14 @@ class CommandAFK : Command(
         val zPlayer = PlayerMap.getPlayer(target)
         if (zPlayer.isAFK) {
             zPlayer.isAFK = false
-            broadcastMessage(format("noLongerAfk", "player" to target.name))
         } else if (Config.getBoolean("protectAfkPlayers") && Config.getInt("afkDelay", 0) > 0) {
             val delay = Config.getInt("afkDelay", 0)
             target.sendMessage(format("commencingAfk", "delay" to delay))
             target.sendMessage(format("doNotMove"))
 
-            Delay(target, {
-                if (!zPlayer.isAFK) {
-                    zPlayer.isAFK = true
-                    broadcastMessage(format("nowAfk", "player" to target.name))
-                }
-            }, delay)
+            Delay(target, { if (!zPlayer.isAFK) zPlayer.isAFK = true }, delay)
         } else {
             zPlayer.isAFK = true
-            broadcastMessage(format("nowAfk", "player" to target.name))
         }
     }
 }

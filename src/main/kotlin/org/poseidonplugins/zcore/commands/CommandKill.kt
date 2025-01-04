@@ -24,8 +24,6 @@ class CommandKill : Command(
         target.health = 0
 
         val isSelf = (event.sender as Player).isSelf(target)
-        event.sender.sendMessage(if (isSelf)
-            format("killed")
-            else format("killedOther", "player" to target.name))
+        event.sender.sendMessage(if (isSelf) format("killed") else format("killedOther", target))
     }
 }

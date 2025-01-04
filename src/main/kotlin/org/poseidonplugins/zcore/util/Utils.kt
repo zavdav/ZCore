@@ -24,6 +24,9 @@ fun getMessage(key: String): String = Utils.bundle.getString(key)
 fun format(key: String, vararg pairs: Pair<String, Any>): String =
     formatString(getMessage(key), *pairs)
 
+fun format(key: String, player: Player, vararg pairs: Pair<String, Any>): String =
+    format(key, *pairs, "name" to player.name, "displayname" to player.displayName)
+
 fun formatProperty(key: String, vararg pairs: Pair<String, Any>): String =
     formatString(Config.getString(key), *pairs)
 

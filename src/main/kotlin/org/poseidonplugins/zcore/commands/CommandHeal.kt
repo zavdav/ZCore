@@ -30,9 +30,7 @@ class CommandHeal : Command(
         }
 
         target.health = 20
-        if (!isSelf) {
-            event.sender.sendMessage(format("healedOther", "player" to target.name))
-        }
+        if (!isSelf) event.sender.sendMessage(format("healedOther", target))
         target.sendMessage(format("healed"))
     }
 }

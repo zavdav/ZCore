@@ -3,7 +3,6 @@ package org.poseidonplugins.zcore.player
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.poseidonplugins.commandapi.broadcastMessage
 import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.PlayerData
@@ -45,6 +44,13 @@ class ZPlayer(uuid: UUID) : PlayerData(uuid) {
         get() = PermissionHandler.getSuffix(this)
 
     var isAFK: Boolean = false
+        set(value) {
+            field = value
+            if (!value) updateActivity()
+            if (isOnline) {
+                Bukkit.broadcastMessage(format(if (value) "nowAfk" else "noLongerAfk", onlinePlayer))
+            }
+        }
 
     var savedInventory: Array<ItemStack>? = null
 
@@ -58,11 +64,13 @@ class ZPlayer(uuid: UUID) : PlayerData(uuid) {
     }
 
     fun checkIsAfk() {
-        if (!isOnline) return
+        if (!isOnline) {
+            if (!isAFK) isAFK = true
+            return
+        }
 
         if (!isAFK && Duration.between(lastSeen, LocalDateTime.now()).seconds >= Config.getInt("afkTime")) {
             isAFK = true
-            broadcastMessage(format("nowAfk", "player" to name))
         }
         if (isAFK && Duration.between(lastSeen, LocalDateTime.now()).seconds >= Config.getInt("afkKickTime")) {
             onlinePlayer.kickPlayer(formatProperty("afkKickReason").safeSubstring(0, 99))

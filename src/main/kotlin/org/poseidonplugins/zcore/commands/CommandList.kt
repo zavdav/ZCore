@@ -8,7 +8,7 @@ import org.poseidonplugins.zcore.util.format
 
 class CommandList : Command(
     "list",
-    listOf("online, who, playerlist"),
+    listOf("online", "who", "playerlist"),
     "Lists all online players.",
     "/list",
     "zcore.list",
@@ -20,6 +20,6 @@ class CommandList : Command(
             "amount" to Bukkit.getOnlinePlayers().size,
             "max" to Bukkit.getMaxPlayers()))
         event.sender.sendMessage(Bukkit.getOnlinePlayers()
-            .map { p: Player -> p.name }.sorted().joinToString(", "))
+            .map { p: Player -> p.displayName }.sorted().joinToString(", "))
     }
 }

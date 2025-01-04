@@ -17,9 +17,9 @@ precacheAllPlayers: false
 # Message of the day
 # Set to '' to disable
 motd:
-  - '§eWelcome, {USERNAME}§e!'
+  - '§eWelcome, {NAME}§e!'
   - '§bType /help for a list of commands.'
-  - '§7Online players: §f{LIST}'
+  - '§7Online players: §f{PLAYERLIST}'
 
 rules:
   - '§c1. Be respectful'

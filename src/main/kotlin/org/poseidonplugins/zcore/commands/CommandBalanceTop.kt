@@ -11,6 +11,7 @@ import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.player.ZPlayer
 import org.poseidonplugins.zcore.util.format
 import org.poseidonplugins.zcore.util.formatError
+import org.poseidonplugins.zcore.util.formatProperty
 import kotlin.math.ceil
 
 class CommandBalanceTop : Command(
@@ -46,7 +47,10 @@ class CommandBalanceTop : Command(
                 if (i >= players.size) break
                 event.sender.sendMessage(format("balancetopEntry",
                     "rank" to i + 1,
-                    "player" to players[i].name,
+                    "name" to formatProperty("nickFormat",
+                        "prefix" to players[i].prefix,
+                        "nickname" to players[i].name,
+                        "suffix" to players[i].suffix),
                     "balance" to Economy.formatBalance(players[i].balance)))
             }
             event.sender.sendMessage(format("balancetopTotal",
