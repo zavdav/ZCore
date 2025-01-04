@@ -5,7 +5,7 @@ import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.safeSubstring
 import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatString
+import org.poseidonplugins.zcore.util.formatProperty
 
 class CommandKick : Command(
     "kick",
@@ -20,9 +20,8 @@ class CommandKick : Command(
         val reason = colorize(if (event.args.size > 1) joinArgs(event.args, 1)
             else Config.getString("defaultKickReason"))
 
-        target.kickPlayer(formatString(Config.getString("kickFormat"),
-            "reason" to reason).safeSubstring(0, 99))
-        sendMessage(event.sender, format("playerKicked",
+        target.kickPlayer(formatProperty("kickFormat", "reason" to reason).safeSubstring(0, 99))
+        event.sender.sendMessage(format("playerKicked",
             "player" to target.name,
             "reason" to reason).safeSubstring(0, 99))
     }

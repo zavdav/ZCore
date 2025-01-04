@@ -10,7 +10,7 @@ import org.poseidonplugins.zcore.data.PlayerData
 import org.poseidonplugins.zcore.permissions.PermissionHandler
 import org.poseidonplugins.zcore.util.Utils.safeSubstring
 import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatString
+import org.poseidonplugins.zcore.util.formatProperty
 import java.time.Duration
 import java.time.LocalDateTime
 import java.util.UUID
@@ -33,7 +33,7 @@ class ZPlayer(uuid: UUID) : PlayerData(uuid) {
         get() {
             val nickname = if (nickname == username) username
                 else "${colorize(Config.getString("nickPrefix"))}$nickname"
-            val displayName = formatString(colorize(Config.getString("nickFormat")),
+            val displayName = formatProperty("nickFormat",
                 "prefix" to prefix, "nickname" to nickname, "suffix" to suffix)
             return "§f${displayName.trim()}§f"
         }
@@ -65,7 +65,7 @@ class ZPlayer(uuid: UUID) : PlayerData(uuid) {
             broadcastMessage(format("nowAfk", "player" to name))
         }
         if (isAFK && Duration.between(lastSeen, LocalDateTime.now()).seconds >= Config.getInt("afkKickTime")) {
-            onlinePlayer.kickPlayer(formatString(Config.getString("afkKickReason")).safeSubstring(0, 99))
+            onlinePlayer.kickPlayer(formatProperty("afkKickReason").safeSubstring(0, 99))
         }
     }
 }

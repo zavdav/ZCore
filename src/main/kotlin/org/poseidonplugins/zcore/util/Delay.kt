@@ -3,7 +3,6 @@ package org.poseidonplugins.zcore.util
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.ZCore
 
 class Delay(
@@ -33,7 +32,7 @@ class Delay(
             player.location.blockZ != location.blockZ) {
             Bukkit.getScheduler().cancelTask(task)
             Bukkit.getScheduler().cancelTask(check)
-            sendMessage(player, format("youMoved"))
+            player.sendMessage(format("youMoved"))
         }
     }
 }

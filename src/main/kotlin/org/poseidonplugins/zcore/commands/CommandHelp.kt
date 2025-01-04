@@ -34,7 +34,7 @@ class CommandHelp : Command(
 
             commands = commands.filter { command -> command.name.contains(query, true) || command.description.contains(query, true) }
             if (commands.isEmpty()) {
-                sendMessage(event.sender, formatError("noMatchingResults"))
+                event.sender.sendMessage(formatError("noMatchingResults"))
                 return
             }
         }
@@ -45,15 +45,15 @@ class CommandHelp : Command(
     private fun printHelp(sender: CommandSender, page: Int, commands: List<org.bukkit.command.Command>) {
         val pages = ceil(commands.size.toDouble() / 10).toInt()
         if (page > pages) {
-            sendMessage(sender, formatError("pageTooHigh"))
+            sender.sendMessage(formatError("pageTooHigh"))
             return
         }
 
-        sendMessage(sender, format("helpPage",
+        sender.sendMessage(format("helpPage",
             "page" to page, "pages" to pages))
         for (i in (page * 10 - 10)..<page * 10) {
             if (i >= commands.size) break
-            sendMessage(sender, format("helpEntry",
+            sender.sendMessage(format("helpEntry",
                 "command" to commands[i].name,
                 "description" to commands[i].description))
         }

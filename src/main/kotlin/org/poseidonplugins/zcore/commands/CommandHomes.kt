@@ -5,7 +5,6 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
@@ -49,7 +48,7 @@ class CommandHomes : Command(
         }
 
         if (player.uniqueId != zPlayer.uuid && !hasPermission(event.sender, "zcore.homes.others")) {
-            sendMessage(event.sender, format("noPermission"))
+            event.sender.sendMessage(format("noPermission"))
             return
         }
 
@@ -57,7 +56,7 @@ class CommandHomes : Command(
         if (page < 1) page = 1
         if (query != "") homes = homes.filter { home -> home.startsWith(query, true) }
         if (homes.isEmpty()) {
-            sendMessage(event.sender, formatError("noMatchingResults"))
+            event.sender.sendMessage(formatError("noMatchingResults"))
             return
         }
 
@@ -68,10 +67,10 @@ class CommandHomes : Command(
         val homesPerPage = Config.getInt("homesPerPage", 1)
         val pages = ceil(homes.size.toDouble() / homesPerPage).toInt()
         if (page > pages) {
-            sendMessage(sender, formatError("pageTooHigh"))
+            sender.sendMessage(formatError("pageTooHigh"))
             return
         }
-        sendMessage(sender, format("homesPage",
+        sender.sendMessage(format("homesPage",
             "page" to page, "pages" to pages))
 
         val sb = StringBuilder()
@@ -79,6 +78,6 @@ class CommandHomes : Command(
             if (i >= homes.size) break
             sb.append(format("homesEntry", "home" to homes[i]) + " ")
         }
-        sendMessage(sender, sb.substring(0, sb.length - 2))
+        sender.sendMessage(sb.substring(0, sb.length - 2))
     }
 }

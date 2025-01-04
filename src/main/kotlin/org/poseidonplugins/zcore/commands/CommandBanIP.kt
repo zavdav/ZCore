@@ -3,7 +3,6 @@ package org.poseidonplugins.zcore.commands
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.joinArgs
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.BanData
 import org.poseidonplugins.zcore.util.Utils
@@ -46,13 +45,13 @@ class CommandBanIP : Command(
             0 -> when (reason.length) {
                 0 -> {
                     BanData.banIP(ip)
-                    sendMessage(event.sender, format("permanentIpBan",
+                    event.sender.sendMessage(format("permanentIpBan",
                         "ip" to ip,
                         "reason" to Config.getString("defaultBanReason")))
                 }
                 else -> {
                     BanData.banIP(ip, reason)
-                    sendMessage(event.sender, format("permanentIpBan",
+                    event.sender.sendMessage(format("permanentIpBan",
                         "ip" to ip, "reason" to reason))
                 }
             }
@@ -60,7 +59,7 @@ class CommandBanIP : Command(
                 0 -> {
                     val until = Utils.parseDateDiff(duration)
                     BanData.banIP(ip, until)
-                    sendMessage(event.sender, format("temporaryIpBan",
+                    event.sender.sendMessage(format("temporaryIpBan",
                         "ip" to ip,
                         "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
                         "reason" to Config.getString("defaultBanReason")))
@@ -68,7 +67,7 @@ class CommandBanIP : Command(
                 else -> {
                     val until = Utils.parseDateDiff(duration)
                     BanData.banIP(ip, until, reason)
-                    sendMessage(event.sender, format("temporaryIpBan",
+                    event.sender.sendMessage(format("temporaryIpBan",
                         "ip" to ip,
                         "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
                         "reason" to reason))

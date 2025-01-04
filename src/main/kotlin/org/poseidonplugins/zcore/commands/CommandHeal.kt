@@ -4,7 +4,6 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.isSelf
 import org.poseidonplugins.zcore.util.format
@@ -26,14 +25,14 @@ class CommandHeal : Command(
 
         val isSelf = (event.sender as Player).isSelf(target)
         if (!isSelf && !hasPermission(event.sender, "zcore.heal.others")) {
-            sendMessage(event.sender, format("noPermission"))
+            event.sender.sendMessage(format("noPermission"))
             return
         }
 
         target.health = 20
         if (!isSelf) {
-            sendMessage(event.sender, format("healedOther", "player" to target.name))
+            event.sender.sendMessage(format("healedOther", "player" to target.name))
         }
-        sendMessage(target, format("healed"))
+        target.sendMessage(format("healed"))
     }
 }

@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.format
@@ -44,9 +43,9 @@ class CommandTP : Command(
 
         player.teleport(target)
         if (sender == player) {
-            sendMessage(sender, format("teleportedToPlayer", "player" to target.name))
+            sender.sendMessage(format("teleportedToPlayer", "player" to target.name))
         } else {
-            sendMessage(sender, if (sender == target)
+            sender.sendMessage(if (sender == target)
                 format("teleportedPlayer", "player" to player.name)
                 else format("teleportedPlayerToPlayer",
                     "player" to player, "other" to target))
@@ -66,7 +65,7 @@ class CommandTP : Command(
         target.teleport(Location(target.world, coords[0], coords[1], coords[2], target.location.yaw, target.location.pitch))
 
         val coordinates = "${coords[0].toFloat()}, ${coords[1].toFloat()}, ${coords[2].toFloat()}"
-        sendMessage(player, if (player == target)
+        player.sendMessage(if (player == target)
             format("teleportedToCoordinates", "coordinates" to coordinates)
             else format("teleportedPlayerToCoordinates",
                 "player" to target.name, "coordinates" to coordinates))
@@ -91,7 +90,7 @@ class CommandTP : Command(
                         coords.add(loc.y)
                         computeY = true
                     } else {
-                        sendMessage(sender, formatError("errorParsingCoordinates",
+                        sender.sendMessage(formatError("errorParsingCoordinates",
                             "string" to args.joinToString(" ")))
                         return null
                     }
@@ -103,7 +102,7 @@ class CommandTP : Command(
             try {
                 coords[1] = Utils.getSafeHeight(Location(loc.world, coords[0], coords[1], coords[2])).toDouble()
             } catch (e: UnsafeDestinationException) {
-                sendMessage(sender, formatError("unsafeDestination"))
+                sender.sendMessage(formatError("unsafeDestination"))
                 return null
             }
         }

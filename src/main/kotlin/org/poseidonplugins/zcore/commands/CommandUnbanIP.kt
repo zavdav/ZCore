@@ -2,7 +2,6 @@ package org.poseidonplugins.zcore.commands
 
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.data.BanData
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.format
@@ -26,18 +25,18 @@ class CommandUnbanIP : Command(
                 val uuid = Utils.getUUIDFromString(event.args[0])
                 val ipBan = BanData.getIPBan(uuid)
                 if (ipBan == null) {
-                    sendMessage(event.sender, formatError("ipNotBanned"))
+                    event.sender.sendMessage(formatError("ipNotBanned"))
                     return
                 }
                 ipBan.ip
             }
 
         if (!BanData.isIPBanned(ip)) {
-            sendMessage(event.sender, formatError("ipNotBanned"))
+            event.sender.sendMessage(formatError("ipNotBanned"))
             return
         }
 
         BanData.unbanIP(ip)
-        sendMessage(event.sender, format("ipUnbanned", "ip" to ip))
+        event.sender.sendMessage(format("ipUnbanned", "ip" to ip))
     }
 }

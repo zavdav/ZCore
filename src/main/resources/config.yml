@@ -17,14 +17,14 @@ precacheAllPlayers: false
 # Message of the day
 # Set to '' to disable
 motd:
-  - '&eWelcome, {USERNAME}&e!'
-  - '&bType /help for a list of commands.'
-  - '&7Online players: &f{LIST}'
+  - '§eWelcome, {USERNAME}§e!'
+  - '§bType /help for a list of commands.'
+  - '§7Online players: §f{LIST}'
 
 rules:
-  - '&c1. Be respectful'
-  - '&c2. No griefing'
-  - '&c3. No cheating'
+  - '§c1. Be respectful'
+  - '§c2. No griefing'
+  - '§c3. No cheating'
 
 # After how long will inactive players be marked as AFK
 afkTime: 300
@@ -32,7 +32,7 @@ afkTime: 300
 # After how long will AFK players be kicked
 afkKickTime: 1800
 
-afkKickReason: '&cYou have been kicked for inactivity'
+afkKickReason: '§cYou have been kicked for inactivity'
 
 # Makes AFK players invincible and freezes them in place
 # Players have to type /afk to unfreeze themselves
@@ -46,17 +46,17 @@ afkDelay: 3
 # │           Chat            │
 # └───────────────────────────┘
 
-chatFormat: '{DISPLAYNAME}&f: {MESSAGE}'
-broadcastFormat: '&d[Broadcast] {MESSAGE}'
-joinMsgFormat: '&e{PLAYER} has joined the game'
-leaveMsgFormat: '&e{PLAYER} has left the game'
-kickMsgFormat: '&e{PLAYER} has been kicked from the server'
-banMsgFormat: '&e{PLAYER} has been banned from the server'
+chatFormat: '{DISPLAYNAME}§f: {MESSAGE}'
+broadcastFormat: '§d[Broadcast] {MESSAGE}'
+joinMsgFormat: '§e{PLAYER} has joined the game'
+leaveMsgFormat: '§e{PLAYER} has left the game'
+kickMsgFormat: '§e{PLAYER} has been kicked from the server'
+banMsgFormat: '§e{PLAYER} has been banned from the server'
 
 # The prefix to add to nicknames to differentiate them from real names
 nickPrefix: '~'
 
-nickFormat: '{PREFIX} &f{NICKNAME}&f {SUFFIX}'
+nickFormat: '{PREFIX} §f{NICKNAME}§f {SUFFIX}'
 
 # How far away a player will be heard from when chatting
 # Set to 0 to make chat global
@@ -92,11 +92,11 @@ homesPerPage: 50
 
 # Kicks
 defaultKickReason: 'Kicked from server'
-kickFormat: '&cYou have been kicked: {REASON}'
+kickFormat: '§cYou have been kicked: {REASON}'
 
 # Bans
 defaultBanReason: 'The ban hammer has spoken!'
-permBanFormat: '&cYou have been permanently banned: {REASON}'
-tempBanFormat: '&cYou have been banned until {DATETIME}: {REASON}'
-permIpBanFormat: '&cYour IP has been permanently banned: {REASON}'
-tempIpBanFormat: '&cYour IP has been banned until {DATETIME}: {REASON}'
+permBanFormat: '§cYou have been permanently banned: {REASON}'
+tempBanFormat: '§cYou have been banned until {DATETIME}: {REASON}'
+permIpBanFormat: '§cYour IP has been permanently banned: {REASON}'
+tempIpBanFormat: '§cYour IP has been banned until {DATETIME}: {REASON}'

@@ -26,7 +26,7 @@ class CommandAFK : Command(
 
         val isSelf = (event.sender as Player).isSelf(target)
         if (!isSelf && !hasPermission(event.sender, "zcore.afk.others")) {
-            sendMessage(event.sender, format("noPermission"))
+            event.sender.sendMessage(format("noPermission"))
             return
         }
 
@@ -36,8 +36,8 @@ class CommandAFK : Command(
             broadcastMessage(format("noLongerAfk", "player" to target.name))
         } else if (Config.getBoolean("protectAfkPlayers") && Config.getInt("afkDelay", 0) > 0) {
             val delay = Config.getInt("afkDelay", 0)
-            sendMessage(target, format("commencingAfk", "delay" to delay))
-            sendMessage(target, format("doNotMove"))
+            target.sendMessage(format("commencingAfk", "delay" to delay))
+            target.sendMessage(format("doNotMove"))
 
             Delay(target, {
                 if (!zPlayer.isAFK) {

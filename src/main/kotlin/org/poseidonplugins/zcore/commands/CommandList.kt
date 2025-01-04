@@ -4,7 +4,6 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.util.format
 
 class CommandList : Command(
@@ -17,10 +16,10 @@ class CommandList : Command(
     preprocessor = Preprocessor()) {
 
     override fun execute(event: CommandEvent) {
-        sendMessage(event.sender, format("listPlayers",
+        event.sender.sendMessage(format("listPlayers",
             "amount" to Bukkit.getOnlinePlayers().size,
             "max" to Bukkit.getMaxPlayers()))
-        sendMessage(event.sender, Bukkit.getOnlinePlayers()
+        event.sender.sendMessage(Bukkit.getOnlinePlayers()
             .map { p: Player -> p.name }.sorted().joinToString(", "))
     }
 }

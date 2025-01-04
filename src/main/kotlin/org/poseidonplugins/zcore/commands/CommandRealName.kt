@@ -4,12 +4,10 @@ import org.bukkit.Bukkit
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.colorize
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.formatError
-import org.poseidonplugins.zcore.util.formatString
-import org.poseidonplugins.zcore.util.getMessage
+import org.poseidonplugins.zcore.util.formatProperty
 
 class CommandRealName : Command(
     "realname",
@@ -30,11 +28,11 @@ class CommandRealName : Command(
                 .replace("§([0-9a-f])".toRegex(), "")
 
             if (string.equals(nickname, true)) {
-                event.sender.sendMessage(formatString(colorize(getMessage("realName")),
+                event.sender.sendMessage(formatProperty("realName",
                     "displayname" to zPlayer.displayName, "username" to zPlayer.name))
                 matches++
             }
         }
-        if (matches == 0) sendMessage(event.sender, formatError("nickNotFound", "nickname" to string))
+        if (matches == 0) event.sender.sendMessage(formatError("nickNotFound", "nickname" to string))
     }
 }

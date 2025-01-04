@@ -3,7 +3,6 @@ package org.poseidonplugins.zcore.commands
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.format
@@ -25,13 +24,13 @@ class CommandInvSee : Command(
             val target = Utils.getPlayerFromUsername(event.args[0])
             if (zPlayer.savedInventory == null) zPlayer.savedInventory = player.inventory.contents
             player.inventory.contents = PlayerMap.getPlayer(target).savedInventory ?: target.inventory.contents
-            sendMessage(event.sender, format("lookingAtInventory", "player" to target.name))
+            event.sender.sendMessage(format("lookingAtInventory", "player" to target.name))
         } else {
             if (zPlayer.savedInventory != null) {
                 player.inventory.contents = zPlayer.savedInventory
                 zPlayer.savedInventory = null
             }
-            sendMessage(event.sender, format("inventoryRestored"))
+            event.sender.sendMessage(format("inventoryRestored"))
         }
     }
 }

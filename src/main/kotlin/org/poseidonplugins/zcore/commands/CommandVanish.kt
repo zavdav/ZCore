@@ -4,7 +4,6 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.format
@@ -29,18 +28,18 @@ class CommandVanish : Command(
 
         val isSelf = player.uniqueId == zPlayer.uuid
         if (!isSelf && !hasPermission(event.sender, "zcore.vanish.others")) {
-            sendMessage(event.sender, format("noPermission"))
+            event.sender.sendMessage(format("noPermission"))
             return
         }
         zPlayer.vanished = !zPlayer.vanished
         Utils.updateVanishedPlayers()
 
         if (!isSelf) {
-            sendMessage(event.sender, if (zPlayer.vanished)
+            event.sender.sendMessage(if (zPlayer.vanished)
                 format("vanishEnabledOther", "player" to zPlayer.name)
             else format("vanishDisabledOther", "player" to zPlayer.name))
         }
-        sendMessage(zPlayer.onlinePlayer, if (zPlayer.vanished)
+        zPlayer.onlinePlayer.sendMessage(if (zPlayer.vanished)
             format("vanishEnabled") else format("vanishDisabled"))
     }
 }

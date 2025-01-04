@@ -4,7 +4,6 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.format
@@ -30,17 +29,17 @@ class CommandGod : Command(
 
         val isSelf = player.uniqueId == zPlayer.uuid
         if (!isSelf && !hasPermission(event.sender, "zcore.god.others")) {
-            sendMessage(event.sender, format("noPermission"))
+            event.sender.sendMessage(format("noPermission"))
             return
         }
 
         zPlayer.isGod = !zPlayer.isGod
         if (!isSelf) {
-            sendMessage(event.sender, if (zPlayer.isGod)
+            event.sender.sendMessage(if (zPlayer.isGod)
                 format("godEnabledOther", "player" to zPlayer.name)
             else format("godDisabledOther", "player" to zPlayer.name))
         }
-        sendMessage(zPlayer.onlinePlayer, if (zPlayer.isGod)
+        zPlayer.onlinePlayer.sendMessage(if (zPlayer.isGod)
             format("godEnabled") else format("godDisabled"))
     }
 }

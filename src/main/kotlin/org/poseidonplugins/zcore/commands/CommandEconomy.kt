@@ -2,7 +2,6 @@ package org.poseidonplugins.zcore.commands
 
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.api.Economy
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
@@ -27,27 +26,27 @@ class CommandEconomy : Command(
         var amount = event.args[2].toDoubleOrNull()?.roundTo(2)
 
         if (amount == null || amount < 0) {
-            sendMessage(event.sender, formatError("invalidAmount"))
+            event.sender.sendMessage(formatError("invalidAmount"))
             return
         }
         when (event.args[0].lowercase()) {
             "set" -> {
                 Economy.setBalance(uuid, amount)
-                sendMessage(event.sender, format("setBalance",
+                event.sender.sendMessage(format("setBalance",
                     "user" to name, "amount" to Economy.formatBalance(amount)))
             }
             "give" -> {
                 Economy.addBalance(uuid, amount)
-                sendMessage(event.sender, format("gaveMoney",
+                event.sender.sendMessage(format("gaveMoney",
                     "user" to name, "amount" to Economy.formatBalance(amount)))
             }
             "take" -> {
                 if (!Economy.hasEnough(uuid, amount)) amount = Economy.getBalance(uuid)
                 Economy.subtractBalance(uuid, amount)
-                sendMessage(event.sender, format("tookMoney",
+                event.sender.sendMessage(format("tookMoney",
                     "user" to name, "amount" to Economy.formatBalance(amount)))
             }
-            else -> sendMessage(event.sender, formatError("invalidAction"))
+            else -> event.sender.sendMessage(formatError("invalidAction"))
         }
     }
 }

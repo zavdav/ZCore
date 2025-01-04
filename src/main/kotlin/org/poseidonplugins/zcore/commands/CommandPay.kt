@@ -3,7 +3,6 @@ package org.poseidonplugins.zcore.commands
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.api.Economy
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
@@ -27,13 +26,13 @@ class CommandPay : Command(
 
         val amount = event.args[1].toDoubleOrNull()?.roundTo(2)
         if (amount == null || amount <= 0) {
-            sendMessage(event.sender, formatError("invalidAmount"))
+            event.sender.sendMessage(formatError("invalidAmount"))
             return
         }
         Economy.transferBalance(sender.uuid, receiver.uuid, amount)
-        sendMessage(event.sender, format("paidUser",
+        event.sender.sendMessage(format("paidUser",
             "user" to receiver.name, "amount" to Economy.formatBalance(amount)))
-        if (receiver.isOnline) sendMessage(receiver.onlinePlayer, format("receivedMoney",
+        if (receiver.isOnline) receiver.onlinePlayer.sendMessage(format("receivedMoney",
             "player" to sender.name, "amount" to Economy.formatBalance(amount)))
     }
 }

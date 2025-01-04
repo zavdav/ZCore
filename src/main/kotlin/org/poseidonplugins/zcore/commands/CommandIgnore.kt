@@ -3,7 +3,6 @@ package org.poseidonplugins.zcore.commands
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.format
@@ -23,17 +22,17 @@ class CommandIgnore : Command(
         val zPlayer = PlayerMap.getPlayer(event.sender as Player)
         val uuid = Utils.getUUIDFromUsername(event.args[0])
         if (zPlayer.uuid == uuid) {
-            sendMessage(event.sender, formatError("cannotIgnoreSelf"))
+            event.sender.sendMessage(formatError("cannotIgnoreSelf"))
             return
         }
 
         if (uuid in zPlayer.ignores) {
             zPlayer.setIgnored(uuid, false)
-            sendMessage(event.sender, format("notIgnoringPlayer",
+            event.sender.sendMessage(format("notIgnoringPlayer",
                 "player" to PlayerMap.getPlayer(uuid).name))
         } else {
             zPlayer.setIgnored(uuid, true)
-            sendMessage(event.sender, format("ignoringPlayer",
+            event.sender.sendMessage(format("ignoringPlayer",
                 "player" to PlayerMap.getPlayer(uuid).name))
         }
     }

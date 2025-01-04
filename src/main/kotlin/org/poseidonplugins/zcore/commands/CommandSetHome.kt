@@ -4,7 +4,6 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.format
@@ -24,7 +23,7 @@ class CommandSetHome : Command(
         var homeName = "main"
         if (event.args.isNotEmpty()) {
             if (!event.args[0].matches("^[a-zA-Z0-9_-]+$".toRegex())) {
-                sendMessage(event.sender, formatError("invalidHomeName"))
+                event.sender.sendMessage(formatError("invalidHomeName"))
                 return
             }
             homeName = event.args[0]
@@ -37,22 +36,22 @@ class CommandSetHome : Command(
         if (!hasPermission(event.sender, "zcore.sethome.unlimited")) {
             if (!hasPermission(event.sender, "zcore.sethome.multiple")) {
                 if (homeCount >= 1) {
-                    sendMessage(event.sender, formatError("homeLimitSingle"))
+                    event.sender.sendMessage(formatError("homeLimitSingle"))
                     return
                 }
             } else if (homeCount >= limit) {
-                sendMessage(event.sender, formatError("homeLimitMultiple",
+                event.sender.sendMessage(formatError("homeLimitMultiple",
                     "amount" to limit))
                 return
             }
         }
 
         if (zPlayer.homeExists(homeName)) {
-            sendMessage(event.sender, formatError("homeAlreadyExists"))
+            event.sender.sendMessage(formatError("homeAlreadyExists"))
             return
         }
 
         zPlayer.addHome(homeName, (event.sender as Player).location)
-        sendMessage(event.sender, format("homeSet", "home" to homeName))
+        event.sender.sendMessage(format("homeSet", "home" to homeName))
     }
 }

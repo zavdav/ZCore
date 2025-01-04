@@ -3,7 +3,6 @@ package org.poseidonplugins.zcore.commands
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.isSelf
 import org.poseidonplugins.zcore.util.format
@@ -25,7 +24,7 @@ class CommandKill : Command(
         target.health = 0
 
         val isSelf = (event.sender as Player).isSelf(target)
-        sendMessage(event.sender, if (isSelf)
+        event.sender.sendMessage(if (isSelf)
             format("killed")
             else format("killedOther", "player" to target.name))
     }

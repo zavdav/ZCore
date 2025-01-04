@@ -3,7 +3,6 @@ package org.poseidonplugins.zcore.commands
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.data.SpawnData
 import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
 import org.poseidonplugins.zcore.util.Utils
@@ -28,11 +27,11 @@ class CommandSpawn : Command(
         try {
             loc.y = Utils.getSafeHeight(loc).toDouble()
         } catch (e: UnsafeDestinationException) {
-            sendMessage(event.sender, formatError("unsafeDestination"))
+            event.sender.sendMessage(formatError("unsafeDestination"))
             return
         }
         player.teleport(loc)
-        sendMessage(player, format("teleportedToSpawn",
+        player.sendMessage(format("teleportedToSpawn",
             "world" to loc.world.name))
     }
 }

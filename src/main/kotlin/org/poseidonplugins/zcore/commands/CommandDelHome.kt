@@ -4,7 +4,6 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.format
@@ -28,13 +27,13 @@ class CommandDelHome : Command(
 
         if (homeName.contains(":")) {
             if (!hasPermission(event.sender, "zcore.delhome.others")) {
-                sendMessage(event.sender, format("noPermission"))
+                event.sender.sendMessage(format("noPermission"))
                 return
             }
 
             val strings = event.args[0].split(":")
             if (strings.size < 2) {
-                sendMessage(event.sender, formatError("noHomeSpecified"))
+                event.sender.sendMessage(formatError("noHomeSpecified"))
                 return
             }
 
@@ -44,7 +43,7 @@ class CommandDelHome : Command(
         }
 
         if (!zPlayer.homeExists(homeName)) {
-            sendMessage(event.sender, formatError("homeDoesNotExist"))
+            event.sender.sendMessage(formatError("homeDoesNotExist"))
             return
         }
 
@@ -52,10 +51,10 @@ class CommandDelHome : Command(
         zPlayer.removeHome(finalName)
 
         if (player.uniqueId == zPlayer.uuid) {
-            sendMessage(event.sender, format("homeDeleted",
+            event.sender.sendMessage(format("homeDeleted",
                 "home" to finalName))
         } else {
-            sendMessage(event.sender, format("homeDeletedOther",
+            event.sender.sendMessage(format("homeDeletedOther",
                 "user" to zPlayer.name,
                 "home" to finalName))
         }

@@ -7,7 +7,7 @@ import org.poseidonplugins.zcore.ZCore
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.safeSubstring
-import org.poseidonplugins.zcore.util.formatString
+import org.poseidonplugins.zcore.util.formatProperty
 import java.io.File
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -87,9 +87,9 @@ object BanData : JsonData(File(ZCore.dataFolder, "bans.json")){
 
         val player = Utils.getPlayerFromUUID(uuid) ?: return
         when (until == null) {
-            true -> player.kickPlayer(formatString(Config.getString("permBanFormat"),
+            true -> player.kickPlayer(formatProperty("permBanFormat",
                 "reason" to reason).safeSubstring(0, 99))
-            false -> player.kickPlayer(formatString(Config.getString("tempBanFormat"),
+            false -> player.kickPlayer(formatProperty("tempBanFormat",
                 "datetime" to until.truncatedTo(ChronoUnit.MINUTES),
                 "reason" to reason).safeSubstring(0, 99))
         }
@@ -118,11 +118,10 @@ object BanData : JsonData(File(ZCore.dataFolder, "bans.json")){
 
         when (until == null) {
             true -> for (player in players) {
-                player.kickPlayer(formatString(Config.getString("permIpBanFormat"),
-                    "reason" to reason).safeSubstring(0, 99))
+                player.kickPlayer(formatProperty("permIpBanFormat", "reason" to reason).safeSubstring(0, 99))
             }
             false -> for (player in players) {
-                player.kickPlayer(formatString(Config.getString("tempIpBanFormat"),
+                player.kickPlayer(formatProperty("tempIpBanFormat",
                     "datetime" to until.truncatedTo(ChronoUnit.MINUTES),
                     "reason" to reason).safeSubstring(0, 99))
             }

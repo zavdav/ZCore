@@ -7,7 +7,6 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.exceptions.PlayerNotFoundException
@@ -22,14 +21,17 @@ import kotlin.math.*
 
 fun getMessage(key: String): String = Utils.bundle.getString(key)
 
-fun format(key: String, vararg pairs: Pair<String, Any>, color: Boolean = true): String =
-    formatString(getMessage(key), *pairs, color = color)
+fun format(key: String, vararg pairs: Pair<String, Any>): String =
+    formatString(getMessage(key), *pairs)
+
+fun formatProperty(key: String, vararg pairs: Pair<String, Any>): String =
+    formatString(Config.getString(key), *pairs)
 
 fun formatError(key: String, vararg pairs: Pair<String, Any>): String =
     format("errorMessage", "message" to format(key, *pairs))
 
-fun formatString(string: String, vararg pairs: Pair<String, Any>, color: Boolean = true): String {
-    var message = if (color) colorize(string) else string
+fun formatString(string: String, vararg pairs: Pair<String, Any>): String {
+    var message = string
     for (pair in pairs) {
         message = message.replace("{${pair.first.uppercase()}}", pair.second.toString())
     }

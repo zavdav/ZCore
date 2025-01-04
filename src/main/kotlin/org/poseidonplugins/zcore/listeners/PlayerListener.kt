@@ -23,7 +23,7 @@ import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.safeSubstring
 import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatString
+import org.poseidonplugins.zcore.util.formatProperty
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -39,10 +39,10 @@ class PlayerListener : Listener {
             if (!ipBan.uuids.contains(player.uniqueId)) ipBan.addUUID(player.uniqueId)
             when (ipBan.until == null) {
                 true -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    formatString(Config.getString("permIpBanFormat"),
+                    formatProperty("permIpBanFormat",
                         "reason" to ipBan.reason).safeSubstring(0, 99))
                 false -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    formatString(Config.getString("tempIpBanFormat"),
+                    formatProperty("tempIpBanFormat",
                         "datetime" to ipBan.until.truncatedTo(ChronoUnit.MINUTES),
                         "reason" to ipBan.reason).safeSubstring(0, 99))
             }
@@ -50,10 +50,9 @@ class PlayerListener : Listener {
             val ban = BanData.getBan(player.uniqueId)!!
             when (ban.until == null) {
                 true -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    formatString(Config.getString("permBanFormat"),
-                        "reason" to ban.reason).safeSubstring(0, 99))
+                    formatProperty("permBanFormat", "reason" to ban.reason).safeSubstring(0, 99))
                 false -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    formatString(Config.getString("tempBanFormat"),
+                    formatProperty("tempBanFormat",
                         "datetime" to ban.until.truncatedTo(ChronoUnit.MINUTES),
                         "reason" to ban.reason).safeSubstring(0, 99))
             }
@@ -78,8 +77,7 @@ class PlayerListener : Listener {
         if (!Config.isEmpty("motd") && hasPermission(event.player, "zcore.motd")) {
             event.player.performCommand("motd")
         }
-        event.joinMessage = formatString(Config.getString("joinMsgFormat"),
-            "player" to event.player.name)
+        event.joinMessage = formatProperty("joinMsgFormat", "player" to event.player.name)
     }
 
     @EventHandler(priority = Event.Priority.Low)
@@ -92,16 +90,15 @@ class PlayerListener : Listener {
             event.player.inventory.contents = zPlayer.savedInventory
             zPlayer.savedInventory = null
         }
-        event.quitMessage = formatString(Config.getString("leaveMsgFormat"),
-            "player" to event.player.name)
+        event.quitMessage = formatProperty("leaveMsgFormat", "player" to event.player.name)
     }
 
     @EventHandler(ignoreCancelled = true, priority = Event.Priority.Low)
     fun onPlayerKick(event: PlayerKickEvent) {
         val isBanned = BanData.isBanned(event.player.uniqueId)
                     || BanData.isIPBanned(event.player.address.address.hostAddress)
-        event.leaveMessage = formatString(Config.getString(if (isBanned)
-            "banMsgFormat" else "kickMsgFormat"), "player" to event.player.name)
+        event.leaveMessage = formatProperty(if (isBanned) "banMsgFormat" else "kickMsgFormat",
+            "player" to event.player.name)
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -109,8 +106,7 @@ class PlayerListener : Listener {
         if (hasPermission(event.player, "zcore.chat.color")) {
             event.message = colorize(event.message)
         }
-        event.format = formatString(colorize(Config.getString("chatFormat")),
-            "displayname" to "%1\$s", "message" to "%2\$s", color = false)
+        event.format = formatProperty("chatFormat", "displayname" to "%1\$s", "message" to "%2\$s")
 
         val radius = Config.getInt("chatRadius", 0)
         if (radius != 0) {

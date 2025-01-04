@@ -3,7 +3,6 @@ package org.poseidonplugins.zcore.commands
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.exceptions.PlayerNotFoundException
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
@@ -29,13 +28,13 @@ class CommandSeen : Command(
         if (zPlayer.isOnline) {
             val isSelf = event.sender is Player && (event.sender as Player).uniqueId == zPlayer.uuid
             val duration = Utils.formatDateDiff(zPlayer.lastSeen, LocalDateTime.now())
-            sendMessage(event.sender, if (isSelf)
+            event.sender.sendMessage(if (isSelf)
                 format("seenOnline", "duration" to duration)
                 else format("seenOnlineOther",
                     "player" to zPlayer.name,
                     "duration" to duration))
         } else {
-            sendMessage(event.sender, format("seenOffline",
+            event.sender.sendMessage(format("seenOffline",
                 "user" to zPlayer.name,
                 "duration" to Utils.formatDateDiff(zPlayer.lastSeen, LocalDateTime.now())))
         }

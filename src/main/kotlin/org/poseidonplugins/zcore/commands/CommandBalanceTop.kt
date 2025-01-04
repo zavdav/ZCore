@@ -4,7 +4,6 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.ZCore
 import org.poseidonplugins.zcore.api.Economy
 import org.poseidonplugins.zcore.config.Config
@@ -37,22 +36,22 @@ class CommandBalanceTop : Command(
             val balancesPerPage = Config.getInt("balancesPerPage", 10)
             val pages = ceil(players.size.toDouble() / balancesPerPage).toInt()
             if (page > pages) {
-                sendMessage(event.sender, formatError("pageTooHigh"))
+                event.sender.sendMessage(formatError("pageTooHigh"))
                 return@scheduleAsyncDelayedTask
             }
 
-            sendMessage(event.sender, format("balancetopPage",
+            event.sender.sendMessage(format("balancetopPage",
                 "page" to page, "pages" to pages))
             for (i in (page * balancesPerPage - balancesPerPage)..<page * balancesPerPage) {
                 if (i >= players.size) break
-                sendMessage(event.sender, format("balancetopEntry",
+                event.sender.sendMessage(format("balancetopEntry",
                     "rank" to i + 1,
                     "player" to players[i].name,
                     "balance" to Economy.formatBalance(players[i].balance)))
             }
-            sendMessage(event.sender, format("balancetopTotal",
+            event.sender.sendMessage(format("balancetopTotal",
                 "amount" to Economy.formatBalance(players.sumOf { p -> p.balance })))
-            sendMessage(event.sender, format("balancetopRank",
+            event.sender.sendMessage(format("balancetopRank",
                 "amount" to Economy.formatBalance(zPlayer.balance),
                 "rank" to players.indexOf(zPlayer) + 1))
         }

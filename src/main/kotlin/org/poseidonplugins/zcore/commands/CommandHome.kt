@@ -4,7 +4,6 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
 import org.poseidonplugins.zcore.util.Utils
@@ -29,14 +28,14 @@ class CommandHome : Command(
 
         if (homeName.contains(":")) {
             if (!hasPermission(event.sender, "zcore.home.others")) {
-                sendMessage(event.sender, format("noPermission"))
+                event.sender.sendMessage(format("noPermission"))
                 return
             }
 
             val strings = event.args[0].split(":", limit = 2)
             val uuid = Utils.getUUIDFromUsername(strings[0])
             if (strings[1].isEmpty()) {
-                sendMessage(event.sender, formatError("noHomeSpecified"))
+                event.sender.sendMessage(formatError("noHomeSpecified"))
                 return
             }
 
@@ -45,7 +44,7 @@ class CommandHome : Command(
         }
 
         if (!zPlayer.homeExists(homeName)) {
-            sendMessage(event.sender, formatError("homeDoesNotExist"))
+            event.sender.sendMessage(formatError("homeDoesNotExist"))
             return
         }
 
@@ -53,16 +52,16 @@ class CommandHome : Command(
             val location = zPlayer.getHome(homeName)
             player.teleport(location)
         } catch (e: UnsafeDestinationException) {
-            sendMessage(event.sender, formatError("unsafeDestination"))
+            event.sender.sendMessage(formatError("unsafeDestination"))
             return
         }
 
         val finalName = zPlayer.getFinalHomeName(homeName)
         if (player.uniqueId == zPlayer.uuid) {
-            sendMessage(event.sender, format("teleportedToHome",
+            event.sender.sendMessage(format("teleportedToHome",
                 "home" to finalName))
         } else {
-            sendMessage(event.sender, format("teleportedToHomeOther",
+            event.sender.sendMessage(format("teleportedToHomeOther",
                 "user" to zPlayer.name,
                 "home" to finalName))
         }

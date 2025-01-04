@@ -6,7 +6,7 @@ import org.poseidonplugins.commandapi.*
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.util.Utils.safeSubstring
 import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatString
+import org.poseidonplugins.zcore.util.formatProperty
 
 class CommandKickAll : Command(
     "kickall",
@@ -21,10 +21,9 @@ class CommandKickAll : Command(
 
         for (player in Bukkit.getOnlinePlayers()) {
             if (event.sender !is Player || !player.equals(event.sender as Player)) {
-                player.kickPlayer(formatString(Config.getString("kickFormat"),
-                    "reason" to reason).safeSubstring(0, 99))
+                player.kickPlayer(formatProperty("kickFormat", "reason" to reason).safeSubstring(0, 99))
             }
         }
-        sendMessage(event.sender, format("allKicked", "reason" to reason))
+        event.sender.sendMessage(format("allKicked", "reason" to reason))
     }
 }

@@ -2,7 +2,6 @@ package org.poseidonplugins.zcore.commands
 
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.ZCore
 
 class CommandZCore : Command(
@@ -14,7 +13,7 @@ class CommandZCore : Command(
 
     override fun execute(event: CommandEvent) {
         val desc = ZCore.plugin.description
-        sendMessage(event.sender, "&e${desc.name} v${desc.version}")
-        sendMessage(event.sender, "&eType /help for a list of commands.")
+        event.sender.sendMessage("&e${desc.name} v${desc.version}")
+        event.sender.sendMessage("&eType /help for a list of commands.")
     }
 }

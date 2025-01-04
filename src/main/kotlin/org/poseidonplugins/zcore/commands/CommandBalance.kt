@@ -4,7 +4,6 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
-import org.poseidonplugins.commandapi.sendMessage
 import org.poseidonplugins.zcore.api.Economy
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
@@ -29,13 +28,13 @@ class CommandBalance : Command(
 
         val isSelf = player.uniqueId == uuid
         if (!isSelf && !hasPermission(event.sender, "zcore.balance.others")) {
-            sendMessage(event.sender, format("noPermission"))
+            event.sender.sendMessage(format("noPermission"))
             return
         }
 
         val amount = Economy.getBalance(uuid)
         val name = PlayerMap.getPlayer(uuid).name
-        sendMessage(event.sender, if (isSelf)
+        event.sender.sendMessage(if (isSelf)
             format("balance", "amount" to Economy.formatBalance(amount))
             else format("balanceOther",
                 "user" to name, "amount" to Economy.formatBalance(amount)))

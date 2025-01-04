@@ -7,8 +7,6 @@ import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.isSelf
 import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatString
-import org.poseidonplugins.zcore.util.getMessage
 
 class CommandNick : Command(
     "nick",
@@ -31,7 +29,7 @@ class CommandNick : Command(
         }
         val isSelf = (event.sender as Player).isSelf(target)
         if (!isSelf && !hasPermission(event.sender, "zcore.nick.others")) {
-            sendMessage(event.sender, format("noPermission"))
+            event.sender.sendMessage(format("noPermission"))
             return
         }
 
@@ -42,14 +40,12 @@ class CommandNick : Command(
         if (reset) zPlayer.resetNickname() else zPlayer.nickname = nickname
         zPlayer.updateDisplayName()
         if (!isSelf) {
-            event.sender.sendMessage(if (reset)
-                format("resetNickOther", "player" to target.name)
-                else formatString(colorize(getMessage("setNickOther")),
+            event.sender.sendMessage(if (reset) format("resetNickOther", "player" to target.name)
+                else format("setNickOther",
                     "player" to target.name,
-                    "nickname" to "${colorize(Config.getString("nickPrefix"))}$nickname", color = false))
+                    "nickname" to "${colorize(Config.getString("nickPrefix"))}$nickname"))
         }
         target.sendMessage(if (reset) format("resetNick")
-            else formatString(colorize(getMessage("setNick")),
-                "nickname" to "${colorize(Config.getString("nickPrefix"))}$nickname", color = false))
+            else format("setNick", "nickname" to "${colorize(Config.getString("nickPrefix"))}$nickname"))
     }
 }
