@@ -7,6 +7,7 @@ import org.poseidonplugins.zcore.commands.*
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.BanData
 import org.poseidonplugins.zcore.data.SpawnData
+import org.poseidonplugins.zcore.listeners.EntityListener
 import org.poseidonplugins.zcore.listeners.PlayerListener
 import org.poseidonplugins.zcore.player.PlayerMap
 import java.io.File
@@ -36,6 +37,7 @@ class ZCore : JavaPlugin() {
 
         cmdManager = CommandManager(plugin)
         cmdManager.registerCommands(
+            CommandAFK(),
             CommandBalance(),
             CommandBalanceTop(),
             CommandBan(),
@@ -72,6 +74,7 @@ class ZCore : JavaPlugin() {
             CommandZCore()
         )
 
+        server.pluginManager.registerEvents(EntityListener(), plugin)
         server.pluginManager.registerEvents(PlayerListener(), plugin)
 
         server.scheduler.scheduleAsyncRepeatingTask(plugin, {

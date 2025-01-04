@@ -62,12 +62,13 @@ object PlayerMap {
     fun runTasks() {
         playerMap.entries.removeIf { entry ->
             val zPlayer = getPlayer(entry.key)
-            if (!precacheAll && !zPlayer.isOnline
-                && Duration.between(zPlayer.lastSeen, LocalDateTime.now()).seconds >= 600) {
+            if (!zPlayer.isOnline && Duration.between(zPlayer.lastSeen, LocalDateTime.now()).seconds >= 600) {
                 zPlayer.saveData()
-                true
+                !precacheAll
+            } else {
+                zPlayer.checkIsAfk()
+                false
             }
-            else false
         }
     }
 

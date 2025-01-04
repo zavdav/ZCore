@@ -9,16 +9,20 @@ import org.bukkit.event.player.PlayerChatEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerKickEvent
 import org.bukkit.event.player.PlayerLoginEvent
+import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerRespawnEvent
+import org.poseidonplugins.commandapi.broadcastMessage
 import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.BanData
 import org.poseidonplugins.zcore.data.SpawnData
+import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.safeSubstring
+import org.poseidonplugins.zcore.util.format
 import org.poseidonplugins.zcore.util.formatString
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -35,7 +39,8 @@ class PlayerListener : Listener {
             if (!ipBan.uuids.contains(player.uniqueId)) ipBan.addUUID(player.uniqueId)
             when (ipBan.until == null) {
                 true -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    formatString(Config.getString("permIpBanFormat"), "reason" to ipBan.reason).safeSubstring(0, 99))
+                    formatString(Config.getString("permIpBanFormat"),
+                        "reason" to ipBan.reason).safeSubstring(0, 99))
                 false -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
                     formatString(Config.getString("tempIpBanFormat"),
                         "datetime" to ipBan.until.truncatedTo(ChronoUnit.MINUTES),
@@ -45,7 +50,8 @@ class PlayerListener : Listener {
             val ban = BanData.getBan(player.uniqueId)!!
             when (ban.until == null) {
                 true -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    formatString(Config.getString("permBanFormat"), "reason" to ban.reason).safeSubstring(0, 99))
+                    formatString(Config.getString("permBanFormat"),
+                        "reason" to ban.reason).safeSubstring(0, 99))
                 false -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
                     formatString(Config.getString("tempBanFormat"),
                         "datetime" to ban.until.truncatedTo(ChronoUnit.MINUTES),
@@ -81,6 +87,7 @@ class PlayerListener : Listener {
         val zPlayer = PlayerMap.getPlayer(event.player)
 
         zPlayer.updateOnQuit()
+        zPlayer.isAFK = false
         if (zPlayer.savedInventory != null) {
             event.player.inventory.contents = zPlayer.savedInventory
             zPlayer.savedInventory = null
@@ -115,16 +122,53 @@ class PlayerListener : Listener {
             event.player.uniqueId in PlayerMap.getPlayer(it).ignores
             && !hasPermission(event.player, "zcore.ignore.exempt")
         }
+
+        val zPlayer = PlayerMap.getPlayer(event.player)
+        zPlayer.updateActivity()
+        if (zPlayer.isAFK) {
+            zPlayer.isAFK = false
+            broadcastMessage(format("noLongerAfk", "player" to zPlayer.name))
+        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = Event.Priority.High)
     fun onPlayerDamage(event: EntityDamageEvent) {
         if (event.entity !is Player) return
         val player = event.entity as Player
-        if (PlayerMap.getPlayer(player).isGod) {
+        val zPlayer = PlayerMap.getPlayer(player)
+        if (zPlayer.isGod || Config.getBoolean("protectAfkPlayers") && zPlayer.isAFK) {
             player.fireTicks = 0
             player.remainingAir = player.maximumAir
             event.isCancelled = true
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = Event.Priority.Low)
+    fun onPlayerMove(event: PlayerMoveEvent) {
+        val from = event.from
+        val to = event.to
+        val moved =
+            from.blockX != to.blockX || from.blockY != to.blockY || from.blockZ != to.blockZ
+
+        val zPlayer = PlayerMap.getPlayer(event.player)
+        if (!zPlayer.isAFK) {
+            if (moved) zPlayer.updateActivity()
+            return
+        }
+        if (!moved) return
+
+        if (Config.getBoolean("protectAfkPlayers") && hasPermission(event.player, "zcore.afk")) {
+            from.pitch = to.pitch
+            from.yaw = to.yaw
+            if (from.y > to.y) from.y = to.y
+            try {
+                from.y = Utils.getSafeHeight(from).toDouble()
+            } catch (_: UnsafeDestinationException) {}
+
+            event.to = from
+        } else {
+            zPlayer.isAFK = false
+            broadcastMessage(format("noLongerAfk", "player" to zPlayer.name))
         }
     }
 
