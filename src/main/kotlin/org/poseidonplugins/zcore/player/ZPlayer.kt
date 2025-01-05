@@ -52,6 +52,8 @@ class ZPlayer(uuid: UUID) : PlayerData(uuid) {
             }
         }
 
+    var replyTo: Player? = null
+
     var savedInventory: Array<ItemStack>? = null
 
     fun updateDisplayName() {

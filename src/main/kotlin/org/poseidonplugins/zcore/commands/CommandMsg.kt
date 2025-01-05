@@ -2,6 +2,7 @@ package org.poseidonplugins.zcore.commands
 
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.*
+import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.formatProperty
 
@@ -16,14 +17,22 @@ class CommandMsg : Command(
     preprocessor = Preprocessor()) {
 
     override fun execute(event: CommandEvent) {
+        val player = event.sender as Player
         val target = Utils.getPlayerFromUsername(event.args[0])
         var message = joinArgs(event.args, 1)
 
-        if (hasPermission(event.sender, "zcore.msg.color")) {
+        if (hasPermission(player, "zcore.msg.color")) {
             message = colorize(message)
         }
 
-        event.sender.sendMessage(formatProperty("msgSendFormat", target, "message" to message))
-        target.sendMessage(formatProperty("msgReceiveFormat", event.sender as Player, "message" to message))
+        PlayerMap.getPlayer(player).replyTo = target
+        player.sendMessage(formatProperty("msgSendFormat", target, "message" to message))
+
+        val zPlayer = PlayerMap.getPlayer(target)
+        if (player.uniqueId !in zPlayer.ignores ||
+            hasPermission(player, "zcore.ignore.exempt")) {
+            zPlayer.replyTo = player
+            target.sendMessage(formatProperty("msgReceiveFormat", player, "message" to message))
+        }
     }
 }
