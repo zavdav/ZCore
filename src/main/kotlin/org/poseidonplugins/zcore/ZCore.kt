@@ -58,6 +58,7 @@ class ZCore : JavaPlugin() {
             CommandKill(),
             CommandList(),
             CommandMotd(),
+            CommandMsg(),
             CommandNick(),
             CommandPay(),
             CommandRealName(),

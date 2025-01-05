@@ -30,6 +30,9 @@ fun format(key: String, player: Player, vararg pairs: Pair<String, Any>): String
 fun formatProperty(key: String, vararg pairs: Pair<String, Any>): String =
     formatString(Config.getString(key), *pairs)
 
+fun formatProperty(key: String, player: Player, vararg pairs: Pair<String, Any>): String =
+    formatProperty(key, *pairs, "name" to player.name, "displayname" to player.displayName)
+
 fun formatError(key: String, vararg pairs: Pair<String, Any>): String =
     format("errorMessage", "message" to format(key, *pairs))
 

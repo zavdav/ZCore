@@ -74,6 +74,8 @@ object Config {
         "nickPrefix" to "~",
         "nickFormat" to "{PREFIX} §f{NICKNAME}§f {SUFFIX}",
         "chatRadius" to 0,
+        "msgSendFormat" to "§7[me -> {NAME}§7] §f{MESSAGE}",
+        "msgReceiveFormat" to "§7[{NAME}§7 -> me] §f{MESSAGE}",
         "currency" to "$",
         "maxBalance" to 10000000000000,
         "balancesPerPage" to 10,
