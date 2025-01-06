@@ -43,14 +43,7 @@ class ZPlayer(uuid: UUID) : PlayerData(uuid) {
     val suffix: String
         get() = PermissionHandler.getSuffix(this)
 
-    var isAFK: Boolean = false
-        set(value) {
-            field = value
-            if (!value) updateActivity()
-            if (isOnline) {
-                Bukkit.broadcastMessage(format(if (value) "nowAfk" else "noLongerAfk", onlinePlayer))
-            }
-        }
+    var isAfk: Boolean = false
 
     var replyTo: Player? = null
 
@@ -60,21 +53,28 @@ class ZPlayer(uuid: UUID) : PlayerData(uuid) {
         onlinePlayer.displayName = displayName
     }
 
+    fun setInactive() {
+        if (!isOnline) return
+        isAfk = true
+        Bukkit.broadcastMessage(format("nowAfk", onlinePlayer))
+    }
+
     fun updateActivity() {
         if (!isOnline) return
+        if (isAfk) {
+            isAfk = false
+            Bukkit.broadcastMessage(format("noLongerAfk", onlinePlayer))
+        }
         lastSeen = LocalDateTime.now()
     }
 
     fun checkIsAfk() {
-        if (!isOnline) {
-            if (!isAFK) isAFK = true
-            return
-        }
+        if (!isOnline) return
 
-        if (!isAFK && Duration.between(lastSeen, LocalDateTime.now()).seconds >= Config.getInt("afkTime")) {
-            isAFK = true
+        if (!isAfk && Duration.between(lastSeen, LocalDateTime.now()).seconds >= Config.getInt("afkTime")) {
+            setInactive()
         }
-        if (isAFK && Duration.between(lastSeen, LocalDateTime.now()).seconds >= Config.getInt("afkKickTime")) {
+        if (isAfk && Duration.between(lastSeen, LocalDateTime.now()).seconds >= Config.getInt("afkKickTime")) {
             onlinePlayer.kickPlayer(formatProperty("afkKickReason").safeSubstring(0, 99))
         }
     }

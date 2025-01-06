@@ -4,6 +4,8 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.player.*
 import org.poseidonplugins.commandapi.colorize
@@ -76,7 +78,7 @@ class PlayerListener : Listener {
     fun onPlayerQuit(event: PlayerQuitEvent) {
         val zPlayer = PlayerMap.getPlayer(event.player)
 
-        zPlayer.updateOnQuit()
+        if (zPlayer.isAfk) zPlayer.isAfk = false
         if (zPlayer.savedInventory != null) {
             event.player.inventory.contents = zPlayer.savedInventory
             zPlayer.savedInventory = null
@@ -110,9 +112,14 @@ class PlayerListener : Listener {
             && !hasPermission(event.player, "zcore.ignore.exempt")
         }
 
-        val zPlayer = PlayerMap.getPlayer(event.player)
-        zPlayer.updateActivity()
-        if (zPlayer.isAFK) zPlayer.isAFK = false
+        PlayerMap.getPlayer(event.player).updateActivity()
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun onPlayerCommand(event: PlayerCommandPreprocessEvent) {
+        if (!event.message.equals("/afk", true)) {
+            PlayerMap.getPlayer(event.player).updateActivity()
+        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = Event.Priority.High)
@@ -120,7 +127,7 @@ class PlayerListener : Listener {
         if (event.entity !is Player) return
         val player = event.entity as Player
         val zPlayer = PlayerMap.getPlayer(player)
-        if (zPlayer.isGod || Config.getBoolean("protectAfkPlayers") && zPlayer.isAFK) {
+        if (zPlayer.isGod || Config.getBoolean("protectAfkPlayers") && zPlayer.isAfk) {
             player.fireTicks = 0
             player.remainingAir = player.maximumAir
             event.isCancelled = true
@@ -133,13 +140,13 @@ class PlayerListener : Listener {
         val to = event.to
         val moved =
             from.blockX != to.blockX || from.blockY != to.blockY || from.blockZ != to.blockZ
+        if (!moved) return
 
         val zPlayer = PlayerMap.getPlayer(event.player)
-        if (!zPlayer.isAFK) {
-            if (moved) zPlayer.updateActivity()
+        if (!zPlayer.isAfk) {
+            zPlayer.updateActivity()
             return
         }
-        if (!moved) return
 
         if (Config.getBoolean("protectAfkPlayers") && hasPermission(event.player, "zcore.afk")) {
             from.pitch = to.pitch
@@ -151,18 +158,44 @@ class PlayerListener : Listener {
 
             event.to = from
         } else {
-            zPlayer.isAFK = false
+            zPlayer.updateActivity()
         }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    fun onPlayerPickupItem(event: PlayerPickupItemEvent) {
-        val zPlayer = PlayerMap.getPlayer(event.player)
-        if (zPlayer.isAFK || zPlayer.vanished) event.isCancelled = true
     }
 
     @EventHandler(priority = Event.Priority.Low)
     fun onPlayerRespawn(event: PlayerRespawnEvent) {
         event.respawnLocation = SpawnData.getSpawn(event.respawnLocation.world) ?: return
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun onPlayerBreakBlock(event: BlockBreakEvent) {
+        PlayerMap.getPlayer(event.player).updateActivity()
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun onPlayerPlaceBlock(event: BlockPlaceEvent) {
+        PlayerMap.getPlayer(event.player).updateActivity()
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun onPlayerEmptyBucket(event: PlayerBucketEmptyEvent) {
+        PlayerMap.getPlayer(event.player).updateActivity()
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun onPlayerFillBucket(event: PlayerBucketFillEvent) {
+        PlayerMap.getPlayer(event.player).updateActivity()
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun onPlayerDropItem(event: PlayerDropItemEvent) {
+        val zPlayer = PlayerMap.getPlayer(event.player)
+        if (zPlayer.isAfk || zPlayer.vanished) event.isCancelled = true
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun onPlayerPickupItem(event: PlayerPickupItemEvent) {
+        val zPlayer = PlayerMap.getPlayer(event.player)
+        if (zPlayer.isAfk || zPlayer.vanished) event.isCancelled = true
     }
 }

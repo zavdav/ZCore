@@ -78,10 +78,6 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
         lastSeen = now
     }
 
-    fun updateOnQuit() {
-        lastSeen = LocalDateTime.now()
-    }
-
     fun addHome(name: String, location: Location) {
         val home = JsonObject()
         home["world"] = location.world.name
