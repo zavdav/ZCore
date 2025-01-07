@@ -8,10 +8,11 @@ import java.io.File
 import java.time.Duration
 import java.time.LocalDateTime
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 
 object PlayerMap {
 
-    private val playerMap: MutableMap<UUID, ZPlayer> = mutableMapOf()
+    private val playerMap: MutableMap<UUID, ZPlayer> = ConcurrentHashMap<UUID, ZPlayer>()
     private val knownPlayers: MutableSet<UUID> = mutableSetOf()
     private val precacheAll: Boolean
 
@@ -58,7 +59,6 @@ object PlayerMap {
         return players.toSet()
     }
 
-    @Synchronized
     fun runTasks() {
         playerMap.entries.removeIf { entry ->
             val zPlayer = getPlayer(entry.key)
@@ -74,7 +74,6 @@ object PlayerMap {
 
     fun isPlayerKnown(uuid: UUID): Boolean = knownPlayers.contains(uuid)
 
-    @Synchronized
     fun saveData() {
         for (zPlayer in playerMap.values) {
             zPlayer.saveData()
