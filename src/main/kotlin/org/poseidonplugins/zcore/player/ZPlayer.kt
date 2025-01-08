@@ -23,7 +23,7 @@ class ZPlayer(uuid: UUID) : PlayerData(uuid) {
         }
 
     val isOnline: Boolean
-        get() = Bukkit.getOnlinePlayers().map { player -> player.uniqueId }.contains(uuid)
+        get() = uuid in Bukkit.getOnlinePlayers().map { player -> player.uniqueId }
 
     val onlinePlayer: Player
         get() = Bukkit.getOnlinePlayers().first { player -> player.uniqueId == uuid }

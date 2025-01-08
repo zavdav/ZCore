@@ -40,7 +40,7 @@ class CommandHomes : Command(
             }
         }
 
-        if (query.contains(":")) {
+        if (":" in query) {
             val strings = query.split(":")
             val uuid = Utils.getUUIDFromUsername(strings[0])
             zPlayer = PlayerMap.getPlayer(uuid)

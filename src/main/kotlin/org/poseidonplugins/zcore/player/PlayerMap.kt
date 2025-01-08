@@ -40,8 +40,8 @@ object PlayerMap {
     }
 
     fun getPlayer(uuid: UUID): ZPlayer {
-        if (!knownPlayers.contains(uuid)) knownPlayers.add(uuid)
-        if (playerMap.containsKey(uuid)) return playerMap[uuid]!!
+        if (!isPlayerKnown(uuid)) knownPlayers.add(uuid)
+        if (uuid in playerMap.keys) return playerMap[uuid]!!
 
         val zPlayer = ZPlayer(uuid)
         playerMap[uuid] = zPlayer
@@ -72,7 +72,7 @@ object PlayerMap {
         }
     }
 
-    fun isPlayerKnown(uuid: UUID): Boolean = knownPlayers.contains(uuid)
+    fun isPlayerKnown(uuid: UUID): Boolean = uuid in knownPlayers
 
     fun saveData() {
         for (zPlayer in playerMap.values) {

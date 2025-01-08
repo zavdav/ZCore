@@ -138,14 +138,14 @@ object Utils {
     }
 
     @JvmStatic private fun isBlockAboveAir(world: World, x: Int, y: Int, z: Int): Boolean =
-        AIR_MATERIALS.contains(world.getBlockTypeIdAt(x, y - 1, z))
+        world.getBlockTypeIdAt(x, y - 1, z) in AIR_MATERIALS
 
     @JvmStatic private fun isBlockUnsafe(world: World, x: Int, y: Int, z: Int): Boolean {
         val below = world.getBlockTypeIdAt(x, y - 1, z)
 
         if (below == Material.LAVA.id || below == Material.STATIONARY_LAVA.id || below == Material.FIRE.id
-            || !AIR_MATERIALS.contains(world.getBlockTypeIdAt(x, y, z))
-            || !AIR_MATERIALS.contains(world.getBlockTypeIdAt(x, y + 1, z))) {
+            || world.getBlockTypeIdAt(x, y, z) !in AIR_MATERIALS
+            || world.getBlockTypeIdAt(x, y + 1, z) !in AIR_MATERIALS) {
             return true
         }
         return isBlockAboveAir(world, x, y, z)

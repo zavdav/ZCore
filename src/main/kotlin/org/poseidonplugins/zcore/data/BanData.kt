@@ -169,7 +169,7 @@ object BanData : JsonData(File(ZCore.dataFolder, "bans.json")){
     fun getIPBan(player: Player): IPBan? = getIPBan(player.address.address.hostAddress)
 
     fun getIPBan(uuid: UUID): IPBan? =
-        ipBanMap.entries.firstOrNull { entry -> entry.value.uuids.contains(uuid) }?.value
+        ipBanMap.entries.firstOrNull { entry -> uuid in entry.value.uuids }?.value
 
     fun getIPBan(ip: String): IPBan? = ipBanMap[ip]
 }

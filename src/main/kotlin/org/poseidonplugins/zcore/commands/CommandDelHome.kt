@@ -25,7 +25,7 @@ class CommandDelHome : Command(
         var zPlayer = PlayerMap.getPlayer(player)
         var homeName = event.args[0]
 
-        if (homeName.contains(":")) {
+        if (":" in homeName) {
             if (!hasPermission(event.sender, "zcore.delhome.others")) {
                 event.sender.sendMessage(format("noPermission"))
                 return

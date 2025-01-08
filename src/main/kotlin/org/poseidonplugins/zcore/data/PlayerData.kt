@@ -36,7 +36,7 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
         set(value) { json["balance"] = value }
 
     var nickname: String
-        get() = if (json.containsKey("nickname")) json["nickname"].toString() else username
+        get() = if ("nickname" in json.keys) json["nickname"].toString() else username
         set(value) { json["nickname"] = value }
 
     var ignores: Set<UUID>
@@ -94,12 +94,12 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
 
     fun removeHome(name: String) {
         val homes = json.getOrDefault("homes", JsonObject()) as JsonObject
-        if (homes.containsKey(name)) homes.remove(name)
+        if (name in homes.keys) homes.remove(name)
         json["homes"] = homes
     }
 
     fun homeExists(name: String): Boolean =
-        getHomes().map { home -> home.lowercase() }.contains(name.lowercase())
+        name.lowercase() in getHomes().map { home -> home.lowercase() }
 
     fun getHome(name: String): Location? {
         val home = getHomeJSON(name) ?: return null
