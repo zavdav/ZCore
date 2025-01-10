@@ -3,6 +3,7 @@ package org.poseidonplugins.zcore.commands
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.api.Economy
+import org.poseidonplugins.zcore.exceptions.InvalidUsageException
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.roundTo
@@ -46,7 +47,7 @@ class CommandEconomy : Command(
                 event.sender.sendMessage(format("tookMoney",
                     "user" to name, "amount" to Economy.formatBalance(amount)))
             }
-            else -> event.sender.sendMessage(formatError("invalidAction"))
+            else -> throw InvalidUsageException()
         }
     }
 }

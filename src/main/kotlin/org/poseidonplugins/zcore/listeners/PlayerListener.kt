@@ -17,6 +17,7 @@ import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.safeSubstring
+import org.poseidonplugins.zcore.util.format
 import org.poseidonplugins.zcore.util.formatProperty
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -71,6 +72,8 @@ class PlayerListener : Listener {
         if (!Config.isEmpty("motd") && hasPermission(event.player, "zcore.motd")) {
             event.player.performCommand("motd")
         }
+        if (zPlayer.mails.isNotEmpty()) event.player.sendMessage(format("newMail"))
+
         event.joinMessage = formatProperty("joinMsgFormat", "player" to event.player.name)
     }
 

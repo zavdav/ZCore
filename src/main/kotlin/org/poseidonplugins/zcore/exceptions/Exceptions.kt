@@ -2,6 +2,8 @@ package org.poseidonplugins.zcore.exceptions
 
 import java.util.UUID
 
+class InvalidUsageException : Exception()
+
 class PlayerNotFoundException(val username: String) : Exception()
 
 class UnknownUserException(val uuid: UUID) : Exception()

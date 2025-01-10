@@ -44,6 +44,10 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
                 .map { UUID.fromString(it.toString()) }.toSet() }
         set(value) { json["ignores"] = JsonArray(value.map { it.toString() }) }
 
+    var mails: List<String>
+        get() = (json.getOrDefault("mails", JsonArray()) as JsonArray).toList() as List<String>
+        set(value) { json["mails"] = JsonArray(value) }
+
     var isGod: Boolean
         get() = json.getOrDefault("god", false) as Boolean
         set(value) { json["god"] = value }
@@ -138,5 +142,13 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
         val ignores = ignores.toMutableSet()
         if (ignore) ignores.add(uuid) else ignores.remove(uuid)
         this.ignores = ignores
+    }
+
+    fun addMail(name: String, message: String) {
+        mails += "$name: $message"
+    }
+
+    fun clearMail() {
+        mails = listOf()
     }
 }

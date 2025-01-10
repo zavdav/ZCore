@@ -26,6 +26,9 @@ class Preprocessor : Preprocessor() {
             Bukkit.getPluginManager().callEvent(event)
             try {
                 if (!event.isCancelled) event.command.execute(event)
+            } catch (e: InvalidUsageException) {
+                event.sender.sendMessage(event.command.description)
+                event.sender.sendMessage("Usage: ${event.command.usage}")
             } catch (e: PlayerNotFoundException) {
                 event.sender.sendMessage(formatError("playerNotFound", "player" to e.username))
             } catch (e: UnknownUserException) {
