@@ -7,7 +7,7 @@ import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.api.Economy
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
-import org.poseidonplugins.zcore.util.format
+import org.poseidonplugins.zcore.util.sendTl
 
 class CommandBalance : Command(
     "balance",
@@ -28,15 +28,16 @@ class CommandBalance : Command(
 
         val isSelf = player.uniqueId == uuid
         if (!isSelf && !hasPermission(event.sender, "zcore.balance.others")) {
-            event.sender.sendMessage(format("noPermission"))
+            event.sender.sendTl("noPermission")
             return
         }
 
         val amount = Economy.getBalance(uuid)
         val name = PlayerMap.getPlayer(uuid).name
-        event.sender.sendMessage(if (isSelf)
-            format("balance", "amount" to Economy.formatBalance(amount))
-            else format("balanceOther",
-                "user" to name, "amount" to Economy.formatBalance(amount)))
+        if (isSelf) {
+            event.sender.sendTl("balance", "amount" to Economy.formatBalance(amount))
+        } else {
+            event.sender.sendTl("balanceOther", "user" to name, "amount" to Economy.formatBalance(amount))
+        }
     }
 }

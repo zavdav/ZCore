@@ -6,7 +6,7 @@ import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
-import org.poseidonplugins.zcore.util.format
+import org.poseidonplugins.zcore.util.sendTl
 
 class CommandGod : Command(
     "god",
@@ -29,15 +29,15 @@ class CommandGod : Command(
 
         val isSelf = player.uniqueId == zPlayer.uuid
         if (!isSelf && !hasPermission(event.sender, "zcore.god.others")) {
-            event.sender.sendMessage(format("noPermission"))
+            event.sender.sendTl("noPermission")
             return
         }
 
         zPlayer.isGod = !zPlayer.isGod
         if (!isSelf) {
-            event.sender.sendMessage(format(if (zPlayer.isGod)
-                "godEnabledOther" else "godDisabledOther", zPlayer.onlinePlayer))
+            event.sender.sendTl(if (zPlayer.isGod)
+                "godEnabledOther" else "godDisabledOther", zPlayer.onlinePlayer)
         }
-        zPlayer.onlinePlayer.sendMessage(format(if (zPlayer.isGod) "godEnabled" else "godDisabled"))
+        zPlayer.onlinePlayer.sendTl(if (zPlayer.isGod) "godEnabled" else "godDisabled")
     }
 }

@@ -9,9 +9,7 @@ import org.poseidonplugins.zcore.api.Economy
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.player.ZPlayer
-import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatError
-import org.poseidonplugins.zcore.util.formatProperty
+import org.poseidonplugins.zcore.util.*
 import kotlin.math.ceil
 
 class CommandBalanceTop : Command(
@@ -37,27 +35,26 @@ class CommandBalanceTop : Command(
             val balancesPerPage = Config.getInt("balancesPerPage", 10)
             val pages = ceil(players.size.toDouble() / balancesPerPage).toInt()
             if (page > pages) {
-                event.sender.sendMessage(formatError("pageTooHigh"))
+                event.sender.sendErrTl("pageTooHigh")
                 return@scheduleAsyncDelayedTask
             }
+            event.sender.sendTl("balancetopPage", "page" to page, "pages" to pages)
 
-            event.sender.sendMessage(format("balancetopPage",
-                "page" to page, "pages" to pages))
             for (i in (page * balancesPerPage - balancesPerPage)..<page * balancesPerPage) {
                 if (i >= players.size) break
-                event.sender.sendMessage(format("balancetopEntry",
+                event.sender.sendTl("balancetopEntry",
                     "rank" to i + 1,
                     "name" to formatProperty("nickFormat",
                         "prefix" to players[i].prefix,
                         "nickname" to players[i].name,
                         "suffix" to players[i].suffix),
-                    "balance" to Economy.formatBalance(players[i].balance)))
+                    "balance" to Economy.formatBalance(players[i].balance))
             }
-            event.sender.sendMessage(format("balancetopTotal",
-                "amount" to Economy.formatBalance(players.sumOf { p -> p.balance })))
-            event.sender.sendMessage(format("balancetopRank",
+            event.sender.sendTl("balancetopTotal",
+                "amount" to Economy.formatBalance(players.sumOf { p -> p.balance }))
+            event.sender.sendTl("balancetopRank",
                 "amount" to Economy.formatBalance(zPlayer.balance),
-                "rank" to players.indexOf(zPlayer) + 1))
+                "rank" to players.indexOf(zPlayer) + 1)
         }
     }
 }

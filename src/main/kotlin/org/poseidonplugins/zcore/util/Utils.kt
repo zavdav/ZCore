@@ -6,18 +6,48 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.bukkit.event.player.PlayerLoginEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.exceptions.PlayerNotFoundException
 import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
 import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.util.Utils.safeSubstring
 import java.text.NumberFormat
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.regex.Pattern
 import kotlin.math.*
+
+fun CommandSender.sendTl(key: String, vararg pairs: Pair<String, Any>) =
+    sendMessage(format(key, *pairs))
+
+fun CommandSender.sendTl(key: String, player: Player, vararg pairs: Pair<String, Any>) =
+    sendMessage(format(key, player, *pairs))
+
+fun CommandSender.sendConfTl(key: String, vararg pairs: Pair<String, Any>) =
+    sendMessage(formatProperty(key, *pairs))
+
+fun CommandSender.sendConfTl(key: String, player: Player, vararg pairs: Pair<String, Any>) =
+    sendMessage(formatProperty(key, player, *pairs))
+
+fun CommandSender.sendErrTl(key: String, vararg pairs: Pair<String, Any>) =
+    sendMessage(formatError(key, *pairs))
+
+fun broadcastTl(key: String, vararg pairs: Pair<String, Any>) =
+    Bukkit.broadcastMessage(format(key, *pairs))
+
+fun broadcastTl(key: String, player: Player, vararg pairs: Pair<String, Any>) =
+    Bukkit.broadcastMessage(format(key, player, *pairs))
+
+fun broadcastConfTl(key: String, vararg pairs: Pair<String, Any>) =
+    Bukkit.broadcastMessage(formatProperty(key, *pairs))
+
+fun Player.kick(key: String, vararg pairs: Pair<String, Any>) =
+    kickPlayer(formatProperty(key, *pairs).safeSubstring(0, 100))
 
 fun getMessage(key: String): String = Utils.bundle.getString(key)
 
@@ -106,6 +136,12 @@ object Utils {
             UUID.fromString(string) else getUUIDFromUsername(string)
 
     fun Player.isSelf(other: Player) = uniqueId == other.uniqueId
+
+    fun PlayerLoginEvent.kickBanned(key: String, vararg pairs: Pair<String, Any>) =
+        disallow(PlayerLoginEvent.Result.KICK_BANNED, formatProperty(key, *pairs).safeSubstring(0, 100))
+
+    fun PlayerLoginEvent.kickBannedIp(key: String, vararg pairs: Pair<String, Any>) =
+        disallow(PlayerLoginEvent.Result.KICK_BANNED_IP, formatProperty(key, *pairs).safeSubstring(0, 100))
 
     @JvmStatic fun updateVanishedPlayers() {
         for (target in Bukkit.getOnlinePlayers()) {

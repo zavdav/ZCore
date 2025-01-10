@@ -7,7 +7,7 @@ import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.BanData
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
-import org.poseidonplugins.zcore.util.format
+import org.poseidonplugins.zcore.util.sendTl
 import java.time.LocalDateTime
 import java.util.regex.Pattern
 
@@ -39,32 +39,31 @@ class CommandBan: Command(
             0 -> when (reason.length) {
                 0 -> {
                     BanData.ban(uuid)
-                    event.sender.sendMessage(format("permanentBan",
+                    event.sender.sendTl("permanentBan",
                         "user" to name,
-                        "reason" to Config.getString("defaultBanReason")))
+                        "reason" to Config.getString("defaultBanReason"))
                 }
                 else -> {
                     BanData.ban(uuid, reason)
-                    event.sender.sendMessage(format("permanentBan",
-                        "user" to name, "reason" to reason))
+                    event.sender.sendTl("permanentBan", "user" to name, "reason" to reason)
                 }
             }
             else -> when (reason.length) {
                 0 -> {
                     val until = Utils.parseDateDiff(duration)
                     BanData.ban(uuid, until)
-                    event.sender.sendMessage(format("temporaryBan",
+                    event.sender.sendTl("temporaryBan",
                         "user" to name,
                         "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
-                        "reason" to Config.getString("defaultBanReason")))
+                        "reason" to Config.getString("defaultBanReason"))
                 }
                 else -> {
                     val until = Utils.parseDateDiff(duration)
                     BanData.ban(uuid, until, reason)
-                    event.sender.sendMessage(format("temporaryBan",
+                    event.sender.sendTl("temporaryBan",
                         "user" to name,
                         "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
-                        "reason" to reason))
+                        "reason" to reason)
                 }
             }
         }

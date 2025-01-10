@@ -6,7 +6,7 @@ import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
-import org.poseidonplugins.zcore.util.format
+import org.poseidonplugins.zcore.util.sendTl
 
 class CommandVanish : Command(
     "vanish",
@@ -28,16 +28,16 @@ class CommandVanish : Command(
 
         val isSelf = player.uniqueId == zPlayer.uuid
         if (!isSelf && !hasPermission(event.sender, "zcore.vanish.others")) {
-            event.sender.sendMessage(format("noPermission"))
+            event.sender.sendTl("noPermission")
             return
         }
         zPlayer.vanished = !zPlayer.vanished
         Utils.updateVanishedPlayers()
 
         if (!isSelf) {
-            event.sender.sendMessage(format(if (zPlayer.vanished)
-                "vanishEnabledOther" else "vanishDisabledOther", zPlayer.onlinePlayer))
+            event.sender.sendTl(if (zPlayer.vanished)
+                "vanishEnabledOther" else "vanishDisabledOther", zPlayer.onlinePlayer)
         }
-        zPlayer.onlinePlayer.sendMessage(format(if (zPlayer.vanished) "vanishEnabled" else "vanishDisabled"))
+        zPlayer.onlinePlayer.sendTl(if (zPlayer.vanished) "vanishEnabled" else "vanishDisabled")
     }
 }

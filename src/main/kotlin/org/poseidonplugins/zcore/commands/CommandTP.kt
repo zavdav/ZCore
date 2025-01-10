@@ -6,9 +6,7 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
-import org.poseidonplugins.zcore.util.Utils
-import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatError
+import org.poseidonplugins.zcore.util.*
 
 class CommandTP : Command(
     "tp",
@@ -43,12 +41,13 @@ class CommandTP : Command(
 
         player.teleport(target)
         if (sender == player) {
-            sender.sendMessage(format("teleportedToPlayer", "player" to target.name))
+            sender.sendTl("teleportedToPlayer", "player" to target.name)
         } else {
-            sender.sendMessage(if (sender == target)
-                format("teleportedPlayer", "player" to player.name)
-                else format("teleportedPlayerToPlayer",
-                    "player" to player, "other" to target))
+            if (sender == target) {
+                sender.sendTl("teleportedPlayer", "player" to player.name)
+            } else {
+                sender.sendTl("teleportedPlayerToPlayer", "player" to player.name, "other" to target.name)
+            }
         }
     }
 
@@ -65,10 +64,12 @@ class CommandTP : Command(
         target.teleport(Location(target.world, coords[0], coords[1], coords[2], target.location.yaw, target.location.pitch))
 
         val coordinates = "${coords[0].toFloat()}, ${coords[1].toFloat()}, ${coords[2].toFloat()}"
-        player.sendMessage(if (player == target)
-            format("teleportedToCoordinates", "coordinates" to coordinates)
-            else format("teleportedPlayerToCoordinates",
-                "player" to target.name, "coordinates" to coordinates))
+        if (player == target) {
+            player.sendTl("teleportedToCoordinates", "coordinates" to coordinates)
+        } else {
+            player.sendTl("teleportedPlayerToCoordinates",
+                "player" to target.name, "coordinates" to coordinates)
+        }
     }
 
     private fun parseCoordinates(sender: CommandSender, player: Player, args: List<String>): List<Double>? {
@@ -90,8 +91,7 @@ class CommandTP : Command(
                         coords.add(loc.y)
                         computeY = true
                     } else {
-                        sender.sendMessage(formatError("errorParsingCoordinates",
-                            "string" to args.joinToString(" ")))
+                        sender.sendErrTl("errorParsingCoordinates", "string" to args.joinToString(" "))
                         return null
                     }
                 }
@@ -102,7 +102,7 @@ class CommandTP : Command(
             try {
                 coords[1] = Utils.getSafeHeight(Location(loc.world, coords[0], coords[1], coords[2])).toDouble()
             } catch (e: UnsafeDestinationException) {
-                sender.sendMessage(formatError("unsafeDestination"))
+                sender.sendErrTl("unsafeDestination")
                 return null
             }
         }

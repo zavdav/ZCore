@@ -4,8 +4,8 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.player.PlayerMap
-import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatError
+import org.poseidonplugins.zcore.util.sendErrTl
+import org.poseidonplugins.zcore.util.sendTl
 
 class CommandIgnoreList : Command(
     "ignorelist",
@@ -20,11 +20,11 @@ class CommandIgnoreList : Command(
     override fun execute(event: CommandEvent) {
         val ignores = PlayerMap.getPlayer(event.sender as Player).ignores
         if (ignores.isEmpty()) {
-            event.sender.sendMessage(formatError("noIgnoredPlayers"))
+            event.sender.sendErrTl("noIgnoredPlayers")
             return
         }
 
-        event.sender.sendMessage(format("ignoreList",
-            "list" to ignores.joinToString(", ") { PlayerMap.getPlayer(it).name }))
+        event.sender.sendTl("ignoreList",
+            "list" to ignores.joinToString(", ") { PlayerMap.getPlayer(it).name })
     }
 }

@@ -5,10 +5,8 @@ import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.api.Economy
 import org.poseidonplugins.zcore.exceptions.InvalidUsageException
 import org.poseidonplugins.zcore.player.PlayerMap
-import org.poseidonplugins.zcore.util.Utils
+import org.poseidonplugins.zcore.util.*
 import org.poseidonplugins.zcore.util.Utils.roundTo
-import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatError
 
 class CommandEconomy : Command(
     "economy",
@@ -27,25 +25,22 @@ class CommandEconomy : Command(
         var amount = event.args[2].toDoubleOrNull()?.roundTo(2)
 
         if (amount == null || amount < 0) {
-            event.sender.sendMessage(formatError("invalidAmount"))
+            event.sender.sendErrTl("invalidAmount")
             return
         }
         when (event.args[0].lowercase()) {
             "set" -> {
                 Economy.setBalance(uuid, amount)
-                event.sender.sendMessage(format("setBalance",
-                    "user" to name, "amount" to Economy.formatBalance(amount)))
+                event.sender.sendTl("setBalance", "user" to name, "amount" to Economy.formatBalance(amount))
             }
             "give" -> {
                 Economy.addBalance(uuid, amount)
-                event.sender.sendMessage(format("gaveMoney",
-                    "user" to name, "amount" to Economy.formatBalance(amount)))
+                event.sender.sendTl("gaveMoney", "user" to name, "amount" to Economy.formatBalance(amount))
             }
             "take" -> {
                 if (!Economy.hasEnough(uuid, amount)) amount = Economy.getBalance(uuid)
                 Economy.subtractBalance(uuid, amount)
-                event.sender.sendMessage(format("tookMoney",
-                    "user" to name, "amount" to Economy.formatBalance(amount)))
+                event.sender.sendTl("tookMoney", "user" to name, "amount" to Economy.formatBalance(amount))
             }
             else -> throw InvalidUsageException()
         }

@@ -7,9 +7,9 @@ import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.PlayerData
 import org.poseidonplugins.zcore.permissions.PermissionHandler
-import org.poseidonplugins.zcore.util.Utils.safeSubstring
-import org.poseidonplugins.zcore.util.format
+import org.poseidonplugins.zcore.util.broadcastTl
 import org.poseidonplugins.zcore.util.formatProperty
+import org.poseidonplugins.zcore.util.kick
 import java.time.Duration
 import java.time.LocalDateTime
 import java.util.UUID
@@ -56,14 +56,14 @@ class ZPlayer(uuid: UUID) : PlayerData(uuid) {
     fun setInactive() {
         if (!isOnline) return
         isAfk = true
-        Bukkit.broadcastMessage(format("nowAfk", onlinePlayer))
+        broadcastTl("nowAfk", onlinePlayer)
     }
 
     fun updateActivity() {
         if (!isOnline) return
         if (isAfk) {
             isAfk = false
-            Bukkit.broadcastMessage(format("noLongerAfk", onlinePlayer))
+            broadcastTl("noLongerAfk", onlinePlayer)
         }
         lastSeen = LocalDateTime.now()
     }
@@ -75,7 +75,7 @@ class ZPlayer(uuid: UUID) : PlayerData(uuid) {
             setInactive()
         }
         if (isAfk && Duration.between(lastSeen, LocalDateTime.now()).seconds >= Config.getInt("afkKickTime")) {
-            onlinePlayer.kickPlayer(formatProperty("afkKickReason").safeSubstring(0, 99))
+            onlinePlayer.kick("afkKickReason")
         }
     }
 }

@@ -6,8 +6,8 @@ import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.player.PlayerMap
-import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatError
+import org.poseidonplugins.zcore.util.sendErrTl
+import org.poseidonplugins.zcore.util.sendTl
 
 class CommandRealName : Command(
     "realname",
@@ -28,10 +28,10 @@ class CommandRealName : Command(
                 .replace("§([0-9a-f])".toRegex(), "")
 
             if (string.equals(nickname, true)) {
-                event.sender.sendMessage(format("realName", zPlayer.onlinePlayer))
+                event.sender.sendTl("realName", zPlayer.onlinePlayer)
                 matches++
             }
         }
-        if (matches == 0) event.sender.sendMessage(formatError("nickNotFound", "nickname" to string))
+        if (matches == 0) event.sender.sendErrTl("nickNotFound", "nickname" to string)
     }
 }

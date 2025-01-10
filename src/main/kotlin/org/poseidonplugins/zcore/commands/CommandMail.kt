@@ -7,9 +7,7 @@ import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.commandapi.joinArgs
 import org.poseidonplugins.zcore.exceptions.InvalidUsageException
 import org.poseidonplugins.zcore.player.PlayerMap
-import org.poseidonplugins.zcore.util.Utils
-import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatError
+import org.poseidonplugins.zcore.util.*
 
 class CommandMail : Command(
     "mail",
@@ -27,11 +25,11 @@ class CommandMail : Command(
         when (event.args[0].lowercase()) {
             "read" -> {
                 if (zPlayer.mails.isEmpty()) {
-                    player.sendMessage(formatError("noMail"))
+                    player.sendErrTl("noMail")
                     return
                 }
 
-                player.sendMessage(format("mailRead"))
+                player.sendTl("mailRead")
                 for (mail in zPlayer.mails) {
                     player.sendMessage(mail)
                 }
@@ -41,17 +39,17 @@ class CommandMail : Command(
 
                 val uuid = Utils.getUUIDFromUsername(event.args[1])
                 val zTarget = PlayerMap.getPlayer(uuid)
-                player.sendMessage(format("mailSent", "name" to zTarget.name))
+                player.sendTl("mailSent", "name" to zTarget.name)
 
                 if (player.uniqueId !in zTarget.ignores ||
                     hasPermission(player, "zcore.ignore.exempt")) {
                     zTarget.addMail(player.name, joinArgs(event.args, 2))
-                    if (zTarget.isOnline) zTarget.onlinePlayer.sendMessage(format("newMail"))
+                    if (zTarget.isOnline) zTarget.onlinePlayer.sendTl("newMail")
                 }
             }
             "clear" -> {
                 zPlayer.clearMail()
-                player.sendMessage(format("mailCleared"))
+                player.sendTl("mailCleared")
             }
             else -> throw InvalidUsageException()
         }

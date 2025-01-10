@@ -16,9 +16,10 @@ import org.poseidonplugins.zcore.data.SpawnData
 import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
-import org.poseidonplugins.zcore.util.Utils.safeSubstring
-import org.poseidonplugins.zcore.util.format
+import org.poseidonplugins.zcore.util.Utils.kickBanned
+import org.poseidonplugins.zcore.util.Utils.kickBannedIp
 import org.poseidonplugins.zcore.util.formatProperty
+import org.poseidonplugins.zcore.util.sendTl
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -33,23 +34,18 @@ class PlayerListener : Listener {
             val ipBan = BanData.getIPBan(ip)!!
             if (player.uniqueId !in ipBan.uuids) ipBan.addUUID(player.uniqueId)
             when (ipBan.until == null) {
-                true -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    formatProperty("permIpBanFormat",
-                        "reason" to ipBan.reason).safeSubstring(0, 99))
-                false -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    formatProperty("tempIpBanFormat",
-                        "datetime" to ipBan.until.truncatedTo(ChronoUnit.MINUTES),
-                        "reason" to ipBan.reason).safeSubstring(0, 99))
+                true -> event.kickBannedIp("permIpBanFormat", "reason" to ipBan.reason)
+                false -> event.kickBannedIp("tempIpBanFormat",
+                    "datetime" to ipBan.until.truncatedTo(ChronoUnit.MINUTES),
+                    "reason" to ipBan.reason)
             }
         } else if (BanData.isBanned(player.uniqueId)) {
             val ban = BanData.getBan(player.uniqueId)!!
             when (ban.until == null) {
-                true -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    formatProperty("permBanFormat", "reason" to ban.reason).safeSubstring(0, 99))
-                false -> event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    formatProperty("tempBanFormat",
-                        "datetime" to ban.until.truncatedTo(ChronoUnit.MINUTES),
-                        "reason" to ban.reason).safeSubstring(0, 99))
+                true -> event.kickBanned("permBanFormat", "reason" to ban.reason)
+                false -> event.kickBanned("tempBanFormat",
+                    "datetime" to ban.until.truncatedTo(ChronoUnit.MINUTES),
+                    "reason" to ban.reason)
             }
         }
     }
@@ -72,7 +68,7 @@ class PlayerListener : Listener {
         if (!Config.isEmpty("motd") && hasPermission(event.player, "zcore.motd")) {
             event.player.performCommand("motd")
         }
-        if (zPlayer.mails.isNotEmpty()) event.player.sendMessage(format("newMail"))
+        if (zPlayer.mails.isNotEmpty()) event.player.sendTl("newMail")
 
         event.joinMessage = formatProperty("joinMsgFormat", "player" to event.player.name)
     }

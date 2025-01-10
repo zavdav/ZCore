@@ -5,9 +5,7 @@ import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.data.SpawnData
 import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
-import org.poseidonplugins.zcore.util.Utils
-import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatError
+import org.poseidonplugins.zcore.util.*
 
 class CommandSpawn : Command(
     "spawn",
@@ -27,11 +25,11 @@ class CommandSpawn : Command(
         try {
             loc.y = Utils.getSafeHeight(loc).toDouble()
         } catch (e: UnsafeDestinationException) {
-            event.sender.sendMessage(formatError("unsafeDestination"))
+            event.sender.sendErrTl("unsafeDestination")
             return
         }
+
         player.teleport(loc)
-        player.sendMessage(format("teleportedToSpawn",
-            "world" to loc.world.name))
+        player.sendTl("teleportedToSpawn", "world" to loc.world.name)
     }
 }

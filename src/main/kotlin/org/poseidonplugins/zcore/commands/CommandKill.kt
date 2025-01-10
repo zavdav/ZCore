@@ -5,7 +5,7 @@ import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.isSelf
-import org.poseidonplugins.zcore.util.format
+import org.poseidonplugins.zcore.util.sendTl
 
 class CommandKill : Command(
     "kill",
@@ -24,6 +24,10 @@ class CommandKill : Command(
         target.health = 0
 
         val isSelf = (event.sender as Player).isSelf(target)
-        event.sender.sendMessage(if (isSelf) format("killed") else format("killedOther", target))
+        if (isSelf) {
+            event.sender.sendTl("killed")
+        } else {
+            event.sender.sendTl("killedOther", target)
+        }
     }
 }

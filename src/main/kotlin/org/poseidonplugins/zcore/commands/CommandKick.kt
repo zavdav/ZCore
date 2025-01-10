@@ -3,9 +3,8 @@ package org.poseidonplugins.zcore.commands
 import org.poseidonplugins.commandapi.*
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.util.Utils
-import org.poseidonplugins.zcore.util.Utils.safeSubstring
-import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatProperty
+import org.poseidonplugins.zcore.util.kick
+import org.poseidonplugins.zcore.util.sendTl
 
 class CommandKick : Command(
     "kick",
@@ -20,9 +19,7 @@ class CommandKick : Command(
         val reason = colorize(if (event.args.size > 1) joinArgs(event.args, 1)
             else Config.getString("defaultKickReason"))
 
-        target.kickPlayer(formatProperty("kickFormat", "reason" to reason).safeSubstring(0, 99))
-        event.sender.sendMessage(format("playerKicked",
-            "player" to target.name,
-            "reason" to reason).safeSubstring(0, 99))
+        target.kick("kickFormat", "reason" to reason)
+        event.sender.sendTl("playerKicked", "player" to target.name, "reason" to reason)
     }
 }

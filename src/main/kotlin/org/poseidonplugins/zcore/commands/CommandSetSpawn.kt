@@ -4,7 +4,7 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.data.SpawnData
-import org.poseidonplugins.zcore.util.format
+import org.poseidonplugins.zcore.util.sendTl
 
 class CommandSetSpawn : Command(
     "setspawn",
@@ -20,13 +20,13 @@ class CommandSetSpawn : Command(
         val loc = player.location
         if (event.args.size == 1 && event.args[0].equals("none", true)) {
             SpawnData.removeSpawn(loc.world.name)
-            player.sendMessage(format("spawnReset", "world" to loc.world.name))
+            player.sendTl("spawnReset", "world" to loc.world.name)
 
         } else {
             SpawnData.setSpawn(loc.world.name, loc)
-            event.sender.sendMessage(format("spawnSet",
+            event.sender.sendTl("spawnSet",
                 "world" to loc.world.name,
-                "coordinates" to "${loc.blockX}, ${loc.blockY}, ${loc.blockZ}"))
+                "coordinates" to "${loc.blockX}, ${loc.blockY}, ${loc.blockZ}")
         }
     }
 }

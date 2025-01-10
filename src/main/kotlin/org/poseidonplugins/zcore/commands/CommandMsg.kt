@@ -4,7 +4,7 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.*
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
-import org.poseidonplugins.zcore.util.formatProperty
+import org.poseidonplugins.zcore.util.sendConfTl
 
 class CommandMsg : Command(
     "msg",
@@ -24,15 +24,14 @@ class CommandMsg : Command(
         if (hasPermission(player, "zcore.msg.color")) {
             message = colorize(message)
         }
-
         PlayerMap.getPlayer(player).replyTo = target
-        player.sendMessage(formatProperty("msgSendFormat", target, "message" to message))
+        player.sendConfTl("msgSendFormat", target, "message" to message)
 
         val zPlayer = PlayerMap.getPlayer(target)
         if (player.uniqueId !in zPlayer.ignores ||
             hasPermission(player, "zcore.ignore.exempt")) {
             zPlayer.replyTo = player
-            target.sendMessage(formatProperty("msgReceiveFormat", player, "message" to message))
+            target.sendConfTl("msgReceiveFormat", player, "message" to message)
         }
     }
 }

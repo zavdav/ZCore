@@ -7,9 +7,7 @@ import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.player.PlayerMap
-import org.poseidonplugins.zcore.util.Utils
-import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatError
+import org.poseidonplugins.zcore.util.*
 import kotlin.math.ceil
 
 class CommandHomes : Command(
@@ -48,7 +46,7 @@ class CommandHomes : Command(
         }
 
         if (player.uniqueId != zPlayer.uuid && !hasPermission(event.sender, "zcore.homes.others")) {
-            event.sender.sendMessage(format("noPermission"))
+            event.sender.sendTl("noPermission")
             return
         }
 
@@ -56,7 +54,7 @@ class CommandHomes : Command(
         if (page < 1) page = 1
         if (query != "") homes = homes.filter { home -> home.startsWith(query, true) }
         if (homes.isEmpty()) {
-            event.sender.sendMessage(formatError("noMatchingResults"))
+            event.sender.sendErrTl("noMatchingResults")
             return
         }
 
@@ -67,11 +65,10 @@ class CommandHomes : Command(
         val homesPerPage = Config.getInt("homesPerPage", 1)
         val pages = ceil(homes.size.toDouble() / homesPerPage).toInt()
         if (page > pages) {
-            sender.sendMessage(formatError("pageTooHigh"))
+            sender.sendErrTl("pageTooHigh")
             return
         }
-        sender.sendMessage(format("homesPage",
-            "page" to page, "pages" to pages))
+        sender.sendTl("homesPage", "page" to page, "pages" to pages)
 
         val sb = StringBuilder()
         for (i in (page * homesPerPage - homesPerPage)..<page * homesPerPage) {

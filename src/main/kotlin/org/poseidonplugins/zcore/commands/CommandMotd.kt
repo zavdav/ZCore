@@ -5,8 +5,8 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.config.Config
-import org.poseidonplugins.zcore.util.formatError
 import org.poseidonplugins.zcore.util.formatString
+import org.poseidonplugins.zcore.util.sendErrTl
 
 class CommandMotd : Command(
     "motd",
@@ -19,7 +19,7 @@ class CommandMotd : Command(
 
     override fun execute(event: CommandEvent) {
         if (Config.isEmpty("motd")) {
-            event.sender.sendMessage(formatError("noMotdSet"))
+            event.sender.sendErrTl("noMotdSet")
             return
         }
         val player = event.sender as Player

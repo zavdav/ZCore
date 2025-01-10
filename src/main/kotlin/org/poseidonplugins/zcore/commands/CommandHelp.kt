@@ -3,8 +3,8 @@ package org.poseidonplugins.zcore.commands
 import org.bukkit.command.CommandSender
 import org.poseidonplugins.commandapi.*
 import org.poseidonplugins.zcore.ZCore
-import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatError
+import org.poseidonplugins.zcore.util.sendErrTl
+import org.poseidonplugins.zcore.util.sendTl
 import kotlin.math.ceil
 
 class CommandHelp : Command(
@@ -34,7 +34,7 @@ class CommandHelp : Command(
 
             commands = commands.filter { command -> command.name.contains(query, true) || command.description.contains(query, true) }
             if (commands.isEmpty()) {
-                event.sender.sendMessage(formatError("noMatchingResults"))
+                event.sender.sendErrTl("noMatchingResults")
                 return
             }
         }
@@ -45,17 +45,16 @@ class CommandHelp : Command(
     private fun printHelp(sender: CommandSender, page: Int, commands: List<org.bukkit.command.Command>) {
         val pages = ceil(commands.size.toDouble() / 10).toInt()
         if (page > pages) {
-            sender.sendMessage(formatError("pageTooHigh"))
+            sender.sendErrTl("pageTooHigh")
             return
         }
+        sender.sendTl("helpPage", "page" to page, "pages" to pages)
 
-        sender.sendMessage(format("helpPage",
-            "page" to page, "pages" to pages))
         for (i in (page * 10 - 10)..<page * 10) {
             if (i >= commands.size) break
-            sender.sendMessage(format("helpEntry",
+            sender.sendTl("helpEntry",
                 "command" to commands[i].name,
-                "description" to commands[i].description))
+                "description" to commands[i].description)
         }
     }
 }

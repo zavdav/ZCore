@@ -4,9 +4,7 @@ import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.data.BanData
 import org.poseidonplugins.zcore.player.PlayerMap
-import org.poseidonplugins.zcore.util.Utils
-import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatError
+import org.poseidonplugins.zcore.util.*
 
 class CommandUnban : Command(
     "unban",
@@ -22,11 +20,11 @@ class CommandUnban : Command(
         val uuid = Utils.getUUIDFromString(event.args[0])
         val name = if (PlayerMap.isPlayerKnown(uuid)) PlayerMap.getPlayer(uuid).name else uuid
         if (!BanData.isBanned(uuid)) {
-            event.sender.sendMessage(formatError("userNotBanned"))
+            event.sender.sendErrTl("userNotBanned")
             return
         }
 
         BanData.unban(uuid)
-        event.sender.sendMessage(format("userUnbanned", "user" to name))
+        event.sender.sendTl("userUnbanned", "user" to name)
     }
 }

@@ -32,7 +32,7 @@ class Delay(
             player.location.blockZ != location.blockZ) {
             Bukkit.getScheduler().cancelTask(task)
             Bukkit.getScheduler().cancelTask(check)
-            player.sendMessage(format("youMoved"))
+            player.sendTl("youMoved")
         }
     }
 }

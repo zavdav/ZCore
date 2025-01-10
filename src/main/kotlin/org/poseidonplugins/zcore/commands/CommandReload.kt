@@ -4,7 +4,7 @@ import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.ZCore
 import org.poseidonplugins.zcore.config.Config
-import org.poseidonplugins.zcore.util.format
+import org.poseidonplugins.zcore.util.sendTl
 
 class CommandReload : Command(
     "zcore.reload",
@@ -16,10 +16,7 @@ class CommandReload : Command(
 
     override fun execute(event: CommandEvent) {
         Config.load()
-
         val desc = ZCore.plugin.description
-        event.sender.sendMessage(format("pluginReloaded",
-            "plugin" to desc.name,
-            "version" to desc.version))
+        event.sender.sendTl("pluginReloaded", "plugin" to desc.name, "version" to desc.version)
     }
 }

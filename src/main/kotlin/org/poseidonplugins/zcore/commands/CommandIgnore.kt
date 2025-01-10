@@ -4,9 +4,7 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.player.PlayerMap
-import org.poseidonplugins.zcore.util.Utils
-import org.poseidonplugins.zcore.util.format
-import org.poseidonplugins.zcore.util.formatError
+import org.poseidonplugins.zcore.util.*
 
 class CommandIgnore : Command(
     "ignore",
@@ -22,16 +20,16 @@ class CommandIgnore : Command(
         val zPlayer = PlayerMap.getPlayer(event.sender as Player)
         val uuid = Utils.getUUIDFromUsername(event.args[0])
         if (zPlayer.uuid == uuid) {
-            event.sender.sendMessage(formatError("cannotIgnoreSelf"))
+            event.sender.sendErrTl("cannotIgnoreSelf")
             return
         }
 
         if (uuid in zPlayer.ignores) {
             zPlayer.setIgnored(uuid, false)
-            event.sender.sendMessage(format("notIgnoringPlayer", "name" to PlayerMap.getPlayer(uuid).name))
+            event.sender.sendTl("notIgnoringPlayer", "name" to PlayerMap.getPlayer(uuid).name)
         } else {
             zPlayer.setIgnored(uuid, true)
-            event.sender.sendMessage(format("ignoringPlayer", "name" to PlayerMap.getPlayer(uuid).name))
+            event.sender.sendTl("ignoringPlayer", "name" to PlayerMap.getPlayer(uuid).name)
         }
     }
 }

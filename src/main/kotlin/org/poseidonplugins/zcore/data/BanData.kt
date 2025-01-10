@@ -6,8 +6,7 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.zcore.ZCore
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.util.Utils
-import org.poseidonplugins.zcore.util.Utils.safeSubstring
-import org.poseidonplugins.zcore.util.formatProperty
+import org.poseidonplugins.zcore.util.kick
 import java.io.File
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -87,11 +86,10 @@ object BanData : JsonData(File(ZCore.dataFolder, "bans.json")){
 
         val player = Utils.getPlayerFromUUID(uuid) ?: return
         when (until == null) {
-            true -> player.kickPlayer(formatProperty("permBanFormat",
-                "reason" to reason).safeSubstring(0, 99))
-            false -> player.kickPlayer(formatProperty("tempBanFormat",
+            true -> player.kick("permBanFormat", "reason" to reason)
+            false -> player.kick("tempBanFormat",
                 "datetime" to until.truncatedTo(ChronoUnit.MINUTES),
-                "reason" to reason).safeSubstring(0, 99))
+                "reason" to reason)
         }
     }
 
@@ -118,12 +116,12 @@ object BanData : JsonData(File(ZCore.dataFolder, "bans.json")){
 
         when (until == null) {
             true -> for (player in players) {
-                player.kickPlayer(formatProperty("permIpBanFormat", "reason" to reason).safeSubstring(0, 99))
+                player.kick("permIpBanFormat", "reason" to reason)
             }
             false -> for (player in players) {
-                player.kickPlayer(formatProperty("tempIpBanFormat",
+                player.kick("tempIpBanFormat",
                     "datetime" to until.truncatedTo(ChronoUnit.MINUTES),
-                    "reason" to reason).safeSubstring(0, 99))
+                    "reason" to reason)
             }
         }
     }

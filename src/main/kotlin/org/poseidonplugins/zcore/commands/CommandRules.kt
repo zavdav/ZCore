@@ -3,7 +3,7 @@ package org.poseidonplugins.zcore.commands
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.config.Config
-import org.poseidonplugins.zcore.util.formatError
+import org.poseidonplugins.zcore.util.sendErrTl
 
 class CommandRules : Command(
     "rules",
@@ -15,11 +15,11 @@ class CommandRules : Command(
 
     override fun execute(event: CommandEvent) {
         if (Config.isEmpty("rules")) {
-            event.sender.sendMessage(formatError("noRulesSet"))
+            event.sender.sendErrTl("noRulesSet")
             return
         }
-        val rules = Config.getList("rules")
-        for (line in rules) {
+
+        for (line in Config.getList("rules")) {
             event.sender.sendMessage(line)
         }
     }

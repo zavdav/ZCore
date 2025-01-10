@@ -6,7 +6,7 @@ import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.exceptions.PlayerNotFoundException
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
-import org.poseidonplugins.zcore.util.format
+import org.poseidonplugins.zcore.util.sendTl
 import java.time.LocalDateTime
 
 class CommandSeen : Command(
@@ -28,13 +28,16 @@ class CommandSeen : Command(
         if (zPlayer.isOnline) {
             val isSelf = event.sender is Player && (event.sender as Player).uniqueId == zPlayer.uuid
             val duration = Utils.formatDateDiff(zPlayer.lastSeen, LocalDateTime.now())
-            event.sender.sendMessage(if (isSelf)
-                format("seenOnline", "duration" to duration)
-                else format("seenOnlineOther", zPlayer.onlinePlayer, "duration" to duration))
+
+            if (isSelf) {
+                event.sender.sendTl("seenOnline", "duration" to duration)
+            } else {
+                event.sender.sendTl("seenOnlineOther", zPlayer.onlinePlayer, "duration" to duration)
+            }
         } else {
-            event.sender.sendMessage(format("seenOffline",
+            event.sender.sendTl("seenOffline",
                 "user" to zPlayer.name,
-                "duration" to Utils.formatDateDiff(zPlayer.lastSeen, LocalDateTime.now())))
+                "duration" to Utils.formatDateDiff(zPlayer.lastSeen, LocalDateTime.now()))
         }
     }
 }
