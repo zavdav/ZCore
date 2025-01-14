@@ -19,10 +19,7 @@ class CommandIgnore : Command(
     override fun execute(event: CommandEvent) {
         val zPlayer = PlayerMap.getPlayer(event.sender as Player)
         val uuid = Utils.getUUIDFromUsername(event.args[0])
-        if (zPlayer.uuid == uuid) {
-            event.sender.sendErrTl("cannotIgnoreSelf")
-            return
-        }
+        assert(zPlayer.uuid != uuid, "cannotIgnoreSelf")
 
         if (uuid in zPlayer.ignores) {
             zPlayer.setIgnored(uuid, false)

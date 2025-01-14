@@ -7,6 +7,7 @@ import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Delay
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.isSelf
+import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
 
 class CommandAFK : Command(
@@ -25,12 +26,9 @@ class CommandAFK : Command(
         }
 
         val isSelf = (event.sender as Player).isSelf(target)
-        if (!isSelf && !hasPermission(event.sender, "zcore.afk.others")) {
-            event.sender.sendTl("noPermission")
-            return
-        }
-
+        assert(isSelf || hasPermission(event.sender, "zcore.afk.others"), "noPermission")
         val zPlayer = PlayerMap.getPlayer(target)
+
         if (zPlayer.isAfk) {
             zPlayer.updateActivity()
         } else if (Config.getBoolean("protectAfkPlayers") && Config.getInt("afkDelay", 0) > 0) {

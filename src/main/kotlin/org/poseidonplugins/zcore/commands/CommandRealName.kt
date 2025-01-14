@@ -6,7 +6,7 @@ import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.player.PlayerMap
-import org.poseidonplugins.zcore.util.sendErrTl
+import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
 
 class CommandRealName : Command(
@@ -32,6 +32,6 @@ class CommandRealName : Command(
                 matches++
             }
         }
-        if (matches == 0) event.sender.sendErrTl("nickNotFound", "nickname" to string)
+        assert(matches > 0, "nickNotFound", "nickname" to string)
     }
 }

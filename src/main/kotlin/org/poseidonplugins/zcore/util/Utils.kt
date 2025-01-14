@@ -11,6 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerLoginEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
+import org.poseidonplugins.zcore.exceptions.CommandException
 import org.poseidonplugins.zcore.exceptions.PlayerNotFoundException
 import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
 import org.poseidonplugins.zcore.player.PlayerMap
@@ -48,6 +49,14 @@ fun broadcastConfTl(key: String, vararg pairs: Pair<String, Any>) =
 
 fun Player.kick(key: String, vararg pairs: Pair<String, Any>) =
     kickPlayer(formatProperty(key, *pairs).safeSubstring(0, 100))
+
+fun assert(condition: Boolean, key: String, vararg pairs: Pair<String, Any>) {
+    if (!condition) throw CommandException(formatError(key, *pairs))
+}
+
+fun assert(condition: Boolean, exception: CommandException) {
+    if (!condition) throw exception
+}
 
 fun getMessage(key: String): String = Utils.bundle.getString(key)
 
@@ -241,7 +250,7 @@ object Utils {
 
     @JvmStatic fun parseDateDiff(time: String): LocalDateTime {
         val matcher = TIME_PATTERN.matcher(time)
-        if (!matcher.matches()) throw Exception()
+        if (!matcher.matches()) throw RuntimeException()
 
         val years = matcher.group(1)?.toLongOrNull() ?: 0
         val months = matcher.group(2)?.toLongOrNull() ?: 0

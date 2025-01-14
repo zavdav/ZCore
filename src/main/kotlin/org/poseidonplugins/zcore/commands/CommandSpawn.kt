@@ -22,12 +22,7 @@ class CommandSpawn : Command(
         loc.x = loc.blockX + 0.5
         loc.z = loc.blockZ + 0.5
         loc = SpawnData.getSpawn(player.world) ?: loc
-        try {
-            loc.y = Utils.getSafeHeight(loc).toDouble()
-        } catch (e: UnsafeDestinationException) {
-            event.sender.sendErrTl("unsafeDestination")
-            return
-        }
+        loc.y = Utils.getSafeHeight(loc).toDouble()
 
         player.teleport(loc)
         player.sendTl("teleportedToSpawn", "world" to loc.world.name)

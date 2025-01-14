@@ -3,7 +3,7 @@ package org.poseidonplugins.zcore.commands
 import org.bukkit.command.CommandSender
 import org.poseidonplugins.commandapi.*
 import org.poseidonplugins.zcore.ZCore
-import org.poseidonplugins.zcore.util.sendErrTl
+import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
 import kotlin.math.ceil
 
@@ -33,10 +33,7 @@ class CommandHelp : Command(
             }
 
             commands = commands.filter { command -> command.name.contains(query, true) || command.description.contains(query, true) }
-            if (commands.isEmpty()) {
-                event.sender.sendErrTl("noMatchingResults")
-                return
-            }
+            assert(commands.isNotEmpty(), "noMatchingResults")
         }
         if (page == null || page <= 0) page = 1
         printHelp(event.sender, page, commands)
@@ -44,10 +41,7 @@ class CommandHelp : Command(
 
     private fun printHelp(sender: CommandSender, page: Int, commands: List<org.bukkit.command.Command>) {
         val pages = ceil(commands.size.toDouble() / 10).toInt()
-        if (page > pages) {
-            sender.sendErrTl("pageTooHigh")
-            return
-        }
+        assert(page <= pages, "pageTooHigh")
         sender.sendTl("helpPage", "page" to page, "pages" to pages)
 
         for (i in (page * 10 - 10)..<page * 10) {

@@ -5,8 +5,8 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.config.Config
+import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.formatString
-import org.poseidonplugins.zcore.util.sendErrTl
 
 class CommandMotd : Command(
     "motd",
@@ -18,10 +18,7 @@ class CommandMotd : Command(
     preprocessor = Preprocessor()) {
 
     override fun execute(event: CommandEvent) {
-        if (Config.isEmpty("motd")) {
-            event.sender.sendErrTl("noMotdSet")
-            return
-        }
+        assert(!Config.isEmpty("motd"), "noMotdSet")
         val player = event.sender as Player
         val motd = Config.getList("motd").toMutableList()
         for (i in motd.indices) {

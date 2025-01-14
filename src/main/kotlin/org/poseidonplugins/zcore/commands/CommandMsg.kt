@@ -20,14 +20,12 @@ class CommandMsg : Command(
         val player = event.sender as Player
         val target = Utils.getPlayerFromUsername(event.args[0])
         var message = joinArgs(event.args, 1)
+        if (hasPermission(player, "zcore.msg.color")) message = colorize(message)
 
-        if (hasPermission(player, "zcore.msg.color")) {
-            message = colorize(message)
-        }
         PlayerMap.getPlayer(player).replyTo = target
         player.sendConfTl("msgSendFormat", target, "message" to message)
-
         val zPlayer = PlayerMap.getPlayer(target)
+
         if (player.uniqueId !in zPlayer.ignores ||
             hasPermission(player, "zcore.ignore.exempt")) {
             zPlayer.replyTo = player

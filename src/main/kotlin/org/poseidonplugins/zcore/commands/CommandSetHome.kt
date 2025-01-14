@@ -6,7 +6,7 @@ import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.player.PlayerMap
-import org.poseidonplugins.zcore.util.sendErrTl
+import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
 
 class CommandSetHome : Command(
@@ -22,10 +22,7 @@ class CommandSetHome : Command(
     override fun execute(event: CommandEvent) {
         var homeName = "main"
         if (event.args.isNotEmpty()) {
-            if (!event.args[0].matches("^[a-zA-Z0-9_-]+$".toRegex())) {
-                event.sender.sendErrTl("invalidHomeName")
-                return
-            }
+            assert(event.args[0].matches("^[a-zA-Z0-9_-]+$".toRegex()), "invalidHomeName")
             homeName = event.args[0]
         }
 
@@ -35,21 +32,13 @@ class CommandSetHome : Command(
 
         if (!hasPermission(event.sender, "zcore.sethome.unlimited")) {
             if (!hasPermission(event.sender, "zcore.sethome.multiple")) {
-                if (homeCount >= 1) {
-                    event.sender.sendErrTl("homeLimitSingle")
-                    return
-                }
-            } else if (homeCount >= limit) {
-                event.sender.sendErrTl("homeLimitMultiple", "amount" to limit)
-                return
+                assert(homeCount == 0, "homeLimitSingle")
+            } else {
+                assert(homeCount < limit, "homeLimitMultiple", "amount" to limit)
             }
         }
 
-        if (zPlayer.homeExists(homeName)) {
-            event.sender.sendErrTl("homeAlreadyExists")
-            return
-        }
-
+        assert(!zPlayer.homeExists(homeName), "homeAlreadyExists")
         zPlayer.addHome(homeName, (event.sender as Player).location)
         event.sender.sendTl("homeSet", "home" to homeName)
     }

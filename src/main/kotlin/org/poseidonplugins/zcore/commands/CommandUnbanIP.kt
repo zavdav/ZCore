@@ -22,18 +22,11 @@ class CommandUnbanIP : Command(
             } else {
                 val uuid = Utils.getUUIDFromString(event.args[0])
                 val ipBan = BanData.getIPBan(uuid)
-                if (ipBan == null) {
-                    event.sender.sendErrTl("ipNotBanned")
-                    return
-                }
-                ipBan.ip
+                assert(ipBan != null, "ipNotBanned")
+                ipBan!!.ip
             }
 
-        if (!BanData.isIPBanned(ip)) {
-            event.sender.sendErrTl("ipNotBanned")
-            return
-        }
-
+        assert(BanData.isIPBanned(ip), "ipNotBanned")
         BanData.unbanIP(ip)
         event.sender.sendTl("ipUnbanned", "ip" to ip)
     }

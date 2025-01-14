@@ -24,27 +24,16 @@ class CommandDelHome : Command(
         var homeName = event.args[0]
 
         if (":" in homeName) {
-            if (!hasPermission(event.sender, "zcore.delhome.others")) {
-                event.sender.sendTl("noPermission")
-                return
-            }
-
-            val strings = event.args[0].split(":")
-            if (strings.size < 2) {
-                event.sender.sendErrTl("noHomeSpecified")
-                return
-            }
+            assert(hasPermission(event.sender, "zcore.delhome.others"), "noPermission")
+            val strings = event.args[0].split(":", limit = 2)
+            assert(strings[1].isNotEmpty(), "noHomeSpecified")
 
             val uuid = Utils.getUUIDFromUsername(strings[0])
             zPlayer = PlayerMap.getPlayer(uuid)
             homeName = strings[1]
         }
 
-        if (!zPlayer.homeExists(homeName)) {
-            event.sender.sendErrTl("homeDoesNotExist")
-            return
-        }
-
+        assert(zPlayer.homeExists(homeName), "homeDoesNotExist")
         val finalName = zPlayer.getFinalHomeName(homeName)
         zPlayer.removeHome(finalName)
 

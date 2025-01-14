@@ -45,18 +45,11 @@ class CommandHomes : Command(
             query = strings.getOrNull(1) ?: ""
         }
 
-        if (player.uniqueId != zPlayer.uuid && !hasPermission(event.sender, "zcore.homes.others")) {
-            event.sender.sendTl("noPermission")
-            return
-        }
-
+        assert(player.uniqueId == zPlayer.uuid || hasPermission(event.sender, "zcore.homes.others"), "noPermission")
         var homes = zPlayer.getHomes().sorted()
         if (page < 1) page = 1
         if (query != "") homes = homes.filter { home -> home.startsWith(query, true) }
-        if (homes.isEmpty()) {
-            event.sender.sendErrTl("noMatchingResults")
-            return
-        }
+        assert(homes.isNotEmpty(), "noMatchingResults")
 
         printHomes(event.sender, page, homes)
     }
@@ -64,10 +57,7 @@ class CommandHomes : Command(
     private fun printHomes(sender: CommandSender, page: Int, homes: List<String>) {
         val homesPerPage = Config.getInt("homesPerPage", 1)
         val pages = ceil(homes.size.toDouble() / homesPerPage).toInt()
-        if (page > pages) {
-            sender.sendErrTl("pageTooHigh")
-            return
-        }
+        assert(page <= pages, "pageTooHigh")
         sender.sendTl("homesPage", "page" to page, "pages" to pages)
 
         val sb = StringBuilder()

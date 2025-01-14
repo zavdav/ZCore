@@ -19,10 +19,7 @@ class CommandUnban : Command(
     override fun execute(event: CommandEvent) {
         val uuid = Utils.getUUIDFromString(event.args[0])
         val name = if (PlayerMap.isPlayerKnown(uuid)) PlayerMap.getPlayer(uuid).name else uuid
-        if (!BanData.isBanned(uuid)) {
-            event.sender.sendErrTl("userNotBanned")
-            return
-        }
+        assert(BanData.isBanned(uuid), "userNotBanned")
 
         BanData.unban(uuid)
         event.sender.sendTl("userUnbanned", "user" to name)

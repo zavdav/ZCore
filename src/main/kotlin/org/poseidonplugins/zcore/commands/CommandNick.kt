@@ -6,6 +6,7 @@ import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.isSelf
+import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
 
 class CommandNick : Command(
@@ -27,16 +28,13 @@ class CommandNick : Command(
             target = Utils.getPlayerFromUsername(event.args[0])
             nickname = event.args[1]
         }
-        val isSelf = (event.sender as Player).isSelf(target)
-        if (!isSelf && !hasPermission(event.sender, "zcore.nick.others")) {
-            event.sender.sendTl("noPermission")
-            return
-        }
 
+        val isSelf = (event.sender as Player).isSelf(target)
+        assert(isSelf || hasPermission(event.sender, "zcore.nick.others"), "noPermission")
         val reset = nickname.equals("reset", true) || nickname.equals(target.name, true)
         if (hasPermission(event.sender, "zcore.nick.color")) nickname = colorize(nickname)
-        val zPlayer = PlayerMap.getPlayer(target)
 
+        val zPlayer = PlayerMap.getPlayer(target)
         if (reset) zPlayer.resetNickname() else zPlayer.nickname = nickname
         zPlayer.updateDisplayName()
 

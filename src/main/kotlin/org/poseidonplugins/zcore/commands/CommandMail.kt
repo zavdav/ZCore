@@ -24,18 +24,14 @@ class CommandMail : Command(
 
         when (event.args[0].lowercase()) {
             "read" -> {
-                if (zPlayer.mails.isEmpty()) {
-                    player.sendErrTl("noMail")
-                    return
-                }
-
+                assert(zPlayer.mails.isNotEmpty(), "noMail")
                 player.sendTl("mailRead")
                 for (mail in zPlayer.mails) {
                     player.sendMessage(mail)
                 }
             }
             "send" -> {
-                if (event.args.size < 3) throw InvalidUsageException()
+                if (event.args.size < 3) throw InvalidUsageException(this)
 
                 val uuid = Utils.getUUIDFromUsername(event.args[1])
                 val zTarget = PlayerMap.getPlayer(uuid)
@@ -51,7 +47,7 @@ class CommandMail : Command(
                 zPlayer.clearMail()
                 player.sendTl("mailCleared")
             }
-            else -> throw InvalidUsageException()
+            else -> throw InvalidUsageException(this)
         }
     }
 }

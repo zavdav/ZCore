@@ -6,6 +6,7 @@ import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.isSelf
+import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
 
 class CommandHeal : Command(
@@ -24,12 +25,9 @@ class CommandHeal : Command(
         }
 
         val isSelf = (event.sender as Player).isSelf(target)
-        if (!isSelf && !hasPermission(event.sender, "zcore.heal.others")) {
-            event.sender.sendTl("noPermission")
-            return
-        }
-
+        assert(isSelf || hasPermission(event.sender, "zcore.heal.others"), "noPermission")
         target.health = 20
+
         if (!isSelf) event.sender.sendTl("healedOther", target)
         target.sendTl("healed")
     }

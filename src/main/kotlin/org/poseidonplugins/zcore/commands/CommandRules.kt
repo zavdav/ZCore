@@ -3,7 +3,7 @@ package org.poseidonplugins.zcore.commands
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.config.Config
-import org.poseidonplugins.zcore.util.sendErrTl
+import org.poseidonplugins.zcore.util.assert
 
 class CommandRules : Command(
     "rules",
@@ -14,10 +14,7 @@ class CommandRules : Command(
     preprocessor = Preprocessor()) {
 
     override fun execute(event: CommandEvent) {
-        if (Config.isEmpty("rules")) {
-            event.sender.sendErrTl("noRulesSet")
-            return
-        }
+        assert(!Config.isEmpty("rules"), "noRulesSet")
 
         for (line in Config.getList("rules")) {
             event.sender.sendMessage(line)

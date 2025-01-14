@@ -23,11 +23,9 @@ class CommandPay : Command(
         val receiver = PlayerMap.getPlayer(Utils.getUUIDFromString(event.args[0]))
 
         val amount = event.args[1].toDoubleOrNull()?.roundTo(2)
-        if (amount == null || amount <= 0) {
-            event.sender.sendErrTl("invalidAmount")
-            return
-        }
-        Economy.transferBalance(sender.uuid, receiver.uuid, amount)
+        assert(amount != null && amount > 0, "invalidAmount")
+        Economy.transferBalance(sender.uuid, receiver.uuid, amount!!)
+
         event.sender.sendTl("paidUser",
             "user" to receiver.name, "amount" to Economy.formatBalance(amount))
         if (receiver.isOnline) receiver.onlinePlayer.sendTl("receivedMoney",

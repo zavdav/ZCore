@@ -25,42 +25,24 @@ class CommandHome : Command(
         var homeName = event.args[0]
 
         if (":" in homeName) {
-            if (!hasPermission(event.sender, "zcore.home.others")) {
-                event.sender.sendTl("noPermission")
-                return
-            }
-
+            assert(hasPermission(event.sender, "zcore.home.others"), "noPermission")
             val strings = event.args[0].split(":", limit = 2)
-            val uuid = Utils.getUUIDFromUsername(strings[0])
-            if (strings[1].isEmpty()) {
-                event.sender.sendErrTl("noHomeSpecified")
-                return
-            }
+            assert(strings[1].isNotEmpty(), "noHomeSpecified")
 
+            val uuid = Utils.getUUIDFromUsername(strings[0])
             zPlayer = PlayerMap.getPlayer(uuid)
             homeName = strings[1]
         }
 
-        if (!zPlayer.homeExists(homeName)) {
-            event.sender.sendErrTl("homeDoesNotExist")
-            return
-        }
-
-        try {
-            val location = zPlayer.getHome(homeName)
-            player.teleport(location)
-        } catch (e: UnsafeDestinationException) {
-            event.sender.sendErrTl("unsafeDestination")
-            return
-        }
+        assert(zPlayer.homeExists(homeName), "homeDoesNotExist")
+        val location = zPlayer.getHome(homeName)
+        player.teleport(location)
 
         val finalName = zPlayer.getFinalHomeName(homeName)
         if (player.uniqueId == zPlayer.uuid) {
             event.sender.sendTl("teleportedToHome", "home" to finalName)
         } else {
-            event.sender.sendTl("teleportedToHomeOther",
-                "user" to zPlayer.name,
-                "home" to finalName)
+            event.sender.sendTl("teleportedToHomeOther", "user" to zPlayer.name, "home" to finalName)
         }
     }
 }

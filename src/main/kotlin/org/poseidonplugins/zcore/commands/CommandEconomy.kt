@@ -23,26 +23,23 @@ class CommandEconomy : Command(
         val uuid = Utils.getUUIDFromString(event.args[1])
         val name = PlayerMap.getPlayer(uuid).name
         var amount = event.args[2].toDoubleOrNull()?.roundTo(2)
+        assert(amount != null && amount >= 0, "invalidAmount")
 
-        if (amount == null || amount < 0) {
-            event.sender.sendErrTl("invalidAmount")
-            return
-        }
         when (event.args[0].lowercase()) {
             "set" -> {
-                Economy.setBalance(uuid, amount)
+                Economy.setBalance(uuid, amount!!)
                 event.sender.sendTl("setBalance", "user" to name, "amount" to Economy.formatBalance(amount))
             }
             "give" -> {
-                Economy.addBalance(uuid, amount)
+                Economy.addBalance(uuid, amount!!)
                 event.sender.sendTl("gaveMoney", "user" to name, "amount" to Economy.formatBalance(amount))
             }
             "take" -> {
-                if (!Economy.hasEnough(uuid, amount)) amount = Economy.getBalance(uuid)
+                if (!Economy.hasEnough(uuid, amount!!)) amount = Economy.getBalance(uuid)
                 Economy.subtractBalance(uuid, amount)
                 event.sender.sendTl("tookMoney", "user" to name, "amount" to Economy.formatBalance(amount))
             }
-            else -> throw InvalidUsageException()
+            else -> throw InvalidUsageException(this)
         }
     }
 }
