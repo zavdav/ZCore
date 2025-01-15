@@ -74,6 +74,7 @@ class ZCore : JavaPlugin() {
             CommandUnban(),
             CommandUnbanIP(),
             CommandVanish(),
+            CommandWeather(),
             CommandZCore()
         )
 
