@@ -34,9 +34,13 @@ abstract class JsonData(private val file: File) {
     fun saveData() {
         if (hashCode == json.hashCode()) return
         hashCode = json.hashCode()
-        FileWriter(file).use { file ->
-            file.write(Jsoner.prettyPrint(json.toJson()))
-            file.flush()
+        saveTo(file)
+    }
+
+    fun saveTo(file: File) {
+        FileWriter(file).use { fw ->
+            fw.write(Jsoner.prettyPrint(json.toJson()))
+            fw.flush()
         }
     }
 }

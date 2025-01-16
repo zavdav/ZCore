@@ -14,8 +14,6 @@ object Config {
     private val file: File = File(ZCore.dataFolder, "config.yml")
     private lateinit var yaml: Configuration
 
-    init { load() }
-
     fun load() {
         if (!file.exists()) {
             try {
@@ -58,6 +56,7 @@ object Config {
     private val defaults: Map<String, Any> = mapOf(
         "autoSaveTime" to 300,
         "precacheAllPlayers" to false,
+        "backupFolder" to "./backup",
         "motd" to mutableListOf("§eWelcome, {NAME}§e!", "§bType /help for a list of commands.", "§7Online players: §f{PLAYERLIST}"),
         "rules" to mutableListOf("§c1. Be respectful", "§c2. No griefing", "§c3. No cheating"),
         "afkTime" to 300,

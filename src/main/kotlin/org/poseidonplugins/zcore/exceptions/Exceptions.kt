@@ -1,5 +1,6 @@
 package org.poseidonplugins.zcore.exceptions
 
+import org.bukkit.command.CommandSender
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.zcore.api.Economy
 import org.poseidonplugins.zcore.config.Config
@@ -8,6 +9,8 @@ import org.poseidonplugins.zcore.util.formatError
 import java.util.UUID
 
 open class CommandException(vararg val messages: String) : RuntimeException()
+
+class AsyncCommandException(val sender: CommandSender, vararg messages: String) : CommandException(*messages)
 
 class InvalidUsageException(command: Command) : CommandException(command.description, "Usage: ${command.usage}")
 

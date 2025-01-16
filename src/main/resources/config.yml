@@ -14,6 +14,10 @@ autoSaveTime: 300
 # If all players should be precached when ZCore loads
 precacheAllPlayers: false
 
+# The path to the folder where backups should be stored.
+# This can be a relative or absolute file path.
+backupFolder: './backup'
+
 # Message of the day
 # Set to '' to disable
 motd:

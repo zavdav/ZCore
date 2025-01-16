@@ -1,9 +1,7 @@
 package org.poseidonplugins.zcore.util
 
-import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import org.poseidonplugins.zcore.ZCore
 
 class Delay(
     private val player: Player,
@@ -16,12 +14,12 @@ class Delay(
     private val location: Location = player.location
 
     init {
-        check = Bukkit.getScheduler().scheduleSyncRepeatingTask(ZCore.plugin, { check() }, 0, 1)
-        task = Bukkit.getScheduler().scheduleSyncDelayedTask(ZCore.plugin, this, delay.coerceAtLeast(0) * 20L)
+        check = syncRepeatingTask({ check() }, 0, 1)
+        task = syncDelayedTask(this, delay.coerceAtLeast(0) * 20L)
     }
 
     override fun run() {
-        Bukkit.getScheduler().cancelTask(check)
+        cancelTask(check)
         runnable.run()
     }
 
@@ -30,8 +28,8 @@ class Delay(
             player.location.blockX != location.blockX ||
             player.location.blockY != location.blockY ||
             player.location.blockZ != location.blockZ) {
-            Bukkit.getScheduler().cancelTask(task)
-            Bukkit.getScheduler().cancelTask(check)
+            cancelTask(task)
+            cancelTask(check)
             player.sendTl("youMoved")
         }
     }

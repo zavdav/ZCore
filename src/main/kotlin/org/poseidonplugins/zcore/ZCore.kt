@@ -10,6 +10,8 @@ import org.poseidonplugins.zcore.data.SpawnData
 import org.poseidonplugins.zcore.listeners.EntityListener
 import org.poseidonplugins.zcore.listeners.PlayerListener
 import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.util.Backup
+import org.poseidonplugins.zcore.util.asyncRepeatingTask
 import java.io.File
 import java.time.Duration
 import java.time.LocalDateTime
@@ -34,10 +36,12 @@ class ZCore : JavaPlugin() {
 
         if (!dataFolder.exists()) dataFolder.mkdirs()
         Config.load()
+        Backup.init()
 
         cmdManager = CommandManager(plugin)
         cmdManager.registerCommands(
             CommandAFK(),
+            CommandBackup(),
             CommandBalance(),
             CommandBalanceTop(),
             CommandBan(),
@@ -82,7 +86,7 @@ class ZCore : JavaPlugin() {
         server.pluginManager.registerEvents(EntityListener(), plugin)
         server.pluginManager.registerEvents(PlayerListener(), plugin)
 
-        server.scheduler.scheduleAsyncRepeatingTask(plugin, {
+        asyncRepeatingTask({
             PlayerMap.runTasks()
             if (Duration.between(lastAutoSave, LocalDateTime.now()).seconds >= Config.getLong("autoSaveTime", 1)) {
                 lastAutoSave = LocalDateTime.now()
