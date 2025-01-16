@@ -4,7 +4,6 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.zcore.exceptions.CommandException
 import org.poseidonplugins.zcore.util.*
 
 class CommandTP : Command(

@@ -4,7 +4,6 @@ package org.poseidonplugins.zcore.util
 
 import org.bukkit.Bukkit
 import org.poseidonplugins.zcore.ZCore
-import org.poseidonplugins.zcore.exceptions.AsyncCommandException
 
 fun syncDelayedTask(runnable: Runnable): Int =
     Bukkit.getScheduler().scheduleSyncDelayedTask(ZCore.plugin, runnable)

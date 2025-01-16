@@ -5,7 +5,6 @@ import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.player.PlayerMap
-import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
 import org.poseidonplugins.zcore.util.*
 
 class CommandHome : Command(

@@ -1,11 +1,10 @@
-package org.poseidonplugins.zcore.exceptions
+package org.poseidonplugins.zcore.util
 
 import org.bukkit.command.CommandSender
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.zcore.api.Economy
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.player.PlayerMap
-import org.poseidonplugins.zcore.util.formatError
 import java.util.UUID
 
 open class CommandException(vararg val messages: String) : RuntimeException()

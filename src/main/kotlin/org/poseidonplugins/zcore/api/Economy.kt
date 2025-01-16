@@ -1,9 +1,9 @@
 package org.poseidonplugins.zcore.api
 
 import org.poseidonplugins.zcore.config.Config
-import org.poseidonplugins.zcore.exceptions.BalanceOutOfBoundsException
-import org.poseidonplugins.zcore.exceptions.NoFundsException
-import org.poseidonplugins.zcore.exceptions.UnknownUserException
+import org.poseidonplugins.zcore.util.BalanceOutOfBoundsException
+import org.poseidonplugins.zcore.util.NoFundsException
+import org.poseidonplugins.zcore.util.UnknownUserException
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import java.util.UUID

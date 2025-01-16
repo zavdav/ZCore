@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack
 import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.PlayerData
-import org.poseidonplugins.zcore.permissions.PermissionHandler
+import org.poseidonplugins.zcore.hooks.permissions.PermissionHandler
 import org.poseidonplugins.zcore.util.broadcastTl
 import org.poseidonplugins.zcore.util.formatProperty
 import org.poseidonplugins.zcore.util.kick

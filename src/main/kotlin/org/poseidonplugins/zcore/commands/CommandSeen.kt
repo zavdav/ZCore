@@ -3,7 +3,7 @@ package org.poseidonplugins.zcore.commands
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.zcore.exceptions.PlayerNotFoundException
+import org.poseidonplugins.zcore.util.PlayerNotFoundException
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.sendTl

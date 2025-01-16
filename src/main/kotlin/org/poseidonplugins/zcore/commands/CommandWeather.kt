@@ -3,7 +3,7 @@ package org.poseidonplugins.zcore.commands
 import org.bukkit.Bukkit
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.zcore.exceptions.InvalidUsageException
+import org.poseidonplugins.zcore.util.InvalidUsageException
 import org.poseidonplugins.zcore.util.sendTl
 
 class CommandWeather : Command(

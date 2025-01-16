@@ -5,7 +5,7 @@ import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.api.Economy
 import org.poseidonplugins.zcore.config.Config
-import org.poseidonplugins.zcore.exceptions.AsyncCommandException
+import org.poseidonplugins.zcore.util.AsyncCommandException
 import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.player.ZPlayer
 import org.poseidonplugins.zcore.util.*

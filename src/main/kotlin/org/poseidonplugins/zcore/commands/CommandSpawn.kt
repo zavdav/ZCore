@@ -4,7 +4,6 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.data.SpawnData
-import org.poseidonplugins.zcore.exceptions.UnsafeDestinationException
 import org.poseidonplugins.zcore.util.*
 
 class CommandSpawn : Command(

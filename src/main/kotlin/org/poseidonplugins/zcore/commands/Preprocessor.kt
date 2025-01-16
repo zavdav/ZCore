@@ -4,7 +4,8 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.Preprocessor
 import org.poseidonplugins.commandapi.hasPermission
-import org.poseidonplugins.zcore.exceptions.*
+import org.poseidonplugins.zcore.util.CommandException
+import org.poseidonplugins.zcore.util.InvalidUsageException
 import org.poseidonplugins.zcore.util.assert
 
 class Preprocessor : Preprocessor() {
