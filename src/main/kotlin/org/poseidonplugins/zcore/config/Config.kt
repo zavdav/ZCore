@@ -64,6 +64,7 @@ object Config {
         "afkKickReason" to "§cYou have been kicked for inactivity",
         "protectAfkPlayers" to false,
         "afkDelay" to 3,
+        "teleportDelay" to 3,
         "chatFormat" to "{DISPLAYNAME}§f: {MESSAGE}",
         "broadcastFormat" to "§d[Broadcast] {MESSAGE}",
         "joinMsgFormat" to "§e{PLAYER} has joined the game.",

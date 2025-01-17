@@ -33,7 +33,7 @@ class CommandHome : Command(
             homeName = strings[1]
         }
 
-        assert(zPlayer.homeExists(homeName), "homeDoesNotExist")
+        assert(zPlayer.homeExists(homeName), "homeNotFound")
         val location = zPlayer.getHome(homeName)
         player.teleport(location)
 

@@ -102,12 +102,11 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
         json["homes"] = homes
     }
 
-    fun homeExists(name: String): Boolean =
-        name.lowercase() in getHomes().map { home -> home.lowercase() }
+    fun homeExists(name: String): Boolean = getHomeJson(name) != null
 
     fun getHome(name: String): Location? {
-        val home = getHomeJSON(name) ?: return null
-        val world = Bukkit.getWorld(home["world"].toString()) ?: Bukkit.getWorlds()[0]
+        val home = getHomeJson(name) ?: return null
+        val world = Bukkit.getWorld(home["world"].toString())
         val x = floor(home["x"].toString().toDouble()) + 0.5
         var y = home["y"].toString().toDouble()
         val z = floor(home["z"].toString().toDouble()) + 0.5
@@ -117,18 +116,18 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
         return Location(world, x, y, z, yaw, pitch)
     }
 
-    fun getHomeJSON(name: String): JsonObject? {
-        val homes = json.getOrDefault("homes", JsonObject()) as JsonObject
+    fun getHomeJson(name: String): JsonObject? {
+        val homes = (json["homes"] ?: return null) as JsonObject
         for (home in homes) {
-            if (name.equals(home.key.toString(), true)) return home.value as JsonObject
+            if (name.equals(home.key, true)) return home.value as JsonObject
         }
         return null
     }
 
     fun getFinalHomeName(name: String): String {
-        val homes = json.getOrDefault("homes", JsonObject()) as JsonObject
+        val homes = (json["homes"] ?: return name) as JsonObject
         for (homeName in homes.keys) {
-            if (name.equals(homeName.toString(), true)) return homeName.toString()
+            if (name.equals(homeName, true)) return homeName
         }
         return name
     }

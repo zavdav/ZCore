@@ -33,7 +33,7 @@ class CommandDelHome : Command(
             homeName = strings[1]
         }
 
-        assert(zPlayer.homeExists(homeName), "homeDoesNotExist")
+        assert(zPlayer.homeExists(homeName), "homeNotFound")
         val finalName = zPlayer.getFinalHomeName(homeName)
         zPlayer.removeHome(finalName)
 

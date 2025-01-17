@@ -7,6 +7,7 @@ import org.poseidonplugins.zcore.commands.*
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.BanData
 import org.poseidonplugins.zcore.data.SpawnData
+import org.poseidonplugins.zcore.data.WarpData
 import org.poseidonplugins.zcore.listeners.EntityListener
 import org.poseidonplugins.zcore.listeners.PlayerListener
 import org.poseidonplugins.zcore.player.PlayerMap
@@ -48,6 +49,7 @@ class ZCore : JavaPlugin() {
             CommandBanIP(),
             CommandBroadcast(),
             CommandDelHome(),
+            CommandDelWarp(),
             CommandEconomy(),
             CommandGod(),
             CommandHeal(),
@@ -74,11 +76,13 @@ class ZCore : JavaPlugin() {
             CommandSeen(),
             CommandSetHome(),
             CommandSetSpawn(),
+            CommandSetWarp(),
             CommandSpawn(),
             CommandTP(),
             CommandUnban(),
             CommandUnbanIP(),
             CommandVanish(),
+            CommandWarp(),
             CommandWeather(),
             CommandZCore()
         )
@@ -94,6 +98,7 @@ class ZCore : JavaPlugin() {
                 PlayerMap.saveData()
                 BanData.saveData()
                 SpawnData.saveData()
+                WarpData.saveData()
             }
         }, 0, 20)
 
@@ -104,6 +109,7 @@ class ZCore : JavaPlugin() {
         PlayerMap.saveData()
         BanData.saveData()
         SpawnData.saveData()
+        WarpData.saveData()
 
         logger.info("$prefix ${plugin.description.name} ${plugin.description.version} has been disabled.")
     }

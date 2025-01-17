@@ -46,6 +46,9 @@ protectAfkPlayers: false
 # have to stand still until they are marked as AFK
 afkDelay: 3
 
+# How long do players have to stand still until they are teleported to a warp
+teleportDelay: 3
+
 # ┌───────────────────────────┐
 # │           Chat            │
 # └───────────────────────────┘
