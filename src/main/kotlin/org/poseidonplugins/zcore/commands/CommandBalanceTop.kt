@@ -40,10 +40,7 @@ class CommandBalanceTop : Command(
                 if (i >= players.size) break
                 event.sender.sendTl("balancetopEntry",
                     "rank" to i + 1,
-                    "name" to formatProperty("nickFormat",
-                        "prefix" to players[i].prefix,
-                        "nickname" to players[i].name,
-                        "suffix" to players[i].suffix),
+                    "name" to players[i].getDisplayName(false),
                     "balance" to Economy.formatBalance(players[i].balance))
             }
 

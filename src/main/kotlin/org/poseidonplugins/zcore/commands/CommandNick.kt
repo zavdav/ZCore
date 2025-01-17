@@ -38,7 +38,7 @@ class CommandNick : Command(
         if (reset) zPlayer.resetNickname() else zPlayer.nickname = nickname
         zPlayer.updateDisplayName()
 
-        val rawNick = "${colorize(Config.getString("nickPrefix"))}$nickname"
+        val rawNick = "${Config.getString("nickPrefix")}$nickname"
         if (!isSelf) {
             if (reset) {
                 event.sender.sendTl("resetNickOther", target)
