@@ -3,3 +3,4 @@ main: org.poseidonplugins.zcore.ZCore
 version: 1.0-SNAPSHOT
 description: Provides core functionality and many commands
 author: zavdav
+depend: [ PoseidonKotlin ]

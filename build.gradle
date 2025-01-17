@@ -14,11 +14,11 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-    implementation 'com.legacyminecraft.poseidon:poseidon-craftbukkit:1.1.8'
+    compileOnly 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22'
+    compileOnly 'com.legacyminecraft.poseidon:poseidon-craftbukkit:1.1.8'
+    compileOnly 'com.johnymuffin.jperms:beta:1.0.1'
     implementation 'com.github.cliftonlabs:json-simple:4.0.1'
     implementation 'com.github.Project-Poseidon-Plugins:poseidon-commandapi:1.0.1'
-    implementation 'com.johnymuffin.jperms:beta:1.0.1'
 }
 
 compileKotlin {
@@ -27,7 +27,8 @@ compileKotlin {
 
 shadowJar {
     dependencies {
-        exclude(dependency('com.legacyminecraft.poseidon:poseidon-craftbukkit:1.1.8'))
+        include(dependency('com.github.cliftonlabs:json-simple:4.0.1'))
+        include(dependency('com.github.Project-Poseidon-Plugins:poseidon-commandapi:1.0.1'))
     }
     archiveBaseName.set('ZCore')
     archiveClassifier.set('')
