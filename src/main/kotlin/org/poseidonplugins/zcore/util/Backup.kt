@@ -15,7 +15,7 @@ import kotlin.io.path.Path
 
 object Backup {
 
-    private val dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
+    private val dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH.mm.ss.SSS")
     private val lock: ReentrantLock = ReentrantLock(true)
     private lateinit var root: File
 
@@ -37,7 +37,7 @@ object Backup {
         asyncDelayedTask {
             try {
                 lock.lock()
-                val folder = File(root, "/ZCore-${dtf.format(LocalDateTime.now())}")
+                val folder = File(root, "ZCore-${dtf.format(LocalDateTime.now())}")
                 folder.mkdirs()
 
                 val bans = File(folder, "bans.json")
