@@ -7,6 +7,7 @@ import org.bukkit.Location
 import org.poseidonplugins.zcore.ZCore
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.util.Utils
+import org.poseidonplugins.zcore.util.Utils.roundTo
 import java.io.File
 import java.time.LocalDateTime
 import java.util.UUID
@@ -32,7 +33,7 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
         set(value) { json["lastSeen"] = value.toString() }
 
     var balance: Double
-        get() = json["balance"].toString().toDouble()
+        get() = json["balance"].toString().toDouble().roundTo(2)
         set(value) { json["balance"] = value }
 
     var nickname: String
