@@ -30,22 +30,6 @@ rules:
   - '§c2. No griefing'
   - '§c3. No cheating'
 
-# After how long will inactive players be marked as AFK
-afkTime: 300
-
-# After how long will AFK players be kicked
-afkKickTime: 1800
-
-afkKickReason: '§cYou have been kicked for inactivity'
-
-# Makes AFK players invincible and freezes them in place
-# Players have to type /afk to unfreeze themselves
-protectAfkPlayers: false
-
-# If protectAfkPlayers is enabled, how long do players
-# have to stand still until they are marked as AFK
-afkDelay: 3
-
 # How long do players have to stand still until they are teleported to a warp
 teleportDelay: 3
 
@@ -95,6 +79,26 @@ multipleHomes: 10
 
 # How many homes should be shown on a page in /homes
 homesPerPage: 50
+
+# ┌───────────────────────────┐
+# │            AFK            │
+# └───────────────────────────┘
+
+# After how long will inactive players be marked as AFK
+afkTime: 300
+
+# After how long will AFK players be kicked
+afkKickTime: 1800
+
+afkKickReason: '§cYou have been kicked for inactivity'
+
+# Makes AFK players invincible and freezes them in place
+# Players have to type /afk to unfreeze themselves
+protectAfkPlayers: false
+
+# If protectAfkPlayers is enabled, how long do players
+# have to stand still until they are marked as AFK
+afkDelay: 3
 
 # ┌───────────────────────────┐
 # │        Punishments        │
