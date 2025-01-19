@@ -39,8 +39,7 @@ class ZCore : JavaPlugin() {
         Config.load()
         Backup.init()
 
-        cmdManager = CommandManager(plugin)
-        cmdManager.registerCommands(
+        val commands = listOf(
             CommandAFK(),
             CommandBackup(),
             CommandBalance(),
@@ -86,7 +85,10 @@ class ZCore : JavaPlugin() {
             CommandWarp(),
             CommandWeather(),
             CommandZCore()
-        )
+        ).filter { it.name !in Config.getList("disabledCommands") }
+
+        cmdManager = CommandManager(plugin)
+        cmdManager.registerCommands(*commands.toTypedArray())
 
         server.pluginManager.registerEvents(EntityListener(), plugin)
         server.pluginManager.registerEvents(PlayerListener(), plugin)

@@ -57,6 +57,15 @@ msgSendFormat: '§7[me -> {NAME}§7] §f{MESSAGE}'
 msgReceiveFormat: '§7[{NAME}§7 -> me] §f{MESSAGE}'
 
 # ┌───────────────────────────┐
+# │         Commands          │
+# └───────────────────────────┘
+
+# Disabled commands will not be registered on the server
+# Make sure to use the command's primary name, not any of its aliases
+disabledCommands:
+# - nick
+
+# ┌───────────────────────────┐
 # │          Economy          │
 # └───────────────────────────┘
 

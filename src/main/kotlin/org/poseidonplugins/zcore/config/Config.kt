@@ -76,6 +76,7 @@ object Config {
         "chatRadius" to 0,
         "msgSendFormat" to "§7[me -> {NAME}§7] §f{MESSAGE}",
         "msgReceiveFormat" to "§7[{NAME}§7 -> me] §f{MESSAGE}",
+        "disabledCommands" to listOf<String>(),
         "currency" to "$",
         "maxBalance" to 10000000000000,
         "balancesPerPage" to 10,
