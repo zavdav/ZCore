@@ -48,6 +48,7 @@ class ZCore : JavaPlugin() {
             CommandBan(),
             CommandBanIP(),
             CommandBroadcast(),
+            CommandClearInv(),
             CommandDelHome(),
             CommandDelWarp(),
             CommandEconomy(),
