@@ -49,13 +49,17 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
         get() = (json.getOrDefault("mails", JsonArray()) as JsonArray).toList() as List<String>
         set(value) { json["mails"] = JsonArray(value) }
 
+    var seesChat: Boolean
+        get() = json.getOrDefault("seesChat", true) as Boolean
+        set(value) { json["seesChat"] = value }
+
     var isGod: Boolean
-        get() = json.getOrDefault("god", false) as Boolean
-        set(value) { json["god"] = value }
+        get() = json.getOrDefault("isGod", false) as Boolean
+        set(value) { json["isGod"] = value }
 
     var vanished: Boolean
-        get() = json.getOrDefault("vanish", false) as Boolean
-        set(value) { json["vanish"] = value }
+        get() = json.getOrDefault("vanished", false) as Boolean
+        set(value) { json["vanished"] = value }
 
     init {
         if (initialize) initData()

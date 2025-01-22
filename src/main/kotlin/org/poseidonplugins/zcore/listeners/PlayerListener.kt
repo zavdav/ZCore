@@ -105,8 +105,9 @@ class PlayerListener : Listener {
             }
         }
         event.recipients.removeIf {
-            event.player.uniqueId in PlayerMap.getPlayer(it).ignores
-            && !hasPermission(event.player, "zcore.ignore.exempt")
+            val zPlayer = PlayerMap.getPlayer(it)
+            !zPlayer.seesChat || event.player.uniqueId in zPlayer.ignores &&
+            !hasPermission(event.player, "zcore.ignore.exempt")
         }
 
         PlayerMap.getPlayer(event.player).updateActivity()

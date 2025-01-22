@@ -78,6 +78,7 @@ class ZCore : JavaPlugin() {
             CommandSetSpawn(),
             CommandSetWarp(),
             CommandSpawn(),
+            CommandToggleChat(),
             CommandTP(),
             CommandUnban(),
             CommandUnbanIP(),
