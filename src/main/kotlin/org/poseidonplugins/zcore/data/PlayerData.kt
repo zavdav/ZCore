@@ -5,6 +5,7 @@ import com.github.cliftonlabs.json_simple.JsonObject
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.poseidonplugins.zcore.ZCore
+import org.poseidonplugins.zcore.api.Economy
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.roundTo
@@ -34,7 +35,7 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
 
     var balance: Double
         get() = json["balance"].toString().toDouble().roundTo(2)
-        set(value) { json["balance"] = value }
+        set(value) { json["balance"] = value.coerceAtLeast(0.0) }
 
     var nickname: String
         get() = if ("nickname" in json.keys) json["nickname"].toString() else username
@@ -63,7 +64,7 @@ abstract class PlayerData(val uuid: UUID) : JsonData(
 
     init {
         if (initialize) initData()
-        balance = balance.coerceAtMost(Config.getDouble("maxBalance", 0.0, 10000000000000.0))
+        balance = balance.coerceAtMost(Config.getDouble("maxBalance", 0.0, Economy.MAX_BALANCE))
     }
 
     private fun initData() {

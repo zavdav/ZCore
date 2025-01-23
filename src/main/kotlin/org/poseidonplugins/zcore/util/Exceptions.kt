@@ -20,8 +20,10 @@ class UnknownUserException(val uuid: UUID) : CommandException(formatError("unkno
 class NoFundsException : CommandException(formatError("noFunds"))
 
 class BalanceOutOfBoundsException(val uuid: UUID) : CommandException(
-    formatError("balanceOutOfBounds", "user" to PlayerMap.getPlayer(uuid).name,
-                "amount" to Economy.formatBalance(Config.getDouble("maxBalance", 0.0, 10000000000000.0)))
+    formatError("balanceOutOfBounds",
+        "user" to PlayerMap.getPlayer(uuid).name,
+        "amount" to Economy.formatBalance(Config.getDouble("maxBalance", 0.0, Economy.MAX_BALANCE))
+    )
 )
 
 class UnsafeDestinationException : CommandException(formatError("unsafeDestination"))

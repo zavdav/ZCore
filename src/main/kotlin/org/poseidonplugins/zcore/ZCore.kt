@@ -1,6 +1,9 @@
 package org.poseidonplugins.zcore
 
+import org.bukkit.Bukkit
+import org.bukkit.Server
 import org.bukkit.plugin.Plugin
+import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.java.JavaPlugin
 import org.poseidonplugins.commandapi.CommandManager
 import org.poseidonplugins.zcore.commands.*
@@ -14,6 +17,8 @@ import org.poseidonplugins.zcore.player.PlayerMap
 import org.poseidonplugins.zcore.util.Backup
 import org.poseidonplugins.zcore.util.asyncRepeatingTask
 import java.io.File
+import java.io.FileReader
+import java.net.URLClassLoader
 import java.time.Duration
 import java.time.LocalDateTime
 import java.util.logging.Logger
@@ -116,5 +121,24 @@ class ZCore : JavaPlugin() {
         WarpData.saveData()
 
         logger.info("$prefix ${plugin.description.name} ${plugin.description.version} has been disabled.")
+    }
+
+    fun setupForTesting(server: Server) {
+        val dataFolder = File("build/tmp/test/ZCoreTest")
+        dataFolder.mkdirs()
+        dataFolder.deleteOnExit()
+
+        val description = PluginDescriptionFile(FileReader("src/main/resources/plugin.yml"))
+        val classLoader = URLClassLoader(arrayOf(File("src/main/resources").toURI().toURL()))
+        Bukkit.setServer(server)
+        initialize(null, server, description, dataFolder, null, classLoader)
+
+        plugin = this
+        Companion.dataFolder = plugin.dataFolder
+        logger = server.logger
+
+        if (!dataFolder.exists()) dataFolder.mkdirs()
+        Config.load()
+        Backup.init()
     }
 }
