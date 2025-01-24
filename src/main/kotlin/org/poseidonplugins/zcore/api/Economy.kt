@@ -1,10 +1,11 @@
 package org.poseidonplugins.zcore.api
 
 import org.poseidonplugins.zcore.config.Config
+import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.BalanceOutOfBoundsException
 import org.poseidonplugins.zcore.util.NoFundsException
 import org.poseidonplugins.zcore.util.UnknownUserException
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.UserMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.roundTo
 import java.util.UUID
@@ -13,17 +14,17 @@ object Economy {
 
     const val MAX_BALANCE: Double = 10000000000000.0
 
-    fun userExists(uuid: UUID): Boolean = PlayerMap.isPlayerKnown(uuid)
+    fun userExists(uuid: UUID): Boolean = UserMap.isUserKnown(uuid)
 
     fun getBalance(uuid: UUID): Double {
         if (!userExists(uuid)) throw UnknownUserException(uuid)
-        return PlayerMap.getPlayer(uuid).balance
+        return User.from(uuid).balance
     }
 
     fun setBalance(uuid: UUID, amount: Double): Double {
         if (!userExists(uuid)) throw UnknownUserException(uuid)
         if (isOutOfBounds(amount)) throw BalanceOutOfBoundsException(uuid)
-        PlayerMap.getPlayer(uuid).balance = amount.roundTo(2)
+        User.from(uuid).balance = amount.roundTo(2)
         return getBalance(uuid)
     }
 

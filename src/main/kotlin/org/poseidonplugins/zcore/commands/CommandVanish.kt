@@ -4,7 +4,7 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
@@ -20,22 +20,22 @@ class CommandVanish : Command(
 
     override fun execute(event: CommandEvent) {
         val player = event.sender as Player
-        var zPlayer = PlayerMap.getPlayer(player)
+        var user = User.from(player)
 
         if (event.args.isNotEmpty()) {
             val target = Utils.getPlayerFromUsername(event.args[0])
-            zPlayer = PlayerMap.getPlayer(target)
+            user = User.from(target)
         }
 
-        val isSelf = player.uniqueId == zPlayer.uuid
+        val isSelf = player.uniqueId == user.uuid
         assert(isSelf || hasPermission(event.sender, "zcore.vanish.others"), "noPermission")
-        zPlayer.vanished = !zPlayer.vanished
+        user.vanished = !user.vanished
         Utils.updateVanishedPlayers()
 
         if (!isSelf) {
-            event.sender.sendTl(if (zPlayer.vanished)
-                "vanishEnabledOther" else "vanishDisabledOther", zPlayer.onlinePlayer)
+            event.sender.sendTl(if (user.vanished)
+                "vanishEnabledOther" else "vanishDisabledOther", user.player)
         }
-        zPlayer.onlinePlayer.sendTl(if (zPlayer.vanished) "vanishEnabled" else "vanishDisabled")
+        user.player.sendTl(if (user.vanished) "vanishEnabled" else "vanishDisabled")
     }
 }

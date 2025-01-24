@@ -5,7 +5,8 @@ import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.joinArgs
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.BanData
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.User
+import org.poseidonplugins.zcore.user.UserMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.sendTl
 import java.time.LocalDateTime
@@ -21,7 +22,7 @@ class CommandBan: Command(
 
     override fun execute(event: CommandEvent) {
         val uuid = Utils.getUUIDFromString(event.args[0])
-        val name = if (PlayerMap.isPlayerKnown(uuid)) PlayerMap.getPlayer(uuid).name else uuid
+        val name = if (UserMap.isUserKnown(uuid)) User.from(uuid).name else uuid
         val subArgs = joinArgs(event.args, 1, event.args.size)
         val matcher = Pattern.compile("^${Utils.TIME_PATTERN.pattern()}").matcher(subArgs)
         val sb = StringBuilder()

@@ -2,7 +2,7 @@ package org.poseidonplugins.zcore.commands
 
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.*
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendConfTl
 
@@ -18,18 +18,18 @@ class CommandReply : Command(
 
     override fun execute(event: CommandEvent) {
         val player = event.sender as Player
-        val zPlayer = PlayerMap.getPlayer(player)
-        val replyTo = zPlayer.replyTo
+        val user = User.from(player)
+        val replyTo = user.replyTo
         assert(replyTo != null && replyTo.isOnline, "noReply")
 
         var message = joinArgs(event.args, 0)
         if (hasPermission(player, "zcore.msg.color")) message = colorize(message)
         player.sendConfTl("msgSendFormat", replyTo!!, "message" to message)
 
-        val zTarget = PlayerMap.getPlayer(replyTo)
-        if (player.uniqueId !in zTarget.ignores ||
+        val targetUser = User.from(replyTo)
+        if (player.uniqueId !in targetUser.ignores ||
             hasPermission(player, "zcore.ignore.exempt")) {
-            zTarget.replyTo = player
+            targetUser.replyTo = player
             replyTo.sendConfTl("msgReceiveFormat", player, "message" to message)
         }
     }

@@ -6,8 +6,8 @@ import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.api.Economy
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.util.AsyncCommandException
-import org.poseidonplugins.zcore.player.PlayerMap
-import org.poseidonplugins.zcore.player.ZPlayer
+import org.poseidonplugins.zcore.user.UserMap
+import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.*
 import kotlin.math.ceil
 
@@ -23,9 +23,9 @@ class CommandBalanceTop : Command(
 
     override fun execute(event: CommandEvent) {
         asyncDelayedTask {
-            val zPlayer = PlayerMap.getPlayer(event.sender as Player)
-            val players = PlayerMap.getAllPlayers().toSortedSet(
-                compareByDescending<ZPlayer> { it.balance }.thenBy { it.name }).toList()
+            val user = User.from(event.sender as Player)
+            val players = UserMap.getAllUsers().toSortedSet(
+                compareByDescending<User> { it.balance }.thenBy { it.name }).toList()
             var page = 1
             if (event.args.isNotEmpty()) {
                 page = (event.args[0].toIntOrNull() ?: 1).coerceAtLeast(1)
@@ -47,8 +47,8 @@ class CommandBalanceTop : Command(
             event.sender.sendTl("balancetopTotal",
                 "amount" to Economy.formatBalance(players.sumOf { p -> p.balance }))
             event.sender.sendTl("balancetopRank",
-                "amount" to Economy.formatBalance(zPlayer.balance),
-                "rank" to players.indexOf(zPlayer) + 1)
+                "amount" to Economy.formatBalance(user.balance),
+                "rank" to players.indexOf(user) + 1)
         }
     }
 }

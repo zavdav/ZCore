@@ -13,7 +13,7 @@ import org.poseidonplugins.zcore.data.SpawnData
 import org.poseidonplugins.zcore.data.WarpData
 import org.poseidonplugins.zcore.listeners.EntityListener
 import org.poseidonplugins.zcore.listeners.PlayerListener
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.UserMap
 import org.poseidonplugins.zcore.util.Backup
 import org.poseidonplugins.zcore.util.asyncRepeatingTask
 import java.io.File
@@ -100,11 +100,11 @@ class ZCore : JavaPlugin() {
         server.pluginManager.registerEvents(PlayerListener(), plugin)
 
         asyncRepeatingTask({
-            PlayerMap.runTasks()
+            UserMap.runTasks()
             if (Duration.between(lastAutoSave, LocalDateTime.now()).seconds >= Config.getLong("autoSaveTime", 1)) {
                 lastAutoSave = LocalDateTime.now()
                 logger.info("$prefix Automatically saving data")
-                PlayerMap.saveData()
+                UserMap.saveData()
                 BanData.saveData()
                 SpawnData.saveData()
                 WarpData.saveData()
@@ -115,7 +115,7 @@ class ZCore : JavaPlugin() {
     }
 
     override fun onDisable() {
-        PlayerMap.saveData()
+        UserMap.saveData()
         BanData.saveData()
         SpawnData.saveData()
         WarpData.saveData()

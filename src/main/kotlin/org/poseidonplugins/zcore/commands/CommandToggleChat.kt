@@ -4,7 +4,7 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
@@ -21,21 +21,21 @@ class CommandToggleChat : Command(
 
     override fun execute(event: CommandEvent) {
         val player = event.sender as Player
-        var zPlayer = PlayerMap.getPlayer(player)
+        var user = User.from(player)
 
         if (event.args.isNotEmpty()) {
             val target = Utils.getPlayerFromUsername(event.args[0])
-            zPlayer = PlayerMap.getPlayer(target)
+            user = User.from(target)
         }
 
-        val isSelf = player.uniqueId == zPlayer.uuid
+        val isSelf = player.uniqueId == user.uuid
         assert(isSelf || hasPermission(event.sender, "zcore.togglechat.others"), "noPermission")
-        zPlayer.seesChat = !zPlayer.seesChat
+        user.seesChat = !user.seesChat
 
         if (!isSelf) {
-            event.sender.sendTl(if (zPlayer.seesChat)
-                "chatEnabledOther" else "chatDisabledOther", zPlayer.onlinePlayer)
+            event.sender.sendTl(if (user.seesChat)
+                "chatEnabledOther" else "chatDisabledOther", user.player)
         }
-        zPlayer.onlinePlayer.sendTl(if (zPlayer.seesChat) "chatEnabled" else "chatDisabled")
+        user.player.sendTl(if (user.seesChat) "chatEnabled" else "chatDisabled")
     }
 }

@@ -4,7 +4,7 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.*
 
 class CommandDelHome : Command(
@@ -20,7 +20,7 @@ class CommandDelHome : Command(
 
     override fun execute(event: CommandEvent) {
         val player = event.sender as Player
-        var zPlayer = PlayerMap.getPlayer(player)
+        var user = User.from(player)
         var homeName = event.args[0]
 
         if (":" in homeName) {
@@ -29,18 +29,18 @@ class CommandDelHome : Command(
             assert(strings[1].isNotEmpty(), "noHomeSpecified")
 
             val uuid = Utils.getUUIDFromUsername(strings[0])
-            zPlayer = PlayerMap.getPlayer(uuid)
+            user = User.from(uuid)
             homeName = strings[1]
         }
 
-        assert(zPlayer.homeExists(homeName), "homeNotFound")
-        val finalName = zPlayer.getFinalHomeName(homeName)
-        zPlayer.removeHome(finalName)
+        assert(user.homeExists(homeName), "homeNotFound")
+        val finalName = user.getFinalHomeName(homeName)
+        user.removeHome(finalName)
 
-        if (player.uniqueId == zPlayer.uuid) {
+        if (player.uniqueId == user.uuid) {
             event.sender.sendTl("homeDeleted", "home" to finalName)
         } else {
-            event.sender.sendTl("homeDeletedOther", "user" to zPlayer.name, "home" to finalName)
+            event.sender.sendTl("homeDeletedOther", "user" to user.name, "home" to finalName)
         }
     }
 }

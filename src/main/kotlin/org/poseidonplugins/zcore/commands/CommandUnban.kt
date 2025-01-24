@@ -3,7 +3,8 @@ package org.poseidonplugins.zcore.commands
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.data.BanData
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.User
+import org.poseidonplugins.zcore.user.UserMap
 import org.poseidonplugins.zcore.util.*
 
 class CommandUnban : Command(
@@ -18,7 +19,7 @@ class CommandUnban : Command(
 
     override fun execute(event: CommandEvent) {
         val uuid = Utils.getUUIDFromString(event.args[0])
-        val name = if (PlayerMap.isPlayerKnown(uuid)) PlayerMap.getPlayer(uuid).name else uuid
+        val name = if (UserMap.isUserKnown(uuid)) User.from(uuid).name else uuid
         assert(BanData.isBanned(uuid), "userNotBanned")
 
         BanData.unban(uuid)

@@ -6,7 +6,7 @@ import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.*
 import kotlin.math.ceil
 
@@ -22,7 +22,7 @@ class CommandHomes : Command(
 
     override fun execute(event: CommandEvent) {
         val player = event.sender as Player
-        var zPlayer = PlayerMap.getPlayer(player)
+        var user = User.from(player)
         var query = ""
         var page = 1
 
@@ -41,12 +41,12 @@ class CommandHomes : Command(
         if (":" in query) {
             val strings = query.split(":")
             val uuid = Utils.getUUIDFromUsername(strings[0])
-            zPlayer = PlayerMap.getPlayer(uuid)
+            user = User.from(uuid)
             query = strings.getOrNull(1) ?: ""
         }
 
-        assert(player.uniqueId == zPlayer.uuid || hasPermission(event.sender, "zcore.homes.others"), "noPermission")
-        var homes = zPlayer.getHomes().sorted()
+        assert(player.uniqueId == user.uuid || hasPermission(event.sender, "zcore.homes.others"), "noPermission")
+        var homes = user.getHomes().sorted()
         if (page < 1) page = 1
         if (query != "") homes = homes.filter { home -> home.startsWith(query, true) }
         assert(homes.isNotEmpty(), "noMatchingResults")

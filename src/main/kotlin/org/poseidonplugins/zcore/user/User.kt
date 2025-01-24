@@ -1,10 +1,10 @@
-package org.poseidonplugins.zcore.player
+package org.poseidonplugins.zcore.user
 
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.poseidonplugins.zcore.config.Config
-import org.poseidonplugins.zcore.data.PlayerData
+import org.poseidonplugins.zcore.data.UserData
 import org.poseidonplugins.zcore.hooks.permissions.PermissionHandler
 import org.poseidonplugins.zcore.util.broadcastTl
 import org.poseidonplugins.zcore.util.formatProperty
@@ -13,18 +13,32 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.util.UUID
 
-class ZPlayer(uuid: UUID) : PlayerData(uuid) {
+class User private constructor(uuid: UUID) : UserData(uuid) {
+
+    companion object {
+        fun from(player: Player, register: Boolean = true): User =
+            from(player.uniqueId, register)
+
+        fun from(uuid: UUID, register: Boolean = true): User {
+            if (!UserMap.isUserKnown(uuid)) UserMap.knownUsers.add(uuid)
+            if (uuid in UserMap.userMap.keys) return UserMap.userMap[uuid]!!
+
+            val user = User(uuid)
+            if (register) UserMap.userMap[uuid] = user
+            return user
+        }
+    }
 
     val name: String
         get() = when (isOnline) {
-            true -> onlinePlayer.name
+            true -> player.name
             false -> username
         }
 
     val isOnline: Boolean
         get() = uuid in Bukkit.getOnlinePlayers().map { player -> player.uniqueId }
 
-    val onlinePlayer: Player
+    val player: Player
         get() = Bukkit.getOnlinePlayers().first { player -> player.uniqueId == uuid }
 
     val prefix: String
@@ -51,20 +65,20 @@ class ZPlayer(uuid: UUID) : PlayerData(uuid) {
     }
 
     fun updateDisplayName() {
-        onlinePlayer.displayName = getDisplayName(true)
+        player.displayName = getDisplayName(true)
     }
 
     fun setInactive() {
         if (!isOnline) return
         isAfk = true
-        broadcastTl("nowAfk", onlinePlayer)
+        broadcastTl("nowAfk", player)
     }
 
     fun updateActivity() {
         if (!isOnline) return
         if (isAfk) {
             isAfk = false
-            broadcastTl("noLongerAfk", onlinePlayer)
+            broadcastTl("noLongerAfk", player)
         }
         lastSeen = LocalDateTime.now()
     }
@@ -76,7 +90,7 @@ class ZPlayer(uuid: UUID) : PlayerData(uuid) {
             setInactive()
         }
         if (isAfk && Duration.between(lastSeen, LocalDateTime.now()).seconds >= Config.getInt("afkKickTime")) {
-            onlinePlayer.kick("afkKickReason")
+            player.kick("afkKickReason")
         }
     }
 }

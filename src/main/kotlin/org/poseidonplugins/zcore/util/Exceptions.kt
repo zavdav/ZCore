@@ -4,7 +4,7 @@ import org.bukkit.command.CommandSender
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.zcore.api.Economy
 import org.poseidonplugins.zcore.config.Config
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.User
 import java.util.UUID
 
 open class CommandException(vararg val messages: String) : RuntimeException()
@@ -21,7 +21,7 @@ class NoFundsException : CommandException(formatError("noFunds"))
 
 class BalanceOutOfBoundsException(val uuid: UUID) : CommandException(
     formatError("balanceOutOfBounds",
-        "user" to PlayerMap.getPlayer(uuid).name,
+        "user" to User.from(uuid).name,
         "amount" to Economy.formatBalance(Config.getDouble("maxBalance", 0.0, Economy.MAX_BALANCE))
     )
 )

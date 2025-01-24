@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 import kotlin.math.floor
 
-abstract class PlayerData(val uuid: UUID) : JsonData(
+abstract class UserData protected constructor(val uuid: UUID) : JsonData(
     File(ZCore.dataFolder, "${File.separator}userdata${File.separator}$uuid.json")) {
 
     protected var username: String

@@ -6,7 +6,7 @@ import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.BanData
 import org.poseidonplugins.zcore.data.SpawnData
 import org.poseidonplugins.zcore.data.WarpData
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.UserMap
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -54,10 +54,10 @@ object Backup {
 
                 val userdata = File(folder, "userdata")
                 userdata.mkdirs()
-                for (zPlayer in PlayerMap.getAllPlayers()) {
-                    val data = File(userdata, "${zPlayer.uuid}.json")
+                for (user in UserMap.getAllUsers()) {
+                    val data = File(userdata, "${user.uuid}.json")
                     data.createNewFile()
-                    zPlayer.saveTo(data)
+                    user.saveTo(data)
                 }
 
                 val time = System.currentTimeMillis() - start

@@ -11,7 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerLoginEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.Utils.safeSubstring
 import java.text.NumberFormat
 import java.time.LocalDateTime
@@ -151,8 +151,8 @@ object Utils {
 
     @JvmStatic fun updateVanishedPlayers() {
         for (target in Bukkit.getOnlinePlayers()) {
-            val zPlayer = PlayerMap.getPlayer(target)
-            when (zPlayer.vanished) {
+            val user = User.from(target)
+            when (user.vanished) {
                 true -> Bukkit.getOnlinePlayers()
                     .filter { player -> !hasPermission(player, "zcore.vanish.bypass") }
                     .forEach { player -> player.hidePlayer(target) }

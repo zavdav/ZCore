@@ -5,7 +5,7 @@ import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
 
@@ -26,9 +26,9 @@ class CommandSetHome : Command(
             homeName = event.args[0]
         }
 
-        val zPlayer = PlayerMap.getPlayer(event.sender as Player)
+        val user = User.from(event.sender as Player)
         val limit = Config.getInt("multipleHomes", 2)
-        val homeCount = zPlayer.getHomes().size
+        val homeCount = user.getHomes().size
 
         if (!hasPermission(event.sender, "zcore.sethome.unlimited")) {
             if (!hasPermission(event.sender, "zcore.sethome.multiple")) {
@@ -38,8 +38,8 @@ class CommandSetHome : Command(
             }
         }
 
-        assert(!zPlayer.homeExists(homeName), "homeAlreadyExists")
-        zPlayer.addHome(homeName, (event.sender as Player).location)
+        assert(!user.homeExists(homeName), "homeAlreadyExists")
+        user.addHome(homeName, (event.sender as Player).location)
         event.sender.sendTl("homeSet", "home" to homeName)
     }
 }

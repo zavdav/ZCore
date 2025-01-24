@@ -2,7 +2,7 @@ package org.poseidonplugins.zcore.hooks.permissions
 
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
-import org.poseidonplugins.zcore.player.ZPlayer
+import org.poseidonplugins.zcore.user.User
 
 object PermissionHandler {
 
@@ -17,7 +17,7 @@ object PermissionHandler {
     fun hasPermission(sender: CommandSender, permission: String) =
         hook.hasPermission(sender, permission)
 
-    fun getPrefix(zPlayer: ZPlayer) = hook.getPrefix(zPlayer.uuid)
+    fun getPrefix(user: User) = hook.getPrefix(user.uuid)
 
-    fun getSuffix(zPlayer: ZPlayer) = hook.getSuffix(zPlayer.uuid)
+    fun getSuffix(user: User) = hook.getSuffix(user.uuid)
 }

@@ -5,7 +5,7 @@ import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.zcore.config.Config
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
 
@@ -23,12 +23,12 @@ class CommandRealName : Command(
         val string = event.args[0].trim()
         var matches = 0
         for (player in Bukkit.getOnlinePlayers()) {
-            val zPlayer = PlayerMap.getPlayer(player)
-            val nickname = "${colorize(Config.getString("nickPrefix"))}${zPlayer.nickname}"
+            val user = User.from(player)
+            val nickname = "${colorize(Config.getString("nickPrefix"))}${user.nickname}"
                 .replace("§([0-9a-f])".toRegex(), "")
 
             if (string.equals(nickname, true)) {
-                event.sender.sendTl("realName", zPlayer.onlinePlayer)
+                event.sender.sendTl("realName", user.player)
                 matches++
             }
         }

@@ -13,7 +13,8 @@ import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.BanData
 import org.poseidonplugins.zcore.data.SpawnData
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.User
+import org.poseidonplugins.zcore.user.UserMap
 import org.poseidonplugins.zcore.util.*
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.kickBanned
@@ -50,35 +51,35 @@ class PlayerListener : Listener {
 
     @EventHandler(priority = Event.Priority.Low)
     fun onPlayerJoin(event: PlayerJoinEvent) {
-        val isFirstJoin = !PlayerMap.isPlayerKnown(event.player.uniqueId)
-        val zPlayer = PlayerMap.getPlayer(event.player)
+        val isFirstJoin = !UserMap.isUserKnown(event.player.uniqueId)
+        val user = User.from(event.player)
         val spawn = SpawnData.getSpawn(event.player.world)
 
         if (isFirstJoin) {
-            zPlayer.firstJoin = LocalDateTime.now()
+            user.firstJoin = LocalDateTime.now()
             if (spawn != null) event.player.teleport(spawn)
         }
 
-        zPlayer.updateOnJoin(event.player.name)
-        zPlayer.updateDisplayName()
+        user.updateOnJoin(event.player.name)
+        user.updateDisplayName()
         Utils.updateVanishedPlayers()
 
         if (!Config.isEmpty("motd") && hasPermission(event.player, "zcore.motd")) {
             event.player.performCommand("motd")
         }
-        if (zPlayer.mails.isNotEmpty()) event.player.sendTl("newMail")
+        if (user.mails.isNotEmpty()) event.player.sendTl("newMail")
 
         event.joinMessage = formatProperty("joinMsgFormat", "player" to event.player.name)
     }
 
     @EventHandler(priority = Event.Priority.Low)
     fun onPlayerQuit(event: PlayerQuitEvent) {
-        val zPlayer = PlayerMap.getPlayer(event.player)
+        val user = User.from(event.player)
 
-        if (zPlayer.isAfk) zPlayer.isAfk = false
-        if (zPlayer.savedInventory != null) {
-            event.player.inventory.contents = zPlayer.savedInventory
-            zPlayer.savedInventory = null
+        if (user.isAfk) user.isAfk = false
+        if (user.savedInventory != null) {
+            event.player.inventory.contents = user.savedInventory
+            user.savedInventory = null
         }
         event.quitMessage = formatProperty("leaveMsgFormat", "player" to event.player.name)
     }
@@ -105,18 +106,18 @@ class PlayerListener : Listener {
             }
         }
         event.recipients.removeIf {
-            val zPlayer = PlayerMap.getPlayer(it)
-            !zPlayer.seesChat || event.player.uniqueId in zPlayer.ignores &&
+            val user = User.from(it)
+            !user.seesChat || event.player.uniqueId in user.ignores &&
             !hasPermission(event.player, "zcore.ignore.exempt")
         }
 
-        PlayerMap.getPlayer(event.player).updateActivity()
+        User.from(event.player).updateActivity()
     }
 
     @EventHandler(ignoreCancelled = true)
     fun onPlayerCommand(event: PlayerCommandPreprocessEvent) {
         if (!event.message.equals("/afk", true)) {
-            PlayerMap.getPlayer(event.player).updateActivity()
+            User.from(event.player).updateActivity()
         }
     }
 
@@ -124,8 +125,8 @@ class PlayerListener : Listener {
     fun onPlayerDamage(event: EntityDamageEvent) {
         if (event.entity !is Player) return
         val player = event.entity as Player
-        val zPlayer = PlayerMap.getPlayer(player)
-        if (zPlayer.isGod || Config.getBoolean("protectAfkPlayers") && zPlayer.isAfk) {
+        val user = User.from(player)
+        if (user.isGod || Config.getBoolean("protectAfkPlayers") && user.isAfk) {
             player.fireTicks = 0
             player.remainingAir = player.maximumAir
             event.isCancelled = true
@@ -140,9 +141,9 @@ class PlayerListener : Listener {
             from.blockX != to.blockX || from.blockY != to.blockY || from.blockZ != to.blockZ
         if (!moved) return
 
-        val zPlayer = PlayerMap.getPlayer(event.player)
-        if (!zPlayer.isAfk) {
-            zPlayer.updateActivity()
+        val user = User.from(event.player)
+        if (!user.isAfk) {
+            user.updateActivity()
             return
         }
 
@@ -156,7 +157,7 @@ class PlayerListener : Listener {
 
             event.to = from
         } else {
-            zPlayer.updateActivity()
+            user.updateActivity()
         }
     }
 
@@ -167,33 +168,33 @@ class PlayerListener : Listener {
 
     @EventHandler(ignoreCancelled = true)
     fun onPlayerBreakBlock(event: BlockBreakEvent) {
-        PlayerMap.getPlayer(event.player).updateActivity()
+        User.from(event.player).updateActivity()
     }
 
     @EventHandler(ignoreCancelled = true)
     fun onPlayerPlaceBlock(event: BlockPlaceEvent) {
-        PlayerMap.getPlayer(event.player).updateActivity()
+        User.from(event.player).updateActivity()
     }
 
     @EventHandler(ignoreCancelled = true)
     fun onPlayerEmptyBucket(event: PlayerBucketEmptyEvent) {
-        PlayerMap.getPlayer(event.player).updateActivity()
+        User.from(event.player).updateActivity()
     }
 
     @EventHandler(ignoreCancelled = true)
     fun onPlayerFillBucket(event: PlayerBucketFillEvent) {
-        PlayerMap.getPlayer(event.player).updateActivity()
+        User.from(event.player).updateActivity()
     }
 
     @EventHandler(ignoreCancelled = true)
     fun onPlayerDropItem(event: PlayerDropItemEvent) {
-        val zPlayer = PlayerMap.getPlayer(event.player)
-        if (zPlayer.isAfk || zPlayer.vanished) event.isCancelled = true
+        val user = User.from(event.player)
+        if (user.isAfk || user.vanished) event.isCancelled = true
     }
 
     @EventHandler(ignoreCancelled = true)
     fun onPlayerPickupItem(event: PlayerPickupItemEvent) {
-        val zPlayer = PlayerMap.getPlayer(event.player)
-        if (zPlayer.isAfk || zPlayer.vanished) event.isCancelled = true
+        val user = User.from(event.player)
+        if (user.isAfk || user.vanished) event.isCancelled = true
     }
 }

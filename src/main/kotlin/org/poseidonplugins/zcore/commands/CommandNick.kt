@@ -3,7 +3,7 @@ package org.poseidonplugins.zcore.commands
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.*
 import org.poseidonplugins.zcore.config.Config
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.isSelf
 import org.poseidonplugins.zcore.util.assert
@@ -34,9 +34,9 @@ class CommandNick : Command(
         val reset = nickname.equals("reset", true) || nickname.equals(target.name, true)
         if (hasPermission(event.sender, "zcore.nick.color")) nickname = colorize(nickname)
 
-        val zPlayer = PlayerMap.getPlayer(target)
-        if (reset) zPlayer.resetNickname() else zPlayer.nickname = nickname
-        zPlayer.updateDisplayName()
+        val user = User.from(target)
+        if (reset) user.resetNickname() else user.nickname = nickname
+        user.updateDisplayName()
 
         val rawNick = "${Config.getString("nickPrefix")}$nickname"
         if (!isSelf) {

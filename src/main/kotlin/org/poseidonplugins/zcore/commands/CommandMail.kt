@@ -5,7 +5,7 @@ import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.commandapi.joinArgs
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.*
 
 class CommandMail : Command(
@@ -19,13 +19,13 @@ class CommandMail : Command(
 
     override fun execute(event: CommandEvent) {
         val player = event.sender as Player
-        val zPlayer = PlayerMap.getPlayer(player)
+        val user = User.from(player)
 
         when (event.args[0].lowercase()) {
             "read" -> {
-                assert(zPlayer.mails.isNotEmpty(), "noMail")
+                assert(user.mails.isNotEmpty(), "noMail")
                 player.sendTl("mailRead")
-                for (mail in zPlayer.mails) {
+                for (mail in user.mails) {
                     player.sendMessage(mail)
                 }
             }
@@ -33,17 +33,17 @@ class CommandMail : Command(
                 if (event.args.size < 3) throw InvalidUsageException(this)
 
                 val uuid = Utils.getUUIDFromUsername(event.args[1])
-                val zTarget = PlayerMap.getPlayer(uuid)
-                player.sendTl("mailSent", "name" to zTarget.name)
+                val targetUser = User.from(uuid)
+                player.sendTl("mailSent", "name" to targetUser.name)
 
-                if (player.uniqueId !in zTarget.ignores ||
+                if (player.uniqueId !in targetUser.ignores ||
                     hasPermission(player, "zcore.ignore.exempt")) {
-                    zTarget.addMail(player.name, joinArgs(event.args, 2))
-                    if (zTarget.isOnline) zTarget.onlinePlayer.sendTl("newMail")
+                    targetUser.addMail(player.name, joinArgs(event.args, 2))
+                    if (targetUser.isOnline) targetUser.player.sendTl("newMail")
                 }
             }
             "clear" -> {
-                zPlayer.clearMail()
+                user.clearMail()
                 player.sendTl("mailCleared")
             }
             else -> throw InvalidUsageException(this)

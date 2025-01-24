@@ -7,7 +7,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityTargetEvent
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.User
 
 class EntityListener : Listener {
 
@@ -18,14 +18,14 @@ class EntityListener : Listener {
         when (event.cause) {
             EntityDamageEvent.DamageCause.ENTITY_ATTACK -> {
                 if (event.damager == null || event.damager !is Player) return
-                if (PlayerMap.getPlayer(event.damager as Player).isAfk) {
+                if (User.from(event.damager as Player).isAfk) {
                     event.isCancelled = true
                 }
             }
             EntityDamageEvent.DamageCause.PROJECTILE -> {
                 val shooter = (event.damager as Projectile).shooter
                 if (shooter == null || shooter !is Player) return
-                if (PlayerMap.getPlayer(shooter).isAfk) {
+                if (User.from(shooter).isAfk) {
                     event.isCancelled = true
                 }
             }
@@ -36,7 +36,7 @@ class EntityListener : Listener {
     @EventHandler(ignoreCancelled = true)
     fun onEntityTarget(event: EntityTargetEvent) {
         if (event.target !is Player) return
-        val zPlayer = PlayerMap.getPlayer(event.target as Player)
-        if (zPlayer.isAfk || zPlayer.vanished) event.isCancelled = true
+        val user = User.from(event.target as Player)
+        if (user.isAfk || user.vanished) event.isCancelled = true
     }
 }

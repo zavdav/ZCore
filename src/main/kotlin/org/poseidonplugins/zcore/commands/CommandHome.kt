@@ -4,7 +4,7 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.*
 
 class CommandHome : Command(
@@ -20,7 +20,7 @@ class CommandHome : Command(
 
     override fun execute(event: CommandEvent) {
         val player = event.sender as Player
-        var zPlayer = PlayerMap.getPlayer(player)
+        var user = User.from(player)
         var homeName = event.args[0]
 
         if (":" in homeName) {
@@ -29,19 +29,19 @@ class CommandHome : Command(
             assert(strings[1].isNotEmpty(), "noHomeSpecified")
 
             val uuid = Utils.getUUIDFromUsername(strings[0])
-            zPlayer = PlayerMap.getPlayer(uuid)
+            user = User.from(uuid)
             homeName = strings[1]
         }
 
-        assert(zPlayer.homeExists(homeName), "homeNotFound")
-        val location = zPlayer.getHome(homeName)
+        assert(user.homeExists(homeName), "homeNotFound")
+        val location = user.getHome(homeName)
         player.teleport(location)
 
-        val finalName = zPlayer.getFinalHomeName(homeName)
-        if (player.uniqueId == zPlayer.uuid) {
+        val finalName = user.getFinalHomeName(homeName)
+        if (player.uniqueId == user.uuid) {
             event.sender.sendTl("teleportedToHome", "home" to finalName)
         } else {
-            event.sender.sendTl("teleportedToHomeOther", "user" to zPlayer.name, "home" to finalName)
+            event.sender.sendTl("teleportedToHomeOther", "user" to user.name, "home" to finalName)
         }
     }
 }

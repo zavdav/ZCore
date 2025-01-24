@@ -4,7 +4,7 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.api.Economy
-import org.poseidonplugins.zcore.player.PlayerMap
+import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.*
 import org.poseidonplugins.zcore.util.Utils.roundTo
 
@@ -19,8 +19,8 @@ class CommandPay : Command(
     preprocessor = Preprocessor()) {
 
     override fun execute(event: CommandEvent) {
-        val sender = PlayerMap.getPlayer(event.sender as Player)
-        val receiver = PlayerMap.getPlayer(Utils.getUUIDFromString(event.args[0]))
+        val sender = User.from(event.sender as Player)
+        val receiver = User.from(Utils.getUUIDFromString(event.args[0]))
 
         val amount = event.args[1].toDoubleOrNull()?.roundTo(2)
         assert(amount != null && amount > 0, "invalidAmount")
@@ -28,7 +28,7 @@ class CommandPay : Command(
 
         event.sender.sendTl("paidUser",
             "user" to receiver.name, "amount" to Economy.formatBalance(amount))
-        if (receiver.isOnline) receiver.onlinePlayer.sendTl("receivedMoney",
+        if (receiver.isOnline) receiver.player.sendTl("receivedMoney",
             "player" to sender.name, "amount" to Economy.formatBalance(amount))
     }
 }
