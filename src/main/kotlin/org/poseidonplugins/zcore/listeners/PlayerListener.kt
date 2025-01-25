@@ -81,6 +81,7 @@ class PlayerListener : Listener {
             event.player.inventory.contents = user.savedInventory
             user.savedInventory = null
         }
+        user.cachedPlayTime = user.playTime
         event.quitMessage = formatProperty("leaveMsgFormat", "player" to event.player.name)
     }
 

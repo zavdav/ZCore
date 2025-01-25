@@ -73,6 +73,7 @@ class ZCore : JavaPlugin() {
             CommandMsg(),
             CommandNick(),
             CommandPay(),
+            CommandPlayTime(),
             CommandRealName(),
             CommandReload(),
             CommandReply(),

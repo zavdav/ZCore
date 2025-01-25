@@ -53,6 +53,8 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
 
     var savedInventory: Array<ItemStack>? = null
 
+    var cachedPlayTime: Long = playTime
+
     fun getDisplayName(useNick: Boolean): String {
         val nickname = if (!useNick || nickname == username) {
             username

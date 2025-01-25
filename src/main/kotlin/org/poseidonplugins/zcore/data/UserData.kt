@@ -33,6 +33,10 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData(
         get() = LocalDateTime.parse(json["lastSeen"].toString())
         set(value) { json["lastSeen"] = value.toString() }
 
+    var playTime: Long
+        get() = json["playTime"].toString().toLong()
+        set(value) { json["playTime"] = value }
+
     var balance: Double
         get() = json["balance"].toString().toDouble().roundTo(2)
         set(value) { json["balance"] = value.coerceAtLeast(0.0) }
@@ -70,6 +74,7 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData(
     private fun initData() {
         json["uuid"] = uuid.toString()
         balance = 0.0
+        playTime = 0L
         for (player in Bukkit.getOnlinePlayers()) {
             if (player.uniqueId == uuid) {
                 val now = LocalDateTime.now()

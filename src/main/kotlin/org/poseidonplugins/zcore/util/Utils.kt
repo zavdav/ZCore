@@ -245,6 +245,11 @@ object Utils {
         return if (sb.isEmpty()) "0 seconds" else sb.substring(0, sb.length - 1)
     }
 
+    @JvmStatic fun formatDuration(millis: Long): String {
+        val start = LocalDateTime.MIN
+        return formatDateDiff(start, start.plus(millis, ChronoUnit.MILLIS))
+    }
+
     @JvmStatic fun parseDateDiff(time: String): LocalDateTime {
         val matcher = TIME_PATTERN.matcher(time)
         if (!matcher.matches()) throw RuntimeException()
