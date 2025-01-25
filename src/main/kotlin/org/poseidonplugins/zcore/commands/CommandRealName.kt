@@ -1,7 +1,6 @@
 package org.poseidonplugins.zcore.commands
 
 import org.bukkit.Bukkit
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.zcore.config.Config
@@ -9,15 +8,15 @@ import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
 
-class CommandRealName : Command(
+class CommandRealName : ZCoreCommand(
     "realname",
     description = "Shows the real name of a nicked player.",
     usage = "/realname <nickname>",
     permission = "zcore.realname",
     isPlayerOnly = true,
     minArgs = 1,
-    maxArgs = 1,
-    preprocessor = Preprocessor()) {
+    maxArgs = 1
+) {
 
     override fun execute(event: CommandEvent) {
         val string = event.args[0].trim()

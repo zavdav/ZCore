@@ -1,7 +1,6 @@
 package org.poseidonplugins.zcore.commands
 
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.api.Economy
 import org.poseidonplugins.zcore.config.Config
@@ -11,15 +10,15 @@ import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.*
 import kotlin.math.ceil
 
-class CommandBalanceTop : Command(
+class CommandBalanceTop : ZCoreCommand(
     "balancetop",
     listOf("baltop"),
     "Shows a list of the richest players.",
     "/balancetop [page]",
     "zcore.balancetop",
     true,
-    maxArgs = 1,
-    preprocessor = Preprocessor()) {
+    maxArgs = 1
+) {
 
     override fun execute(event: CommandEvent) {
         asyncDelayedTask {

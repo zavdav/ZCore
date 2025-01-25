@@ -9,7 +9,7 @@ import org.poseidonplugins.zcore.util.Utils.isSelf
 import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
 
-class CommandNick : Command(
+class CommandNick : ZCoreCommand(
     "nick",
     listOf("nickname"),
     "Sets your or a player's nickname.",
@@ -17,11 +17,12 @@ class CommandNick : Command(
     "zcore.nick",
     true,
     1,
-    2,
-    Preprocessor()) {
+    2
+) {
 
     override fun execute(event: CommandEvent) {
-        var target = event.sender as Player
+        val player = event.sender as Player
+        var target = player
         var nickname = event.args[0]
 
         if (event.args.size == 2) {
@@ -29,13 +30,18 @@ class CommandNick : Command(
             nickname = event.args[1]
         }
 
-        val isSelf = (event.sender as Player).isSelf(target)
+        val isSelf = player.isSelf(target)
         assert(isSelf || hasPermission(event.sender, "zcore.nick.others"), "noPermission")
         val reset = nickname.equals("reset", true) || nickname.equals(target.name, true)
-        if (hasPermission(event.sender, "zcore.nick.color")) nickname = colorize(nickname)
+        if (hasPermission(target, "zcore.nick.color")) nickname = colorize(nickname)
 
         val user = User.from(target)
-        if (reset) user.resetNickname() else user.nickname = nickname
+        if (reset) {
+            user.resetNickname()
+        } else {
+            if (isSelf) charge(player)
+            user.nickname = nickname
+        }
         user.updateDisplayName()
 
         val rawNick = "${Config.getString("nickPrefix")}$nickname"

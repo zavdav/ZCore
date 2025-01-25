@@ -1,20 +1,19 @@
 package org.poseidonplugins.zcore.commands
 
 import org.bukkit.Bukkit
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.util.InvalidUsageException
 import org.poseidonplugins.zcore.util.sendTl
 
-class CommandWeather : Command(
+class CommandWeather : ZCoreCommand(
     "weather",
     description = "Changes the world's weather.",
     usage = "/weather <clear/rain/thunder>",
     permission = "zcore.weather",
     isPlayerOnly = true,
     minArgs = 1,
-    maxArgs = 1,
-    preprocessor = Preprocessor()) {
+    maxArgs = 1
+) {
 
     override fun execute(event: CommandEvent) {
         val world = Bukkit.getWorlds()[0]

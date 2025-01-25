@@ -1,6 +1,5 @@
 package org.poseidonplugins.zcore.commands
 
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.joinArgs
 import org.poseidonplugins.zcore.config.Config
@@ -10,14 +9,14 @@ import org.poseidonplugins.zcore.util.sendTl
 import java.time.LocalDateTime
 import java.util.regex.Pattern
 
-class CommandBanIP : Command(
+class CommandBanIP : ZCoreCommand(
     "banip",
     listOf("ipban"),
     "Bans an IP address from the server.",
     "/banip <player/ip> [duration] [reason]",
     "zcore.banip",
-    minArgs = 1,
-    preprocessor = Preprocessor()) {
+    minArgs = 1
+) {
 
     override fun execute(event: CommandEvent) {
         val ip =

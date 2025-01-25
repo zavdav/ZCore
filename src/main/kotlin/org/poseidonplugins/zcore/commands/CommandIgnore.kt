@@ -1,20 +1,19 @@
 package org.poseidonplugins.zcore.commands
 
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.*
 
-class CommandIgnore : Command(
+class CommandIgnore : ZCoreCommand(
     "ignore",
     description = "Makes you ignore a player.",
     usage = "/ignore <player>",
     permission = "zcore.ignore",
     isPlayerOnly = true,
     minArgs = 1,
-    maxArgs = 1,
-    preprocessor = Preprocessor()) {
+    maxArgs = 1
+) {
 
     override fun execute(event: CommandEvent) {
         val user = User.from(event.sender as Player)

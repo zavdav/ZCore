@@ -1,13 +1,12 @@
 package org.poseidonplugins.zcore.commands
 
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.*
 
-class CommandHome : Command(
+class CommandHome : ZCoreCommand(
     "home",
     listOf("h"),
     "Teleports you to your specified home.",
@@ -15,8 +14,8 @@ class CommandHome : Command(
     "zcore.home",
     true,
     1,
-    1,
-    Preprocessor()) {
+    1
+) {
 
     override fun execute(event: CommandEvent) {
         val player = event.sender as Player
@@ -35,10 +34,12 @@ class CommandHome : Command(
 
         assert(user.homeExists(homeName), "homeNotFound")
         val location = user.getHome(homeName)
+        val isSelf = player.uniqueId == user.uuid
+        if (isSelf) charge(player)
         player.teleport(location)
 
         val finalName = user.getFinalHomeName(homeName)
-        if (player.uniqueId == user.uuid) {
+        if (isSelf) {
             event.sender.sendTl("teleportedToHome", "home" to finalName)
         } else {
             event.sender.sendTl("teleportedToHomeOther", "user" to user.name, "home" to finalName)

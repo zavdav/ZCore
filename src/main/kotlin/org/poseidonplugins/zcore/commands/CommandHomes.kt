@@ -2,7 +2,6 @@ package org.poseidonplugins.zcore.commands
 
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
@@ -10,15 +9,15 @@ import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.*
 import kotlin.math.ceil
 
-class CommandHomes : Command(
+class CommandHomes : ZCoreCommand(
     "homes",
     listOf("hs"),
     "Shows a list of your homes.",
     "/homes [page/query]",
     "zcore.homes",
     true,
-    maxArgs = 2,
-    preprocessor = Preprocessor()) {
+    maxArgs = 2
+) {
 
     override fun execute(event: CommandEvent) {
         val player = event.sender as Player

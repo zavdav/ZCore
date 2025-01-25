@@ -1,20 +1,19 @@
 package org.poseidonplugins.zcore.commands
 
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.data.WarpData
 import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
 
-class CommandDelWarp : Command(
+class CommandDelWarp : ZCoreCommand(
     "delwarp",
     description = "Deletes the specified warp.",
     usage = "/delwarp <name>",
     permission = "zcore.delwarp",
     isPlayerOnly = true,
     minArgs = 1,
-    maxArgs = 1,
-    preprocessor = Preprocessor()) {
+    maxArgs = 1
+) {
 
     override fun execute(event: CommandEvent) {
         val warpName = event.args[0]

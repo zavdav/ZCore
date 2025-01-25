@@ -6,13 +6,13 @@ import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.kick
 import org.poseidonplugins.zcore.util.sendTl
 
-class CommandKick : Command(
+class CommandKick : ZCoreCommand(
     "kick",
     description = "Kicks a player from the server.",
     usage = "/kick <player> [message]",
     permission = "zcore.kick",
-    minArgs = 1,
-    preprocessor = Preprocessor()) {
+    minArgs = 1
+) {
 
     override fun execute(event: CommandEvent) {
         val target = Utils.getPlayerFromUsername(event.args[0])

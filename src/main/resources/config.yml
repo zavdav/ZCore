@@ -60,10 +60,17 @@ msgReceiveFormat: '§7[{NAME}§7 -> me] §f{MESSAGE}'
 # │         Commands          │
 # └───────────────────────────┘
 
-# Disabled commands will not be registered on the server
 # Make sure to use the command's primary name, not any of its aliases
+
+
+# Disabled commands will not be registered on the server
 disabledCommands:
-# - nick
+#  - nick
+
+# The cost to perform a certain command
+# Applicable to: /clearinv, /heal, /home, /nick, /sethome, /spawn and /warp
+commandCosts:
+#  nick: 10.0
 
 # ┌───────────────────────────┐
 # │          Economy          │

@@ -1,7 +1,6 @@
 package org.poseidonplugins.zcore.commands
 
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.PlayerNotFoundException
@@ -10,14 +9,14 @@ import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.sendTl
 import java.time.LocalDateTime
 
-class CommandSeen : Command(
+class CommandSeen : ZCoreCommand(
     "seen",
     description = "Shows when a player was last online.",
     usage = "/seen <player>",
     permission = "zcore.seen",
     minArgs = 1,
-    maxArgs = 1,
-    preprocessor = Preprocessor()) {
+    maxArgs = 1
+) {
 
     override fun execute(event: CommandEvent) {
         val uuid = Utils.getUUIDFromUsername(event.args[0])

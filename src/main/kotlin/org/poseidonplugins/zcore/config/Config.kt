@@ -2,6 +2,9 @@ package org.poseidonplugins.zcore.config
 
 import org.bukkit.util.config.Configuration
 import org.poseidonplugins.zcore.ZCore
+import org.poseidonplugins.zcore.api.Economy
+import org.poseidonplugins.zcore.commands.ZCoreCommand
+import org.poseidonplugins.zcore.util.Utils.roundTo
 import org.poseidonplugins.zcore.util.Utils.toBooleanOrDefault
 import org.poseidonplugins.zcore.util.Utils.toDoubleOrDefault
 import org.poseidonplugins.zcore.util.Utils.toIntOrDefault
@@ -52,6 +55,11 @@ object Config {
     fun isEmpty(key: String): Boolean {
         return (yaml.getProperty(key) ?: return false).toString().isEmpty()
     }
+
+    fun getCommandCost(command: ZCoreCommand) =
+        (yaml.getProperty("commandCosts.${command.name}") as? Double ?: 0.0)
+            .coerceIn(0.0, Economy.MAX_BALANCE)
+            .roundTo(2)
 
     private val defaults: Map<String, Any> = mapOf(
         "autoSaveTime" to 300,

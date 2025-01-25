@@ -1,15 +1,14 @@
 package org.poseidonplugins.zcore.commands
 
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.ZCore
 
-class CommandZCore : Command(
+class CommandZCore : ZCoreCommand(
     "zcore",
     description = "Displays information about ZCore.",
     usage = "/zcore",
-    permission = "zcore.zcore",
-    preprocessor = Preprocessor()) {
+    permission = "zcore.zcore"
+) {
 
     override fun execute(event: CommandEvent) {
         val desc = ZCore.plugin.description

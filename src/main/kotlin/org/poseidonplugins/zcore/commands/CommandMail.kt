@@ -1,21 +1,20 @@
 package org.poseidonplugins.zcore.commands
 
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.commandapi.joinArgs
 import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.*
 
-class CommandMail : Command(
+class CommandMail : ZCoreCommand(
     "mail",
     description = "Manages your mails.",
     usage = "/mail read, /mail send <player> <message>, /mail clear",
     permission = "zcore.mail",
     isPlayerOnly = true,
-    minArgs = 1,
-    preprocessor = Preprocessor()) {
+    minArgs = 1
+) {
 
     override fun execute(event: CommandEvent) {
         val player = event.sender as Player

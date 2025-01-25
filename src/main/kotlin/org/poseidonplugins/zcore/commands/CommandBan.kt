@@ -1,6 +1,5 @@
 package org.poseidonplugins.zcore.commands
 
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.joinArgs
 import org.poseidonplugins.zcore.config.Config
@@ -12,13 +11,13 @@ import org.poseidonplugins.zcore.util.sendTl
 import java.time.LocalDateTime
 import java.util.regex.Pattern
 
-class CommandBan: Command(
+class CommandBan: ZCoreCommand(
     "ban",
     description = "Bans a player from the server.",
     usage = "/ban <player/uuid> [duration] [reason]",
     permission = "zcore.ban",
-    minArgs = 1,
-    preprocessor = Preprocessor()) {
+    minArgs = 1
+) {
 
     override fun execute(event: CommandEvent) {
         val uuid = Utils.getUUIDFromString(event.args[0])

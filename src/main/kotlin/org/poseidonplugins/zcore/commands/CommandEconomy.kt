@@ -1,6 +1,5 @@
 package org.poseidonplugins.zcore.commands
 
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.api.Economy
 import org.poseidonplugins.zcore.user.User
@@ -8,7 +7,7 @@ import org.poseidonplugins.zcore.util.InvalidUsageException
 import org.poseidonplugins.zcore.util.*
 import org.poseidonplugins.zcore.util.Utils.roundTo
 
-class CommandEconomy : Command(
+class CommandEconomy : ZCoreCommand(
     "economy",
     listOf("eco"),
     "Manages the economy.",
@@ -16,8 +15,8 @@ class CommandEconomy : Command(
     "zcore.economy",
     true,
     3,
-    3,
-    Preprocessor()) {
+    3
+) {
 
     override fun execute(event: CommandEvent) {
         val uuid = Utils.getUUIDFromString(event.args[1])

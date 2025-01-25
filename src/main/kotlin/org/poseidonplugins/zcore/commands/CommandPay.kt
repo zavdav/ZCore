@@ -1,22 +1,21 @@
 package org.poseidonplugins.zcore.commands
 
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.api.Economy
 import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.*
 import org.poseidonplugins.zcore.util.Utils.roundTo
 
-class CommandPay : Command(
+class CommandPay : ZCoreCommand(
     "pay",
     description = "Sends money to another player.",
     usage = "/pay <player/uuid> <amount>",
     permission = "zcore.pay",
     isPlayerOnly = true,
     minArgs = 2,
-    maxArgs = 2,
-    preprocessor = Preprocessor()) {
+    maxArgs = 2
+) {
 
     override fun execute(event: CommandEvent) {
         val sender = User.from(event.sender as Player)

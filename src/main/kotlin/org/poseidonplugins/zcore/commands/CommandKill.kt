@@ -1,20 +1,19 @@
 package org.poseidonplugins.zcore.commands
 
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.isSelf
 import org.poseidonplugins.zcore.util.sendTl
 
-class CommandKill : Command(
+class CommandKill : ZCoreCommand(
     "kill",
     description = "Kills a player.",
     usage = "/kill [player]",
     permission = "zcore.kill",
     isPlayerOnly = true,
-    maxArgs = 1,
-    preprocessor = Preprocessor()) {
+    maxArgs = 1
+) {
 
     override fun execute(event: CommandEvent) {
         var target = event.sender as Player

@@ -2,20 +2,19 @@ package org.poseidonplugins.zcore.commands
 
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.formatString
 
-class CommandMotd : Command(
+class CommandMotd : ZCoreCommand(
     "motd",
     description = "Shows the message of the day.",
     usage = "/motd",
     permission = "zcore.motd",
     isPlayerOnly = true,
-    maxArgs = 0,
-    preprocessor = Preprocessor()) {
+    maxArgs = 0
+) {
 
     override fun execute(event: CommandEvent) {
         assert(!Config.isEmpty("motd"), "noMotdSet")

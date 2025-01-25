@@ -7,12 +7,12 @@ import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
 import kotlin.math.ceil
 
-class CommandHelp : Command(
+class CommandHelp : ZCoreCommand(
     "help",
     description = "Shows a list of available commands.",
     usage = "/help [page/query]",
-    permission = "zcore.help",
-    preprocessor = Preprocessor()) {
+    permission = "zcore.help"
+) {
 
     override fun execute(event: CommandEvent) {
         var query = event.args.joinToString(" ")

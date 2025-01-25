@@ -1,7 +1,6 @@
 package org.poseidonplugins.zcore.commands
 
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.user.User
@@ -9,14 +8,14 @@ import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
 
-class CommandVanish : Command(
+class CommandVanish : ZCoreCommand(
     "vanish",
     description = "Vanishes you or a player from other players.",
     usage = "/vanish [player]",
     permission = "zcore.vanish",
     isPlayerOnly = true,
-    maxArgs = 1,
-    preprocessor = Preprocessor()) {
+    maxArgs = 1
+) {
 
     override fun execute(event: CommandEvent) {
         val player = event.sender as Player

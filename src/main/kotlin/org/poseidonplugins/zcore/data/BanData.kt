@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
 
-object BanData : JsonData(File(ZCore.dataFolder, "bans.json")){
+object BanData : JsonData(File(ZCore.dataFolder, "bans.json")) {
 
     private val banMap: MutableMap<UUID, Ban> = mutableMapOf()
     private val ipBanMap: MutableMap<String, IPBan> = mutableMapOf()

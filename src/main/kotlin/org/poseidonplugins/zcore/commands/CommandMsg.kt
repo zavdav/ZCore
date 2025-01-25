@@ -6,15 +6,15 @@ import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.sendConfTl
 
-class CommandMsg : Command(
+class CommandMsg : ZCoreCommand(
     "msg",
     listOf("m", "tell", "t", "whisper", "w"),
     "Sends a private message to a player.",
     "/msg <player> <message>",
     "zcore.msg",
     true,
-    2,
-    preprocessor = Preprocessor()) {
+    2
+) {
 
     override fun execute(event: CommandEvent) {
         val player = event.sender as Player

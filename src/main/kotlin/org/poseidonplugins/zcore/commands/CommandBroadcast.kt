@@ -1,18 +1,17 @@
 package org.poseidonplugins.zcore.commands
 
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.joinArgs
 import org.poseidonplugins.zcore.util.broadcastConfTl
 
-class CommandBroadcast : Command(
+class CommandBroadcast : ZCoreCommand(
     "broadcast",
     listOf("bc"),
     "Broadcasts a message to all players.",
     "/broadcast <message>",
     "zcore.broadcast",
-    minArgs = 1,
-    preprocessor = Preprocessor()) {
+    minArgs = 1
+) {
 
     override fun execute(event: CommandEvent) {
         broadcastConfTl("broadcastFormat", "message" to joinArgs(event.args, 0))

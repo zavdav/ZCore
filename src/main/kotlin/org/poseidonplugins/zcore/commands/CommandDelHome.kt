@@ -1,13 +1,12 @@
 package org.poseidonplugins.zcore.commands
 
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.*
 
-class CommandDelHome : Command(
+class CommandDelHome : ZCoreCommand(
     "delhome",
     listOf("dh"),
     "Deletes the specified home.",
@@ -15,8 +14,8 @@ class CommandDelHome : Command(
     "zcore.delhome",
     true,
     1,
-    1,
-    Preprocessor()) {
+    1
+) {
 
     override fun execute(event: CommandEvent) {
         val player = event.sender as Player

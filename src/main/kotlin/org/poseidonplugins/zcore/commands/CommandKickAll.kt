@@ -7,12 +7,12 @@ import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.util.kick
 import org.poseidonplugins.zcore.util.sendTl
 
-class CommandKickAll : Command(
+class CommandKickAll : ZCoreCommand(
     "kickall",
     description = "Kicks all players from the server.",
     usage = "/kickall [message]",
-    permission = "zcore.kickall",
-    preprocessor = Preprocessor()) {
+    permission = "zcore.kickall"
+) {
 
     override fun execute(event: CommandEvent) {
         val reason = colorize(if (event.args.isNotEmpty()) joinArgs(event.args, 0)

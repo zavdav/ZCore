@@ -10,14 +10,14 @@ import org.poseidonplugins.zcore.util.Utils.isSelf
 import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
 
-class CommandAFK : Command(
+class CommandAFK : ZCoreCommand(
     "afk",
     description = "Marks you as away-from-keyboard.",
     usage = "/afk [player]",
     permission = "zcore.afk",
     isPlayerOnly = true,
-    maxArgs = 1,
-    preprocessor = Preprocessor()) {
+    maxArgs = 1
+) {
 
     override fun execute(event: CommandEvent) {
         var target = event.sender as Player

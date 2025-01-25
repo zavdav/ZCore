@@ -2,18 +2,17 @@ package org.poseidonplugins.zcore.commands
 
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.util.sendTl
 
-class CommandList : Command(
+class CommandList : ZCoreCommand(
     "list",
     listOf("online", "who", "playerlist"),
     "Lists all online players.",
     "/list",
     "zcore.list",
-    maxArgs = 0,
-    preprocessor = Preprocessor()) {
+    maxArgs = 0
+) {
 
     override fun execute(event: CommandEvent) {
         event.sender.sendTl("listPlayers",

@@ -24,7 +24,7 @@ class Delay(
     }
 
     private fun check() {
-        if (player.health < health ||
+        if (!player.isOnline || player.health < health ||
             player.location.blockX != location.blockX ||
             player.location.blockY != location.blockY ||
             player.location.blockZ != location.blockZ) {

@@ -1,7 +1,6 @@
 package org.poseidonplugins.zcore.commands
 
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
@@ -9,15 +8,15 @@ import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
 
-class CommandSetHome : Command(
+class CommandSetHome : ZCoreCommand(
     "sethome",
     listOf("sh"),
     "Sets a home at your current location.",
     "/sethome <name>",
     "zcore.sethome",
     true,
-    maxArgs = 1,
-    preprocessor = Preprocessor()) {
+    maxArgs = 1
+) {
 
     override fun execute(event: CommandEvent) {
         var homeName = "main"
@@ -26,7 +25,8 @@ class CommandSetHome : Command(
             homeName = event.args[0]
         }
 
-        val user = User.from(event.sender as Player)
+        val player = event.sender as Player
+        val user = User.from(player)
         val limit = Config.getInt("multipleHomes", 2)
         val homeCount = user.getHomes().size
 
@@ -39,6 +39,7 @@ class CommandSetHome : Command(
         }
 
         assert(!user.homeExists(homeName), "homeAlreadyExists")
+        charge(player)
         user.addHome(homeName, (event.sender as Player).location)
         event.sender.sendTl("homeSet", "home" to homeName)
     }

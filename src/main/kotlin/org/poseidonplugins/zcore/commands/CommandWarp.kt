@@ -1,7 +1,6 @@
 package org.poseidonplugins.zcore.commands
 
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.WarpData
@@ -9,14 +8,14 @@ import org.poseidonplugins.zcore.util.Delay
 import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
 
-class CommandWarp : Command(
+class CommandWarp : ZCoreCommand(
     "warp",
     description = "Teleports you to the specified warp.",
     usage = "/warp [name]",
     permission = "zcore.warp",
     isPlayerOnly = true,
-    maxArgs = 1,
-    preprocessor = Preprocessor()) {
+    maxArgs = 1
+) {
 
     override fun execute(event: CommandEvent) {
         if (event.args.isEmpty()) {
@@ -35,10 +34,12 @@ class CommandWarp : Command(
                 event.sender.sendTl("commencingTeleport", "location" to finalName, "delay" to delay)
                 event.sender.sendTl("doNotMove")
                 Delay(player, {
+                    charge(player)
                     player.teleport(location)
                     event.sender.sendTl("teleportedToWarp", "warp" to finalName)
                 }, delay)
             } else {
+                charge(player)
                 player.teleport(location)
                 event.sender.sendTl("teleportedToWarp", "warp" to finalName)
             }

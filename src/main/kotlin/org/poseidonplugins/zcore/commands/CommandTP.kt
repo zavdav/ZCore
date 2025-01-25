@@ -2,11 +2,10 @@ package org.poseidonplugins.zcore.commands
 
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.util.*
 
-class CommandTP : Command(
+class CommandTP : ZCoreCommand(
     "tp",
     listOf("teleport"),
     "Teleports you or a player to coordinates or another player.",
@@ -14,8 +13,8 @@ class CommandTP : Command(
     "zcore.tp",
     true,
     1,
-    4,
-    Preprocessor()) {
+    4
+) {
 
     override fun execute(event: CommandEvent) {
         val player = event.sender as Player

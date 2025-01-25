@@ -1,19 +1,18 @@
 package org.poseidonplugins.zcore.commands
 
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.data.SpawnData
 import org.poseidonplugins.zcore.util.sendTl
 
-class CommandSetSpawn : Command(
+class CommandSetSpawn : ZCoreCommand(
     "setspawn",
     description = "Sets the world spawn to your current location.",
     usage = "/setspawn [none]",
     permission = "zcore.setspawn",
     isPlayerOnly = true,
-    maxArgs = 1,
-    preprocessor = Preprocessor()) {
+    maxArgs = 1
+) {
 
     override fun execute(event: CommandEvent) {
         val player = event.sender as Player

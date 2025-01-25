@@ -1,19 +1,18 @@
 package org.poseidonplugins.zcore.commands
 
-import org.poseidonplugins.commandapi.Command
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.data.BanData
 import org.poseidonplugins.zcore.util.*
 
-class CommandUnbanIP : Command(
+class CommandUnbanIP : ZCoreCommand(
     "unbanip",
     listOf("unipban", "pardonip"),
     "Unbans an IP address from the server.",
     "/unbanip <player/ip>",
     "zcore.unbanip",
     minArgs = 1,
-    maxArgs = 1,
-    preprocessor = Preprocessor()){
+    maxArgs = 1
+) {
 
     override fun execute(event: CommandEvent) {
         val ip =

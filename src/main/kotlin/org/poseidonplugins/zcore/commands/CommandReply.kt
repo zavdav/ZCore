@@ -6,15 +6,15 @@ import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendConfTl
 
-class CommandReply : Command(
+class CommandReply : ZCoreCommand(
     "reply",
     listOf("r"),
     "Quickly replies to the last player that messaged you.",
     "/reply <message>",
     "zcore.reply",
     true,
-    1,
-    preprocessor = Preprocessor()) {
+    1
+) {
 
     override fun execute(event: CommandEvent) {
         val player = event.sender as Player
