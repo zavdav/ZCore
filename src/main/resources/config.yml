@@ -124,6 +124,9 @@ afkDelay: 3
 defaultKickReason: 'Kicked from server'
 kickFormat: '§cYou have been kicked: {REASON}'
 
+# Mutes
+defaultMuteReason: 'You have been muted!'
+
 # Bans
 defaultBanReason: 'The ban hammer has spoken!'
 permBanFormat: '§cYou have been permanently banned: {REASON}'

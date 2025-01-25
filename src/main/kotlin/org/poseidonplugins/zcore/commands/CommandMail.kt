@@ -29,6 +29,7 @@ class CommandMail : ZCoreCommand(
                 }
             }
             "send" -> {
+                if (user.checkIsMuted()) return
                 if (event.args.size < 3) throw InvalidUsageException(this)
 
                 val uuid = Utils.getUUIDFromUsername(event.args[1])

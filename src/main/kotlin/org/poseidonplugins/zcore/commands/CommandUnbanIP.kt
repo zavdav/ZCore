@@ -1,7 +1,7 @@
 package org.poseidonplugins.zcore.commands
 
 import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.zcore.data.BanData
+import org.poseidonplugins.zcore.data.Punishments
 import org.poseidonplugins.zcore.util.*
 
 class CommandUnbanIP : ZCoreCommand(
@@ -20,13 +20,13 @@ class CommandUnbanIP : ZCoreCommand(
                 event.args[0]
             } else {
                 val uuid = Utils.getUUIDFromString(event.args[0])
-                val ipBan = BanData.getIPBan(uuid)
+                val ipBan = Punishments.getIPBan(uuid)
                 assert(ipBan != null, "ipNotBanned")
                 ipBan!!.ip
             }
 
-        assert(BanData.isIPBanned(ip), "ipNotBanned")
-        BanData.unbanIP(ip)
+        assert(Punishments.isIPBanned(ip), "ipNotBanned")
+        Punishments.unbanIP(ip)
         event.sender.sendTl("ipUnbanned", "ip" to ip)
     }
 }

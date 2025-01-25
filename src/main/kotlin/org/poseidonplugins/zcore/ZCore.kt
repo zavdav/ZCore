@@ -8,7 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.poseidonplugins.commandapi.CommandManager
 import org.poseidonplugins.zcore.commands.*
 import org.poseidonplugins.zcore.config.Config
-import org.poseidonplugins.zcore.data.BanData
+import org.poseidonplugins.zcore.data.Punishments
 import org.poseidonplugins.zcore.data.SpawnData
 import org.poseidonplugins.zcore.data.WarpData
 import org.poseidonplugins.zcore.listeners.EntityListener
@@ -71,6 +71,7 @@ class ZCore : JavaPlugin() {
             CommandMail(),
             CommandMotd(),
             CommandMsg(),
+            CommandMute(),
             CommandNick(),
             CommandPay(),
             CommandPlayTime(),
@@ -88,6 +89,7 @@ class ZCore : JavaPlugin() {
             CommandTP(),
             CommandUnban(),
             CommandUnbanIP(),
+            CommandUnmute(),
             CommandVanish(),
             CommandWarp(),
             CommandWeather(),
@@ -106,7 +108,7 @@ class ZCore : JavaPlugin() {
                 lastAutoSave = LocalDateTime.now()
                 logger.info("$prefix Automatically saving data")
                 UserMap.saveData()
-                BanData.saveData()
+                Punishments.saveData()
                 SpawnData.saveData()
                 WarpData.saveData()
             }
@@ -117,7 +119,7 @@ class ZCore : JavaPlugin() {
 
     override fun onDisable() {
         UserMap.saveData()
-        BanData.saveData()
+        Punishments.saveData()
         SpawnData.saveData()
         WarpData.saveData()
 

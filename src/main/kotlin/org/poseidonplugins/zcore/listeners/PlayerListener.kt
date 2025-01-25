@@ -11,7 +11,7 @@ import org.bukkit.event.player.*
 import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
-import org.poseidonplugins.zcore.data.BanData
+import org.poseidonplugins.zcore.data.Punishments
 import org.poseidonplugins.zcore.data.SpawnData
 import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.user.UserMap
@@ -28,9 +28,9 @@ class PlayerListener : Listener {
     fun onPlayerLogin(event: PlayerLoginEvent) {
         val player = event.player
 
-        if (BanData.isIPBanned(event.address.hostAddress)) {
+        if (Punishments.isIPBanned(event.address.hostAddress)) {
             val ip = event.address.hostAddress
-            val ipBan = BanData.getIPBan(ip)!!
+            val ipBan = Punishments.getIPBan(ip)!!
             if (player.uniqueId !in ipBan.uuids) ipBan.addUUID(player.uniqueId)
             when (ipBan.until == null) {
                 true -> event.kickBannedIp("permIpBanFormat", "reason" to ipBan.reason)
@@ -38,8 +38,8 @@ class PlayerListener : Listener {
                     "datetime" to ipBan.until.truncatedTo(ChronoUnit.MINUTES),
                     "reason" to ipBan.reason)
             }
-        } else if (BanData.isBanned(player.uniqueId)) {
-            val ban = BanData.getBan(player.uniqueId)!!
+        } else if (Punishments.isBanned(player.uniqueId)) {
+            val ban = Punishments.getBan(player.uniqueId)!!
             when (ban.until == null) {
                 true -> event.kickBanned("permBanFormat", "reason" to ban.reason)
                 false -> event.kickBanned("tempBanFormat",
@@ -87,14 +87,19 @@ class PlayerListener : Listener {
 
     @EventHandler(ignoreCancelled = true, priority = Event.Priority.Low)
     fun onPlayerKick(event: PlayerKickEvent) {
-        val isBanned = BanData.isBanned(event.player.uniqueId)
-                    || BanData.isIPBanned(event.player.address.address.hostAddress)
+        val isBanned = Punishments.isBanned(event.player.uniqueId)
+                    || Punishments.isIPBanned(event.player.address.address.hostAddress)
         event.leaveMessage = formatProperty(if (isBanned) "banMsgFormat" else "kickMsgFormat",
             "player" to event.player.name)
     }
 
     @EventHandler(ignoreCancelled = true)
     fun onPlayerChat(event: PlayerChatEvent) {
+        val user = User.from(event.player)
+        if (user.checkIsMuted()) {
+            event.isCancelled = true
+            return
+        }
         if (hasPermission(event.player, "zcore.chat.color")) {
             event.message = colorize(event.message)
         }
@@ -107,12 +112,12 @@ class PlayerListener : Listener {
             }
         }
         event.recipients.removeIf {
-            val user = User.from(it)
-            !user.seesChat || event.player.uniqueId in user.ignores &&
+            val targetUser = User.from(it)
+            !targetUser.seesChat || event.player.uniqueId in targetUser.ignores &&
             !hasPermission(event.player, "zcore.ignore.exempt")
         }
 
-        User.from(event.player).updateActivity()
+        user.updateActivity()
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -4,13 +4,16 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.poseidonplugins.zcore.config.Config
+import org.poseidonplugins.zcore.data.Punishments
 import org.poseidonplugins.zcore.data.UserData
 import org.poseidonplugins.zcore.hooks.permissions.PermissionHandler
 import org.poseidonplugins.zcore.util.broadcastTl
 import org.poseidonplugins.zcore.util.formatProperty
 import org.poseidonplugins.zcore.util.kick
+import org.poseidonplugins.zcore.util.sendTl
 import java.time.Duration
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 class User private constructor(uuid: UUID) : UserData(uuid) {
@@ -94,5 +97,22 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
         if (isAfk && Duration.between(lastSeen, LocalDateTime.now()).seconds >= Config.getInt("afkKickTime")) {
             player.kick("afkKickReason")
         }
+    }
+
+    fun checkIsMuted(): Boolean {
+        if (!isOnline) return false
+
+        if (Punishments.isMuted(uuid)) {
+            val mute = Punishments.getMute(uuid) ?: return false
+            when (mute.until == null) {
+                true -> player.sendTl("permMute", "reason" to mute.reason)
+                false -> player.sendTl("tempMute",
+                    "datetime" to mute.until.truncatedTo(ChronoUnit.MINUTES),
+                    "reason" to mute.reason
+                )
+            }
+            return true
+        }
+        return false
     }
 }

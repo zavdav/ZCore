@@ -3,7 +3,7 @@ package org.poseidonplugins.zcore.commands
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.joinArgs
 import org.poseidonplugins.zcore.config.Config
-import org.poseidonplugins.zcore.data.BanData
+import org.poseidonplugins.zcore.data.Punishments
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.sendTl
 import java.time.LocalDateTime
@@ -43,20 +43,20 @@ class CommandBanIP : ZCoreCommand(
         when (duration.length) {
             0 -> when (reason.length) {
                 0 -> {
-                    BanData.banIP(ip)
+                    Punishments.banIP(ip)
                     event.sender.sendTl("permanentIpBan",
                         "ip" to ip,
                         "reason" to Config.getString("defaultBanReason"))
                 }
                 else -> {
-                    BanData.banIP(ip, reason)
+                    Punishments.banIP(ip, reason)
                     event.sender.sendTl("permanentIpBan", "ip" to ip, "reason" to reason)
                 }
             }
             else -> when (reason.length) {
                 0 -> {
                     val until = Utils.parseDateDiff(duration)
-                    BanData.banIP(ip, until)
+                    Punishments.banIP(ip, until)
                     event.sender.sendTl("temporaryIpBan",
                         "ip" to ip,
                         "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
@@ -64,7 +64,7 @@ class CommandBanIP : ZCoreCommand(
                 }
                 else -> {
                     val until = Utils.parseDateDiff(duration)
-                    BanData.banIP(ip, until, reason)
+                    Punishments.banIP(ip, until, reason)
                     event.sender.sendTl("temporaryIpBan",
                         "ip" to ip,
                         "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),

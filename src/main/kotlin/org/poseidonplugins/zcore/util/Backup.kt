@@ -3,7 +3,7 @@ package org.poseidonplugins.zcore.util
 import org.bukkit.command.CommandSender
 import org.poseidonplugins.zcore.ZCore
 import org.poseidonplugins.zcore.config.Config
-import org.poseidonplugins.zcore.data.BanData
+import org.poseidonplugins.zcore.data.Punishments
 import org.poseidonplugins.zcore.data.SpawnData
 import org.poseidonplugins.zcore.data.WarpData
 import org.poseidonplugins.zcore.user.UserMap
@@ -40,9 +40,9 @@ object Backup {
                 val folder = File(root, "ZCore-${dtf.format(LocalDateTime.now())}")
                 folder.mkdirs()
 
-                val bans = File(folder, "bans.json")
-                bans.createNewFile()
-                BanData.saveTo(bans)
+                val punishments = File(folder, "punishments.json")
+                punishments.createNewFile()
+                Punishments.saveTo(punishments)
 
                 val spawns = File(folder, "spawns.json")
                 spawns.createNewFile()

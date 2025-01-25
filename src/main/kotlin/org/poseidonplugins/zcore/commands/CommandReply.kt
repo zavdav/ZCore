@@ -20,6 +20,8 @@ class CommandReply : ZCoreCommand(
         val player = event.sender as Player
         val user = User.from(player)
         val replyTo = user.replyTo
+
+        if (user.checkIsMuted()) return
         assert(replyTo != null && replyTo.isOnline, "noReply")
 
         var message = joinArgs(event.args, 0)
