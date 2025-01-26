@@ -4,8 +4,8 @@ import com.github.cliftonlabs.json_simple.JsonArray
 import com.github.cliftonlabs.json_simple.JsonObject
 import org.bukkit.entity.Player
 import org.poseidonplugins.zcore.ZCore
-import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.util.Utils
+import org.poseidonplugins.zcore.util.format
 import org.poseidonplugins.zcore.util.kick
 import org.poseidonplugins.zcore.util.sendTl
 import java.io.File
@@ -86,13 +86,13 @@ object Punishments : JsonData(File(ZCore.dataFolder, "punishments.json")) {
     }
 
     fun mute(uuid: UUID) =
-        mute(uuid, Config.getString("defaultMuteReason"))
+        mute(uuid, format("muteReason"))
 
     fun mute(uuid: UUID, reason: String) =
         mute(uuid, null, reason)
 
     fun mute(uuid: UUID, until: LocalDateTime) =
-        mute(uuid, until, Config.getString("defaultMuteReason"))
+        mute(uuid, until, format("muteReason"))
 
     fun mute(uuid: UUID, until: LocalDateTime?, reason: String) {
         muteMap[uuid] = Mute(uuid, until, reason)
@@ -104,8 +104,8 @@ object Punishments : JsonData(File(ZCore.dataFolder, "punishments.json")) {
 
         val player = Utils.getPlayerFromUUID(uuid) ?: return
         when (until == null) {
-            true -> player.sendTl("permMute", "reason" to reason)
-            false -> player.sendTl("tempMute",
+            true -> player.sendTl("permaMuted", "reason" to reason)
+            false -> player.sendTl("tempMuted",
                 "datetime" to until.truncatedTo(ChronoUnit.MINUTES),
                 "reason" to reason
             )
@@ -113,13 +113,13 @@ object Punishments : JsonData(File(ZCore.dataFolder, "punishments.json")) {
     }
 
     fun ban(uuid: UUID) =
-        ban(uuid, Config.getString("defaultBanReason"))
+        ban(uuid, format("banReason"))
 
     fun ban(uuid: UUID, reason: String) =
         ban(uuid, null, reason)
 
     fun ban(uuid: UUID, until: LocalDateTime) =
-        ban(uuid, until, Config.getString("defaultBanReason"))
+        ban(uuid, until, format("banReason"))
 
     fun ban(uuid: UUID, until: LocalDateTime?, reason: String) {
         banMap[uuid] = Ban(uuid, until, reason)
@@ -131,21 +131,21 @@ object Punishments : JsonData(File(ZCore.dataFolder, "punishments.json")) {
 
         val player = Utils.getPlayerFromUUID(uuid) ?: return
         when (until == null) {
-            true -> player.kick("permBanFormat", "reason" to reason)
-            false -> player.kick("tempBanFormat",
+            true -> player.kick("permaBanned", "reason" to reason)
+            false -> player.kick("tempBanned",
                 "datetime" to until.truncatedTo(ChronoUnit.MINUTES),
                 "reason" to reason)
         }
     }
 
     fun banIP(ip: String) =
-        banIP(ip, Config.getString("defaultBanReason"))
+        banIP(ip, format("banReason"))
 
     fun banIP(ip: String, reason: String) =
         banIP(ip, null, reason)
 
     fun banIP(ip: String, until: LocalDateTime) =
-        banIP(ip, until, Config.getString("defaultBanReason"))
+        banIP(ip, until, format("banReason"))
 
     fun banIP(ip: String, until: LocalDateTime?, reason: String) {
         val players = Utils.getPlayersFromIP(ip)
@@ -161,10 +161,10 @@ object Punishments : JsonData(File(ZCore.dataFolder, "punishments.json")) {
 
         when (until == null) {
             true -> for (player in players) {
-                player.kick("permIpBanFormat", "reason" to reason)
+                player.kick("permaIpBanned", "reason" to reason)
             }
             false -> for (player in players) {
-                player.kick("tempIpBanFormat",
+                player.kick("tempIpBanned",
                     "datetime" to until.truncatedTo(ChronoUnit.MINUTES),
                     "reason" to reason)
             }

@@ -105,8 +105,8 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
         if (Punishments.isMuted(uuid)) {
             val mute = Punishments.getMute(uuid) ?: return false
             when (mute.until == null) {
-                true -> player.sendTl("permMute", "reason" to mute.reason)
-                false -> player.sendTl("tempMute",
+                true -> player.sendTl("permaMuted", "reason" to mute.reason)
+                false -> player.sendTl("tempMuted",
                     "datetime" to mute.until.truncatedTo(ChronoUnit.MINUTES),
                     "reason" to mute.reason
                 )

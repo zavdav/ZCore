@@ -69,7 +69,6 @@ object Config {
         "rules" to mutableListOf("§c1. Be respectful", "§c2. No griefing", "§c3. No cheating"),
         "afkTime" to 300,
         "afkKickTime" to 1800,
-        "afkKickReason" to "§cYou have been kicked for inactivity",
         "protectAfkPlayers" to false,
         "afkDelay" to 3,
         "teleportDelay" to 3,
@@ -90,12 +89,5 @@ object Config {
         "balancesPerPage" to 10,
         "multipleHomes" to 10,
         "homesPerPage" to 50,
-        "defaultKickReason" to "Kicked from server",
-        "kickFormat" to "§cYou have been kicked: {REASON}",
-        "defaultBanReason" to "The ban hammer has spoken!",
-        "permBanFormat" to "§cYou have been permanently banned: {REASON}",
-        "tempBanFormat" to "§cYou have been banned until {DATETIME}: {REASON}",
-        "permIpBanFormat" to "§cYour IP has been permanently banned: {REASON}",
-        "tempIpBanFormat" to "§cYour IP has been banned until {DATETIME}: {REASON}",
     )
 }

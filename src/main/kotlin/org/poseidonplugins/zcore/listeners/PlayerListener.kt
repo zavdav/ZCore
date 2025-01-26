@@ -33,16 +33,16 @@ class PlayerListener : Listener {
             val ipBan = Punishments.getIPBan(ip)!!
             if (player.uniqueId !in ipBan.uuids) ipBan.addUUID(player.uniqueId)
             when (ipBan.until == null) {
-                true -> event.kickBannedIp("permIpBanFormat", "reason" to ipBan.reason)
-                false -> event.kickBannedIp("tempIpBanFormat",
+                true -> event.kickBannedIp("permaIpBanned", "reason" to ipBan.reason)
+                false -> event.kickBannedIp("tempIpBanned",
                     "datetime" to ipBan.until.truncatedTo(ChronoUnit.MINUTES),
                     "reason" to ipBan.reason)
             }
         } else if (Punishments.isBanned(player.uniqueId)) {
             val ban = Punishments.getBan(player.uniqueId)!!
             when (ban.until == null) {
-                true -> event.kickBanned("permBanFormat", "reason" to ban.reason)
-                false -> event.kickBanned("tempBanFormat",
+                true -> event.kickBanned("permaBanned", "reason" to ban.reason)
+                false -> event.kickBanned("tempBanned",
                     "datetime" to ban.until.truncatedTo(ChronoUnit.MINUTES),
                     "reason" to ban.reason)
             }

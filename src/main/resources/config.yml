@@ -106,8 +106,6 @@ afkTime: 300
 # After how long will AFK players be kicked
 afkKickTime: 1800
 
-afkKickReason: '§cYou have been kicked for inactivity'
-
 # Makes AFK players invincible and freezes them in place
 # Players have to type /afk to unfreeze themselves
 protectAfkPlayers: false
@@ -115,21 +113,3 @@ protectAfkPlayers: false
 # If protectAfkPlayers is enabled, how long do players
 # have to stand still until they are marked as AFK
 afkDelay: 3
-
-# ┌───────────────────────────┐
-# │        Punishments        │
-# └───────────────────────────┘
-
-# Kicks
-defaultKickReason: 'Kicked from server'
-kickFormat: '§cYou have been kicked: {REASON}'
-
-# Mutes
-defaultMuteReason: 'You have been muted!'
-
-# Bans
-defaultBanReason: 'The ban hammer has spoken!'
-permBanFormat: '§cYou have been permanently banned: {REASON}'
-tempBanFormat: '§cYou have been banned until {DATETIME}: {REASON}'
-permIpBanFormat: '§cYour IP has been permanently banned: {REASON}'
-tempIpBanFormat: '§cYour IP has been banned until {DATETIME}: {REASON}'

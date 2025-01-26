@@ -2,11 +2,11 @@ package org.poseidonplugins.zcore.commands
 
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.joinArgs
-import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.Punishments
 import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.user.UserMap
 import org.poseidonplugins.zcore.util.Utils
+import org.poseidonplugins.zcore.util.format
 import org.poseidonplugins.zcore.util.sendTl
 import java.time.LocalDateTime
 import java.util.regex.Pattern
@@ -39,28 +39,28 @@ class CommandBan: ZCoreCommand(
             0 -> when (reason.length) {
                 0 -> {
                     Punishments.ban(uuid)
-                    event.sender.sendTl("permanentBan",
+                    event.sender.sendTl("playerPermaBanned",
                         "user" to name,
-                        "reason" to Config.getString("defaultBanReason"))
+                        "reason" to format("banReason"))
                 }
                 else -> {
                     Punishments.ban(uuid, reason)
-                    event.sender.sendTl("permanentBan", "user" to name, "reason" to reason)
+                    event.sender.sendTl("playerPermaBanned", "user" to name, "reason" to reason)
                 }
             }
             else -> when (reason.length) {
                 0 -> {
                     val until = Utils.parseDateDiff(duration)
                     Punishments.ban(uuid, until)
-                    event.sender.sendTl("temporaryBan",
+                    event.sender.sendTl("playerTempBanned",
                         "user" to name,
                         "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
-                        "reason" to Config.getString("defaultBanReason"))
+                        "reason" to format("banReason"))
                 }
                 else -> {
                     val until = Utils.parseDateDiff(duration)
                     Punishments.ban(uuid, until, reason)
-                    event.sender.sendTl("temporaryBan",
+                    event.sender.sendTl("playerTempBanned",
                         "user" to name,
                         "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
                         "reason" to reason)

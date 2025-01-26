@@ -2,10 +2,10 @@ package org.poseidonplugins.zcore.commands
 
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.joinArgs
-import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.Punishments
 import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.Utils
+import org.poseidonplugins.zcore.util.format
 import org.poseidonplugins.zcore.util.sendTl
 import java.time.LocalDateTime
 import java.util.regex.Pattern
@@ -38,28 +38,28 @@ class CommandMute : ZCoreCommand(
             0 -> when (reason.length) {
                 0 -> {
                     Punishments.mute(uuid)
-                    event.sender.sendTl("permanentMute",
+                    event.sender.sendTl("playerPermaMuted",
                         "user" to name,
-                        "reason" to Config.getString("defaultMuteReason"))
+                        "reason" to format("muteReason"))
                 }
                 else -> {
                     Punishments.mute(uuid, reason)
-                    event.sender.sendTl("permanentMute", "user" to name, "reason" to reason)
+                    event.sender.sendTl("playerPermaMuted", "user" to name, "reason" to reason)
                 }
             }
             else -> when (reason.length) {
                 0 -> {
                     val until = Utils.parseDateDiff(duration)
                     Punishments.mute(uuid, until)
-                    event.sender.sendTl("temporaryMute",
+                    event.sender.sendTl("playerTempMuted",
                         "user" to name,
                         "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
-                        "reason" to Config.getString("defaultMuteReason"))
+                        "reason" to format("muteReason"))
                 }
                 else -> {
                     val until = Utils.parseDateDiff(duration)
                     Punishments.mute(uuid, until, reason)
-                    event.sender.sendTl("temporaryMute",
+                    event.sender.sendTl("playerTempMuted",
                         "user" to name,
                         "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
                         "reason" to reason)

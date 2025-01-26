@@ -2,9 +2,9 @@ package org.poseidonplugins.zcore.commands
 
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.joinArgs
-import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.Punishments
 import org.poseidonplugins.zcore.util.Utils
+import org.poseidonplugins.zcore.util.format
 import org.poseidonplugins.zcore.util.sendTl
 import java.time.LocalDateTime
 import java.util.regex.Pattern
@@ -44,28 +44,28 @@ class CommandBanIP : ZCoreCommand(
             0 -> when (reason.length) {
                 0 -> {
                     Punishments.banIP(ip)
-                    event.sender.sendTl("permanentIpBan",
+                    event.sender.sendTl("ipPermaBanned",
                         "ip" to ip,
-                        "reason" to Config.getString("defaultBanReason"))
+                        "reason" to format("banReason"))
                 }
                 else -> {
                     Punishments.banIP(ip, reason)
-                    event.sender.sendTl("permanentIpBan", "ip" to ip, "reason" to reason)
+                    event.sender.sendTl("ipPermaBanned", "ip" to ip, "reason" to reason)
                 }
             }
             else -> when (reason.length) {
                 0 -> {
                     val until = Utils.parseDateDiff(duration)
                     Punishments.banIP(ip, until)
-                    event.sender.sendTl("temporaryIpBan",
+                    event.sender.sendTl("ipTempBanned",
                         "ip" to ip,
                         "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
-                        "reason" to Config.getString("defaultBanReason"))
+                        "reason" to format("banReason"))
                 }
                 else -> {
                     val until = Utils.parseDateDiff(duration)
                     Punishments.banIP(ip, until, reason)
-                    event.sender.sendTl("temporaryIpBan",
+                    event.sender.sendTl("ipTempBanned",
                         "ip" to ip,
                         "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
                         "reason" to reason)

@@ -45,7 +45,7 @@ fun broadcastConfTl(key: String, vararg pairs: Pair<String, Any>) =
     Bukkit.broadcastMessage(formatProperty(key, *pairs))
 
 fun Player.kick(key: String, vararg pairs: Pair<String, Any>) =
-    kickPlayer(formatProperty(key, *pairs).safeSubstring(0, 100))
+    kickPlayer(format(key, *pairs).safeSubstring(0, 100))
 
 fun assert(condition: Boolean, key: String, vararg pairs: Pair<String, Any>) {
     if (!condition) throw CommandException(formatError(key, *pairs))
@@ -144,10 +144,10 @@ object Utils {
     fun Player.isSelf(other: Player) = uniqueId == other.uniqueId
 
     fun PlayerLoginEvent.kickBanned(key: String, vararg pairs: Pair<String, Any>) =
-        disallow(PlayerLoginEvent.Result.KICK_BANNED, formatProperty(key, *pairs).safeSubstring(0, 100))
+        disallow(PlayerLoginEvent.Result.KICK_BANNED, format(key, *pairs).safeSubstring(0, 100))
 
     fun PlayerLoginEvent.kickBannedIp(key: String, vararg pairs: Pair<String, Any>) =
-        disallow(PlayerLoginEvent.Result.KICK_BANNED_IP, formatProperty(key, *pairs).safeSubstring(0, 100))
+        disallow(PlayerLoginEvent.Result.KICK_BANNED_IP, format(key, *pairs).safeSubstring(0, 100))
 
     @JvmStatic fun updateVanishedPlayers() {
         for (target in Bukkit.getOnlinePlayers()) {
