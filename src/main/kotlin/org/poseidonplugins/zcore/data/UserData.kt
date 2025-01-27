@@ -5,7 +5,6 @@ import com.github.cliftonlabs.json_simple.JsonObject
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.poseidonplugins.zcore.ZCore
-import org.poseidonplugins.zcore.api.Economy
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.roundTo
@@ -51,6 +50,7 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData(
         set(value) { json["ignores"] = JsonArray(value.map { it.toString() }) }
 
     var mails: List<String>
+        @Suppress("UNCHECKED_CAST")
         get() = (json.getOrDefault("mails", JsonArray()) as JsonArray).toList() as List<String>
         set(value) { json["mails"] = JsonArray(value) }
 
@@ -68,7 +68,7 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData(
 
     init {
         if (initialize) initData()
-        balance = balance.coerceAtMost(Config.getDouble("maxBalance", 0.0, Economy.MAX_BALANCE))
+        balance = balance.coerceAtMost(Config.maxBalance)
     }
 
     private fun initData() {

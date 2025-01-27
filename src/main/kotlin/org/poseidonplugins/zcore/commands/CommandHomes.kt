@@ -54,7 +54,7 @@ class CommandHomes : ZCoreCommand(
     }
 
     private fun printHomes(sender: CommandSender, page: Int, homes: List<String>) {
-        val homesPerPage = Config.getInt("homesPerPage", 1)
+        val homesPerPage = Config.homesPerPage
         val pages = ceil(homes.size.toDouble() / homesPerPage).toInt()
         assert(page <= pages, "pageTooHigh")
         sender.sendTl("homesPage", "page" to page, "pages" to pages)

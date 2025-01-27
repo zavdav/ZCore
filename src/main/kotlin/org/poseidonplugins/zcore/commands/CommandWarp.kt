@@ -27,7 +27,7 @@ class CommandWarp : ZCoreCommand(
             assert(WarpData.warpExists(warpName), "warpNotFound")
 
             val location = WarpData.getWarp(warpName)
-            val delay = Config.getInt("teleportDelay")
+            val delay = Config.teleportDelay
             val finalName = WarpData.getFinalWarpName(warpName)
 
             if (delay > 0) {

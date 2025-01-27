@@ -2,6 +2,7 @@ package org.poseidonplugins.zcore.commands
 
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.joinArgs
+import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.util.broadcastConfTl
 
 class CommandBroadcast : ZCoreCommand(
@@ -14,6 +15,6 @@ class CommandBroadcast : ZCoreCommand(
 ) {
 
     override fun execute(event: CommandEvent) {
-        broadcastConfTl("broadcastFormat", "message" to joinArgs(event.args, 0))
+        broadcastConfTl(Config.broadcastFormat, "message" to joinArgs(event.args, 0))
     }
 }

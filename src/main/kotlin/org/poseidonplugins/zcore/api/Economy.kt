@@ -48,7 +48,7 @@ object Economy {
     fun hasEnough(uuid: UUID, amount: Double): Boolean =
         getBalance(uuid) >= amount.roundTo(2)
 
-    fun isOutOfBounds(amount: Double) = amount.roundTo(2) > Config.getDouble("maxBalance", 0.0, MAX_BALANCE)
+    fun isOutOfBounds(amount: Double) = amount.roundTo(2) > Config.maxBalance
 
     fun formatBalance(amount: Double): String = Utils.formatBalance(amount)
 }

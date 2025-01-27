@@ -8,7 +8,7 @@ import org.poseidonplugins.zcore.data.Punishments
 import org.poseidonplugins.zcore.data.UserData
 import org.poseidonplugins.zcore.hooks.permissions.PermissionHandler
 import org.poseidonplugins.zcore.util.broadcastTl
-import org.poseidonplugins.zcore.util.formatProperty
+import org.poseidonplugins.zcore.util.formatString
 import org.poseidonplugins.zcore.util.kick
 import org.poseidonplugins.zcore.util.sendTl
 import java.time.Duration
@@ -62,9 +62,9 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
         val nickname = if (!useNick || nickname == username) {
             username
         } else {
-            "${Config.getString("nickPrefix")}${nickname}"
+            "${Config.nickPrefix}$nickname"
         }
-        val displayName = formatProperty("nickFormat",
+        val displayName = formatString(Config.nickFormat,
             "prefix" to prefix, "nickname" to nickname, "suffix" to suffix)
         return "§f${displayName.trim()}§f"
     }
@@ -91,10 +91,10 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
     fun checkIsAfk() {
         if (!isOnline) return
 
-        if (!isAfk && Duration.between(lastSeen, LocalDateTime.now()).seconds >= Config.getInt("afkTime")) {
+        if (!isAfk && Duration.between(lastSeen, LocalDateTime.now()).seconds >= Config.afkTime) {
             setInactive()
         }
-        if (isAfk && Duration.between(lastSeen, LocalDateTime.now()).seconds >= Config.getInt("afkKickTime")) {
+        if (isAfk && Duration.between(lastSeen, LocalDateTime.now()).seconds >= Config.afkKickTime) {
             player.kick("afkKickReason")
         }
     }

@@ -26,11 +26,11 @@ fun CommandSender.sendTl(key: String, vararg pairs: Pair<String, Any>) =
 fun CommandSender.sendTl(key: String, player: Player, vararg pairs: Pair<String, Any>) =
     sendMessage(format(key, player, *pairs))
 
-fun CommandSender.sendConfTl(key: String, vararg pairs: Pair<String, Any>) =
-    sendMessage(formatProperty(key, *pairs))
+fun CommandSender.sendConfTl(message: String, vararg pairs: Pair<String, Any>) =
+    sendMessage(formatString(message, *pairs))
 
-fun CommandSender.sendConfTl(key: String, player: Player, vararg pairs: Pair<String, Any>) =
-    sendMessage(formatProperty(key, player, *pairs))
+fun CommandSender.sendConfTl(message: String, player: Player, vararg pairs: Pair<String, Any>) =
+    sendMessage(formatString(message, player, *pairs))
 
 fun CommandSender.sendErrTl(key: String, vararg pairs: Pair<String, Any>) =
     sendMessage(formatError(key, *pairs))
@@ -41,8 +41,8 @@ fun broadcastTl(key: String, vararg pairs: Pair<String, Any>) =
 fun broadcastTl(key: String, player: Player, vararg pairs: Pair<String, Any>) =
     Bukkit.broadcastMessage(format(key, player, *pairs))
 
-fun broadcastConfTl(key: String, vararg pairs: Pair<String, Any>) =
-    Bukkit.broadcastMessage(formatProperty(key, *pairs))
+fun broadcastConfTl(message: String, vararg pairs: Pair<String, Any>) =
+    Bukkit.broadcastMessage(formatString(message, *pairs))
 
 fun Player.kick(key: String, vararg pairs: Pair<String, Any>) =
     kickPlayer(format(key, *pairs).safeSubstring(0, 100))
@@ -63,14 +63,11 @@ fun format(key: String, vararg pairs: Pair<String, Any>): String =
 fun format(key: String, player: Player, vararg pairs: Pair<String, Any>): String =
     format(key, *pairs, "name" to player.name, "displayname" to player.displayName)
 
-fun formatProperty(key: String, vararg pairs: Pair<String, Any>): String =
-    formatString(Config.getString(key), *pairs)
-
-fun formatProperty(key: String, player: Player, vararg pairs: Pair<String, Any>): String =
-    formatProperty(key, *pairs, "name" to player.name, "displayname" to player.displayName)
-
 fun formatError(key: String, vararg pairs: Pair<String, Any>): String =
     format("errorMessage", "message" to format(key, *pairs))
+
+fun formatString(string: String, player: Player, vararg pairs: Pair<String, Any>): String =
+    formatString(string, "name" to player.name, "displayname" to player.displayName, *pairs)
 
 fun formatString(string: String, vararg pairs: Pair<String, Any>): String {
     var message = string
@@ -102,14 +99,6 @@ object Utils {
 
     fun String.safeSubstring(startIndex: Int, endIndex: Int): String =
         if (length <= endIndex) this else substring(startIndex, endIndex)
-
-    fun String.toIntOrDefault(default: Int) = toIntOrNull() ?: default
-
-    fun String.toLongOrDefault(default: Long) = toLongOrNull() ?: default
-
-    fun String.toDoubleOrDefault(default: Double) = toDoubleOrNull() ?: default
-
-    fun String.toBooleanOrDefault(default: Boolean) = toBooleanStrictOrNull() ?: default
 
     @JvmStatic fun getPlayerFromUsername(name: String): Player {
         if (name.isEmpty()) throw PlayerNotFoundException(name)
@@ -273,7 +262,7 @@ object Utils {
     }
 
     @JvmStatic fun formatBalance(amount: Double): String {
-        val string = "${Config.getString("currency")}${nf.format(amount)}"
+        val string = "${Config.currency}${nf.format(amount)}"
         return if (string.endsWith(".00")) string.substring(0, string.length - 3) else string
     }
 

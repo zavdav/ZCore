@@ -17,9 +17,9 @@ class CommandMotd : ZCoreCommand(
 ) {
 
     override fun execute(event: CommandEvent) {
-        assert(!Config.isEmpty("motd"), "noMotdSet")
+        assert(Config.motd.isNotEmpty(), "noMotdSet")
         val player = event.sender as Player
-        val motd = Config.getList("motd").toMutableList()
+        val motd = Config.motd.toMutableList()
         for (i in motd.indices) {
             motd[i] = formatString(motd[i],
                 "name" to player.name,

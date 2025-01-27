@@ -5,10 +5,6 @@ import org.poseidonplugins.zcore.ZCore
 import org.poseidonplugins.zcore.api.Economy
 import org.poseidonplugins.zcore.commands.ZCoreCommand
 import org.poseidonplugins.zcore.util.Utils.roundTo
-import org.poseidonplugins.zcore.util.Utils.toBooleanOrDefault
-import org.poseidonplugins.zcore.util.Utils.toDoubleOrDefault
-import org.poseidonplugins.zcore.util.Utils.toIntOrDefault
-import org.poseidonplugins.zcore.util.Utils.toLongOrDefault
 import java.io.File
 import java.nio.file.Files
 
@@ -33,61 +29,106 @@ object Config {
         yaml.load()
     }
 
-    fun getString(key: String): String =
-        (yaml.getProperty(key) ?: defaults[key]).toString()
+    private fun getString(key: String, def: String): String =
+        yaml.getProperty(key) as? String ?: def
 
-    fun getInt(key: String, min: Int = 0, max: Int = Int.MAX_VALUE): Int =
-        getString(key).toIntOrDefault(defaults[key].toString().toInt()).coerceIn(min, max)
+    private fun getInt(key: String, range: IntRange = 0..Int.MAX_VALUE, def: Int): Int =
+        (yaml.getProperty(key) as? Number)?.toInt()?.coerceIn(range) ?: def
 
-    fun getLong(key: String, min: Long = 0, max: Long = Long.MAX_VALUE): Long =
-        getString(key).toLongOrDefault(defaults[key].toString().toLong()).coerceIn(min, max)
+    private fun getLong(key: String, range: LongRange = 0..Long.MAX_VALUE, def: Long): Long =
+        (yaml.getProperty(key) as? Number)?.toLong()?.coerceIn(range) ?: def
 
-    fun getDouble(key: String, min: Double = 0.0, max: Double = Double.MAX_VALUE): Double =
-        getString(key).toDoubleOrDefault(defaults[key].toString().toDouble()).coerceIn(min, max)
+    private fun getDouble(key: String, range: ClosedFloatingPointRange<Double> = 0.0..Double.MAX_VALUE, def: Double): Double =
+        (yaml.getProperty(key) as? Number)?.toDouble()?.coerceIn(range) ?: def
 
-    fun getBoolean(key: String): Boolean =
-        getString(key).toBooleanOrDefault(defaults[key].toString().toBooleanStrict())
+    private fun getBoolean(key: String, def: Boolean): Boolean =
+        yaml.getProperty(key) as? Boolean ?: def
 
-    fun getList(key: String): List<String> =
-        try { yaml.getProperty(key) as List<String> }
-        catch (_: Exception) { defaults[key] as List<String> }
+    @Suppress("UNCHECKED_CAST")
+    private fun getStringList(key: String, def: List<String>): List<String> =
+        yaml.getProperty(key) as? List<String> ?: def
 
-    fun isEmpty(key: String): Boolean {
-        return (yaml.getProperty(key) ?: return false).toString().isEmpty()
-    }
+    val autoSaveTime: Long
+        get() = getLong("autoSaveTime", 1..Long.MAX_VALUE, 300)
 
-    fun getCommandCost(command: ZCoreCommand) =
-        (yaml.getProperty("commandCosts.${command.name}") as? Double ?: 0.0)
-            .coerceIn(0.0, Economy.MAX_BALANCE)
-            .roundTo(2)
+    val precacheAllPlayers: Boolean
+        get() = getBoolean("precacheAllPlayers", false)
 
-    private val defaults: Map<String, Any> = mapOf(
-        "autoSaveTime" to 300,
-        "precacheAllPlayers" to false,
-        "backupFolder" to "./backup",
-        "motd" to mutableListOf("§eWelcome, {NAME}§e!", "§bType /help for a list of commands.", "§7Online players: §f{PLAYERLIST}"),
-        "rules" to mutableListOf("§c1. Be respectful", "§c2. No griefing", "§c3. No cheating"),
-        "afkTime" to 300,
-        "afkKickTime" to 1800,
-        "protectAfkPlayers" to false,
-        "afkDelay" to 3,
-        "teleportDelay" to 3,
-        "chatFormat" to "{DISPLAYNAME}§f: {MESSAGE}",
-        "broadcastFormat" to "§d[Broadcast] {MESSAGE}",
-        "joinMsgFormat" to "§e{PLAYER} has joined the game.",
-        "leaveMsgFormat" to "§e{PLAYER} has left the game.",
-        "kickMsgFormat" to "§e{PLAYER} has been kicked from the server.",
-        "banMsgFormat" to "§e{PLAYER} has been banned from the server.",
-        "nickPrefix" to "~",
-        "nickFormat" to "{PREFIX} §f{NICKNAME}§f {SUFFIX}",
-        "chatRadius" to 0,
-        "msgSendFormat" to "§7[me -> {NAME}§7] §f{MESSAGE}",
-        "msgReceiveFormat" to "§7[{NAME}§7 -> me] §f{MESSAGE}",
-        "disabledCommands" to listOf<String>(),
-        "currency" to "$",
-        "maxBalance" to 10000000000000,
-        "balancesPerPage" to 10,
-        "multipleHomes" to 10,
-        "homesPerPage" to 50,
-    )
+    val backupFolder: String
+        get() = getString("backupFolder", "./backup")
+
+    val motd: List<String>
+        get() = getStringList("motd", emptyList())
+
+    val rules: List<String>
+        get() = getStringList("motd", emptyList())
+
+    val afkTime: Int
+        get() = getInt("afkTime", 1..Int.MAX_VALUE, 300)
+
+    val afkKickTime: Int
+        get() = getInt("afkKickTime", 1..Int.MAX_VALUE, 1800)
+
+    val protectAfkPlayers: Boolean
+        get() = getBoolean("protectAfkPlayers", false)
+
+    val afkDelay: Int
+        get() = getInt("afkDelay", def = 3)
+
+    val teleportDelay: Int
+        get() = getInt("teleportDelay", def = 3)
+
+    val chatFormat: String
+        get() = getString("chatFormat", "{DISPLAYNAME}§f: {MESSAGE}")
+
+    val broadcastFormat: String
+        get() = getString("broadcastFormat", "§d[Broadcast] {MESSAGE}")
+
+    val joinMsgFormat: String
+        get() = getString("joinMsgFormat", "§e{NAME} has joined the game.")
+
+    val leaveMsgFormat: String
+        get() = getString("leaveMsgFormat", "§e{NAME} has left the game.")
+
+    val kickMsgFormat: String
+        get() = getString("kickMsgFormat", "§e{NAME} has been kicked from the server.")
+
+    val banMsgFormat: String
+        get() = getString("banMsgFormat", "§e{NAME} has been banned from the server.")
+
+    val nickPrefix: String
+        get() = getString("nickPrefix", "~")
+
+    val nickFormat: String
+        get() = getString("nickFormat", "{PREFIX} §f{NICKNAME}§f {SUFFIX}")
+
+    val chatRadius: Int
+        get() = getInt("chatRadius", def = 0)
+
+    val msgSendFormat: String
+        get() = getString("msgSendFormat", "§7[me -> {NAME}§7] §f{MESSAGE}")
+
+    val msgReceiveFormat: String
+        get() = getString("msgReceiveFormat", "§7[{NAME}§7 -> me] §f{MESSAGE}")
+
+    val disabledCommands: List<String>
+        get() = getStringList("disabledCommands", emptyList())
+
+    fun getCommandCost(command: ZCoreCommand): Double =
+        getDouble("commandCosts.${command.name}", 0.0..maxBalance, 0.0).roundTo(2)
+
+    val currency: String
+        get() = getString("currency", "$")
+
+    val maxBalance: Double
+        get() = getDouble("maxBalance", 0.0..Economy.MAX_BALANCE, Economy.MAX_BALANCE).roundTo(2)
+
+    val balancesPerPage: Int
+        get() = getInt("balancesPerPage", 1..Int.MAX_VALUE, 10)
+
+    val multipleHomes: Int
+        get() = getInt("multipleHomes", 2..Int.MAX_VALUE, 10)
+
+    val homesPerPage: Int
+        get() = getInt("homesPerPage", 1..Int.MAX_VALUE, 50)
 }

@@ -13,9 +13,8 @@ class CommandRules : ZCoreCommand(
 ) {
 
     override fun execute(event: CommandEvent) {
-        assert(!Config.isEmpty("rules"), "noRulesSet")
-
-        for (line in Config.getList("rules")) {
+        assert(Config.rules.isNotEmpty(), "noRulesSet")
+        for (line in Config.rules) {
             event.sender.sendMessage(line)
         }
     }

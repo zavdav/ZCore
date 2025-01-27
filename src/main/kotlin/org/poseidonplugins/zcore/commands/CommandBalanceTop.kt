@@ -30,7 +30,7 @@ class CommandBalanceTop : ZCoreCommand(
                 page = (event.args[0].toIntOrNull() ?: 1).coerceAtLeast(1)
             }
 
-            val balancesPerPage = Config.getInt("balancesPerPage", 10)
+            val balancesPerPage = Config.balancesPerPage
             val pages = ceil(players.size.toDouble() / balancesPerPage).toInt()
             assert(page <= pages, AsyncCommandException(event.sender, formatError("pageTooHigh")))
             event.sender.sendTl("balancetopPage", "page" to page, "pages" to pages)

@@ -27,7 +27,7 @@ class CommandSetHome : ZCoreCommand(
 
         val player = event.sender as Player
         val user = User.from(player)
-        val limit = Config.getInt("multipleHomes", 2)
+        val limit = Config.multipleHomes
         val homeCount = user.getHomes().size
 
         if (!hasPermission(event.sender, "zcore.sethome.unlimited")) {

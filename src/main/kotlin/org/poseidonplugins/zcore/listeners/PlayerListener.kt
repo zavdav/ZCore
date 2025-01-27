@@ -64,12 +64,12 @@ class PlayerListener : Listener {
         user.updateDisplayName()
         Utils.updateVanishedPlayers()
 
-        if (!Config.isEmpty("motd") && hasPermission(event.player, "zcore.motd")) {
+        if (Config.motd.isNotEmpty() && hasPermission(event.player, "zcore.motd")) {
             event.player.performCommand("motd")
         }
         if (user.mails.isNotEmpty()) event.player.sendTl("newMail")
 
-        event.joinMessage = formatProperty("joinMsgFormat", "player" to event.player.name)
+        event.joinMessage = formatString(Config.joinMsgFormat, event.player)
     }
 
     @EventHandler(priority = Event.Priority.Low)
@@ -82,15 +82,14 @@ class PlayerListener : Listener {
             user.savedInventory = null
         }
         user.cachedPlayTime = user.playTime
-        event.quitMessage = formatProperty("leaveMsgFormat", "player" to event.player.name)
+        event.quitMessage = formatString(Config.leaveMsgFormat, event.player)
     }
 
     @EventHandler(ignoreCancelled = true, priority = Event.Priority.Low)
     fun onPlayerKick(event: PlayerKickEvent) {
         val isBanned = Punishments.isBanned(event.player.uniqueId)
                     || Punishments.isIPBanned(event.player.address.address.hostAddress)
-        event.leaveMessage = formatProperty(if (isBanned) "banMsgFormat" else "kickMsgFormat",
-            "player" to event.player.name)
+        event.leaveMessage = formatString(if (isBanned) Config.banMsgFormat else Config.kickMsgFormat, event.player)
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -103,9 +102,9 @@ class PlayerListener : Listener {
         if (hasPermission(event.player, "zcore.chat.color")) {
             event.message = colorize(event.message)
         }
-        event.format = formatProperty("chatFormat", "displayname" to "%1\$s", "message" to "%2\$s")
+        event.format = formatString(Config.chatFormat, "displayname" to "%1\$s", "message" to "%2\$s")
 
-        val radius = Config.getInt("chatRadius", 0)
+        val radius = Config.chatRadius
         if (radius != 0) {
             event.recipients.removeIf { player ->
                 player.world != event.player.world || event.player.location.distance(player.location) > radius
@@ -132,7 +131,7 @@ class PlayerListener : Listener {
         if (event.entity !is Player) return
         val player = event.entity as Player
         val user = User.from(player)
-        if (user.isGod || Config.getBoolean("protectAfkPlayers") && user.isAfk) {
+        if (user.isGod || Config.protectAfkPlayers && user.isAfk) {
             player.fireTicks = 0
             player.remainingAir = player.maximumAir
             event.isCancelled = true
@@ -153,7 +152,7 @@ class PlayerListener : Listener {
             return
         }
 
-        if (Config.getBoolean("protectAfkPlayers") && hasPermission(event.player, "zcore.afk")) {
+        if (Config.protectAfkPlayers && hasPermission(event.player, "zcore.afk")) {
             from.pitch = to.pitch
             from.yaw = to.yaw
             if (from.y > to.y) from.y = to.y

@@ -94,7 +94,7 @@ class ZCore : JavaPlugin() {
             CommandWarp(),
             CommandWeather(),
             CommandZCore()
-        ).filter { it.name !in Config.getList("disabledCommands") }
+        ).filter { it.name !in Config.disabledCommands }
 
         cmdManager = CommandManager(plugin)
         cmdManager.registerCommands(*commands.toTypedArray())
@@ -104,7 +104,7 @@ class ZCore : JavaPlugin() {
 
         asyncRepeatingTask({
             UserMap.runTasks()
-            if (Duration.between(lastAutoSave, LocalDateTime.now()).seconds >= Config.getLong("autoSaveTime", 1)) {
+            if (Duration.between(lastAutoSave, LocalDateTime.now()).seconds >= Config.autoSaveTime) {
                 lastAutoSave = LocalDateTime.now()
                 logger.info("$prefix Automatically saving data")
                 UserMap.saveData()

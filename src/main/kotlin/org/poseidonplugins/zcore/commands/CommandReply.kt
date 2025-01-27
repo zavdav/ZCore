@@ -2,6 +2,7 @@ package org.poseidonplugins.zcore.commands
 
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.*
+import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendConfTl
@@ -26,13 +27,13 @@ class CommandReply : ZCoreCommand(
 
         var message = joinArgs(event.args, 0)
         if (hasPermission(player, "zcore.msg.color")) message = colorize(message)
-        player.sendConfTl("msgSendFormat", replyTo!!, "message" to message)
+        player.sendConfTl(Config.msgSendFormat, replyTo!!, "message" to message)
 
         val targetUser = User.from(replyTo)
         if (player.uniqueId !in targetUser.ignores ||
             hasPermission(player, "zcore.ignore.exempt")) {
             targetUser.replyTo = player
-            replyTo.sendConfTl("msgReceiveFormat", player, "message" to message)
+            replyTo.sendConfTl(Config.msgReceiveFormat, player, "message" to message)
         }
     }
 }

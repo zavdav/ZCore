@@ -22,7 +22,7 @@ class NoFundsException : CommandException(formatError("noFunds"))
 class BalanceOutOfBoundsException(val uuid: UUID) : CommandException(
     formatError("balanceOutOfBounds",
         "user" to User.from(uuid).name,
-        "amount" to Economy.formatBalance(Config.getDouble("maxBalance", 0.0, Economy.MAX_BALANCE))
+        "amount" to Economy.formatBalance(Config.maxBalance)
     )
 )
 

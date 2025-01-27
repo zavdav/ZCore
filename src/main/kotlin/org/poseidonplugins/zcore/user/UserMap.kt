@@ -29,7 +29,7 @@ object UserMap {
             knownUsers.add(UUID.fromString(uuid))
         }
 
-        precacheAll = Config.getBoolean("precacheAllPlayers")
+        precacheAll = Config.precacheAllPlayers
         if (precacheAll) {
             for (uuid in knownUsers) {
                 User.from(uuid)

@@ -44,7 +44,7 @@ class CommandNick : ZCoreCommand(
         }
         user.updateDisplayName()
 
-        val rawNick = "${Config.getString("nickPrefix")}$nickname"
+        val rawNick = "${Config.nickPrefix}$nickname"
         if (!isSelf) {
             if (reset) {
                 event.sender.sendTl("resetNickOther", target)

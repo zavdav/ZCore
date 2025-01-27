@@ -2,7 +2,6 @@ package org.poseidonplugins.zcore.commands
 
 import org.bukkit.Bukkit
 import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.assert
@@ -23,7 +22,7 @@ class CommandRealName : ZCoreCommand(
         var matches = 0
         for (player in Bukkit.getOnlinePlayers()) {
             val user = User.from(player)
-            val nickname = "${colorize(Config.getString("nickPrefix"))}${user.nickname}"
+            val nickname = "${Config.nickPrefix}${user.nickname}"
                 .replace("§([0-9a-f])".toRegex(), "")
 
             if (string.equals(nickname, true)) {

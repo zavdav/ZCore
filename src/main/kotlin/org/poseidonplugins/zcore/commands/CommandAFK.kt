@@ -31,8 +31,8 @@ class CommandAFK : ZCoreCommand(
 
         if (user.isAfk) {
             user.updateActivity()
-        } else if (Config.getBoolean("protectAfkPlayers") && Config.getInt("afkDelay", 0) > 0) {
-            val delay = Config.getInt("afkDelay", 0)
+        } else if (Config.protectAfkPlayers && Config.afkDelay > 0) {
+            val delay = Config.afkDelay
             target.sendTl("commencingAfk", "delay" to delay)
             target.sendTl("doNotMove")
 

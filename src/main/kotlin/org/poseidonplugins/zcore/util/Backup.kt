@@ -20,7 +20,7 @@ object Backup {
     private lateinit var root: File
 
     fun init() {
-        val path = Path(Config.getString("backupFolder"))
+        val path = Path(Config.backupFolder)
         root = if (path.isAbsolute) path.toFile()
                else Path(ZCore.dataFolder.path, path.toString()).normalize().toFile()
         if (root.exists() && !root.isDirectory) {

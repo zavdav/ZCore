@@ -36,14 +36,10 @@ class EconomyTest : ZCoreTest {
         assertEquals(0.0, user1.balance)
 
         assertThrows<BalanceOutOfBoundsException> {
-            Economy.setBalance(user1.uuid,
-                Config.getDouble("maxBalance", 0.0, Economy.MAX_BALANCE) + 1.0
-            )
+            Economy.setBalance(user1.uuid, Config.maxBalance + 1.0)
         }
         assertDoesNotThrow {
-            Economy.setBalance(user1.uuid,
-                Config.getDouble("maxBalance", 0.0, Economy.MAX_BALANCE)
-            )
+            Economy.setBalance(user1.uuid, Config.maxBalance)
         }
     }
 
@@ -68,9 +64,7 @@ class EconomyTest : ZCoreTest {
         Economy.addBalance(user1.uuid, -100.0)
         assertEquals(20400.49, user1.balance)
 
-        Economy.setBalance(user1.uuid,
-            Config.getDouble("maxBalance", 0.0, Economy.MAX_BALANCE) - 100.0
-        )
+        Economy.setBalance(user1.uuid, Config.maxBalance - 100.0)
         assertThrows<BalanceOutOfBoundsException> {
             Economy.addBalance(user1.uuid, 100.005)
         }
@@ -149,9 +143,7 @@ class EconomyTest : ZCoreTest {
         }
 
         Economy.setBalance(user1.uuid, 5000.0)
-        Economy.setBalance(user2.uuid,
-            Config.getDouble("maxBalance", 0.0, Economy.MAX_BALANCE) - 100.0
-        )
+        Economy.setBalance(user2.uuid, Config.maxBalance - 100.0)
         assertThrows<BalanceOutOfBoundsException> {
             Economy.transferBalance(user1.uuid, user2.uuid, 100.005)
         }
