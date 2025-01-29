@@ -113,3 +113,18 @@ protectAfkPlayers: false
 # If protectAfkPlayers is enabled, how long do players
 # have to stand still until they are marked as AFK
 afkDelay: 3
+
+# ┌───────────────────────────┐
+# │           Kits            │
+# └───────────────────────────┘
+
+kits:
+  # Kit name must be lowercase
+  tools:
+    items:
+      # id,data,count
+      - 273,0,1
+      - 274,0,1
+      - 275,0,1
+    cost: 10
+    cooldown: 300

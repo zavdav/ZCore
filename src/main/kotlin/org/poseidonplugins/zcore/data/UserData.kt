@@ -6,6 +6,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.poseidonplugins.zcore.ZCore
 import org.poseidonplugins.zcore.config.Config
+import org.poseidonplugins.zcore.config.Kits
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.roundTo
 import java.io.File
@@ -65,6 +66,17 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData(
     var vanished: Boolean
         get() = json.getOrDefault("vanished", false) as Boolean
         set(value) { json["vanished"] = value }
+
+    var kitCooldowns: Map<Kits.Kit, LocalDateTime>
+        @Suppress("UNCHECKED_CAST")
+        get() {
+            val kits = (json["kitCooldowns"] ?: JsonObject()) as Map<String, String>
+            return kits.entries.associate { Kits.getKit(it.key)!! to LocalDateTime.parse(it.value) }
+        }
+        set(value) {
+            val kits = value.entries.associate { it.key.name to it.value.toString() }
+            json["kitCooldowns"] = JsonObject(kits)
+        }
 
     init {
         if (initialize) initData()
@@ -160,5 +172,11 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData(
 
     fun clearMail() {
         mails = listOf()
+    }
+
+    fun addKitCooldown(kit: Kits.Kit, cooldown: Int) {
+        val kitCooldowns = kitCooldowns.toMutableMap()
+        kitCooldowns[kit] = LocalDateTime.now().plusSeconds(cooldown.toLong())
+        this.kitCooldowns = kitCooldowns
     }
 }

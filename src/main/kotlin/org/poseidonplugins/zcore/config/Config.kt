@@ -48,6 +48,10 @@ object Config {
     private fun getStringList(key: String, def: List<String>): List<String> =
         yaml.getProperty(key) as? List<String> ?: def
 
+    @Suppress("UNCHECKED_CAST")
+    private fun getMap(key: String, def: Map<String, Any>): Map<String, Any> =
+        yaml.getProperty(key) as? Map<String, Any> ?: def
+
     val autoSaveTime: Long
         get() = getLong("autoSaveTime", 1..Long.MAX_VALUE, 300)
 
@@ -131,4 +135,7 @@ object Config {
 
     val homesPerPage: Int
         get() = getInt("homesPerPage", 1..Int.MAX_VALUE, 50)
+
+    val kits: Map<String, Any>
+        get() = getMap("kits", emptyMap()).mapKeys { it.key.lowercase() }
 }

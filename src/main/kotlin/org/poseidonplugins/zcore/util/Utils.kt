@@ -9,6 +9,7 @@ import org.bukkit.World
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerLoginEvent
+import org.bukkit.inventory.ItemStack
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.user.User
@@ -270,5 +271,7 @@ object Utils {
         if (digits < 0) throw RuntimeException()
         return (this * 10.0.pow(digits)).roundToLong() / 10.0.pow(digits)
     }
+
+    fun ItemStack.copy(): ItemStack = ItemStack(this.typeId, this.amount, this.durability)
 
 }

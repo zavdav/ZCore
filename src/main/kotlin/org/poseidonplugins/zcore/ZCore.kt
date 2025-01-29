@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.poseidonplugins.commandapi.CommandManager
 import org.poseidonplugins.zcore.commands.*
 import org.poseidonplugins.zcore.config.Config
+import org.poseidonplugins.zcore.config.Kits
 import org.poseidonplugins.zcore.data.Punishments
 import org.poseidonplugins.zcore.data.SpawnData
 import org.poseidonplugins.zcore.data.WarpData
@@ -42,6 +43,7 @@ class ZCore : JavaPlugin() {
 
         if (!dataFolder.exists()) dataFolder.mkdirs()
         Config.load()
+        Kits.load()
         Backup.init()
 
         val commands = listOf(
@@ -67,6 +69,7 @@ class ZCore : JavaPlugin() {
             CommandKick(),
             CommandKickAll(),
             CommandKill(),
+            CommandKit(),
             CommandList(),
             CommandMail(),
             CommandMotd(),

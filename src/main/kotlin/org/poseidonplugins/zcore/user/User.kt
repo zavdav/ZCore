@@ -115,4 +115,10 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
         }
         return false
     }
+
+    fun checkKitCooldowns() {
+        val kitCooldowns = kitCooldowns.toMutableMap()
+        kitCooldowns.entries.removeIf { LocalDateTime.now().isAfter(it.value) }
+        this.kitCooldowns = kitCooldowns
+    }
 }
