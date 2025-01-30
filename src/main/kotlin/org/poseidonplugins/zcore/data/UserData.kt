@@ -18,84 +18,78 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData(
     File(ZCore.dataFolder, "${File.separator}userdata${File.separator}$uuid.json")) {
 
     protected var username: String
-        get() = json["username"].toString()
+        get() = json["username", ""]
         private set(value) { json["username"] = value }
 
     var firstJoin: LocalDateTime
-        get() = LocalDateTime.parse(json["firstJoin"].toString())
+        get() = LocalDateTime.parse(json["firstJoin", ""])
         set(value) { json["firstJoin"] = value.toString() }
 
     var lastJoin: LocalDateTime
-        get() = LocalDateTime.parse(json["lastJoin"].toString())
+        get() = LocalDateTime.parse(json["lastJoin", ""])
         set(value) { json["lastJoin"] = value.toString() }
 
     var lastSeen: LocalDateTime
-        get() = LocalDateTime.parse(json["lastSeen"].toString())
+        get() = LocalDateTime.parse(json["lastSeen", ""])
         set(value) { json["lastSeen"] = value.toString() }
 
     var playTime: Long
-        get() = json["playTime"].toString().toLong()
+        get() = json["playTime", 0L]
         set(value) { json["playTime"] = value }
 
     var balance: Double
-        get() = json["balance"].toString().toDouble().roundTo(2)
-        set(value) { json["balance"] = value.coerceAtLeast(0.0) }
+        get() = json["balance", 0.0].coerceIn(0.0..Config.maxBalance).roundTo(2)
+        set(value) { json["balance"] = value.coerceIn(0.0..Config.maxBalance).roundTo(2) }
 
     var nickname: String
-        get() = if ("nickname" in json.keys) json["nickname"].toString() else username
+        get() = json["nickname", username]
         set(value) { json["nickname"] = value }
 
+    var homes: JsonObject
+        get() = json["homes", JsonObject()]
+        set(value) { json["homes"] = value }
+
     var ignores: Set<UUID>
-        get() { return ((json["ignores"] ?: return setOf()) as JsonArray)
-                .map { UUID.fromString(it.toString()) }.toSet() }
+        get() = json["ignores", JsonArray()].map { UUID.fromString(it.toString()) }.toSet()
         set(value) { json["ignores"] = JsonArray(value.map { it.toString() }) }
 
     var mails: List<String>
         @Suppress("UNCHECKED_CAST")
-        get() = (json.getOrDefault("mails", JsonArray()) as JsonArray).toList() as List<String>
+        get() = json["mails", JsonArray()].toList() as List<String>
         set(value) { json["mails"] = JsonArray(value) }
 
     var seesChat: Boolean
-        get() = json.getOrDefault("seesChat", true) as Boolean
+        get() = json["seesChat", true]
         set(value) { json["seesChat"] = value }
 
     var isGod: Boolean
-        get() = json.getOrDefault("isGod", false) as Boolean
+        get() = json["isGod", false]
         set(value) { json["isGod"] = value }
 
     var vanished: Boolean
-        get() = json.getOrDefault("vanished", false) as Boolean
+        get() = json["vanished", false]
         set(value) { json["vanished"] = value }
 
     var kitCooldowns: Map<Kits.Kit, LocalDateTime>
-        @Suppress("UNCHECKED_CAST")
-        get() {
-            val kits = (json["kitCooldowns"] ?: JsonObject()) as Map<String, String>
-            return kits.entries.associate { Kits.getKit(it.key)!! to LocalDateTime.parse(it.value) }
-        }
+        get() = json["kitCooldowns", emptyMap<String, String>()].entries
+            .associate { Kits.getKit(it.key)!! to LocalDateTime.parse(it.value) }
         set(value) {
-            val kits = value.entries.associate { it.key.name to it.value.toString() }
-            json["kitCooldowns"] = JsonObject(kits)
+            json["kitCooldowns"] = JsonObject(value.entries
+                .associate { it.key.name to it.value.toString() })
         }
 
     init {
         if (initialize) initData()
-        balance = balance.coerceAtMost(Config.maxBalance)
     }
 
     private fun initData() {
         json["uuid"] = uuid.toString()
-        balance = 0.0
-        playTime = 0L
-        for (player in Bukkit.getOnlinePlayers()) {
-            if (player.uniqueId == uuid) {
-                val now = LocalDateTime.now()
-                username = player.name
-                firstJoin = now
-                lastJoin = now
-                lastSeen = now
-            }
-        }
+        val player = Bukkit.getOnlinePlayers().firstOrNull { it.uniqueId == uuid }
+        val now = LocalDateTime.now()
+        username = player?.name ?: ""
+        firstJoin = now
+        lastJoin = now
+        lastSeen = now
     }
 
     fun updateOnJoin(username: String) {
@@ -114,21 +108,21 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData(
         home["pitch"] = location.pitch
         home["yaw"] = location.yaw
 
-        val homes = json.getOrDefault("homes", JsonObject()) as JsonObject
+        val homes = this.homes
         homes[name] = home
-        json["homes"] = homes
+        this.homes = homes
     }
 
     fun removeHome(name: String) {
-        val homes = json.getOrDefault("homes", JsonObject()) as JsonObject
+        val homes = this.homes
         if (name in homes.keys) homes.remove(name)
-        json["homes"] = homes
+        this.homes = homes
     }
 
-    fun homeExists(name: String): Boolean = getHomeJson(name) != null
+    fun homeExists(name: String): Boolean = getHome(name) != null
 
-    fun getHome(name: String): Location? {
-        val home = getHomeJson(name) ?: return null
+    fun getHomeLocation(name: String): Location? {
+        val home = getHome(name) ?: return null
         val world = Bukkit.getWorld(home["world"].toString())
         val x = floor(home["x"].toString().toDouble()) + 0.5
         var y = home["y"].toString().toDouble()
@@ -139,16 +133,14 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData(
         return Location(world, x, y, z, yaw, pitch)
     }
 
-    fun getHomeJson(name: String): JsonObject? {
-        val homes = (json["homes"] ?: return null) as JsonObject
+    fun getHome(name: String): JsonObject? {
         for (home in homes) {
             if (name.equals(home.key, true)) return home.value as JsonObject
         }
         return null
     }
 
-    fun getFinalHomeName(name: String): String {
-        val homes = (json["homes"] ?: return name) as JsonObject
+    fun getHomeName(name: String): String {
         for (homeName in homes.keys) {
             if (name.equals(homeName, true)) return homeName
         }
@@ -156,7 +148,7 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData(
     }
 
     fun getHomes(): List<String> =
-        (json.getOrDefault("homes", JsonObject()) as JsonObject).keys.filterIsInstance<String>().toList()
+        homes.keys.filterIsInstance<String>().toList()
 
     fun resetNickname() = json.remove("nickname")
 
@@ -171,7 +163,7 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData(
     }
 
     fun clearMail() {
-        mails = listOf()
+        mails = emptyList()
     }
 
     fun addKitCooldown(kit: Kits.Kit, cooldown: Int) {

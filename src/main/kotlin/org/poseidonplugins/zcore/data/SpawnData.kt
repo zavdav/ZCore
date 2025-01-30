@@ -23,7 +23,8 @@ object SpawnData : JsonData(File(ZCore.dataFolder, "spawns.json")) {
     fun removeSpawn(world: String) = json.remove(world)
 
     fun getSpawn(world: World): Location? {
-        val spawn = (json[world.name] ?: return null) as JsonObject
+        val spawn = json[world.name, JsonObject()]
+        if (spawn.isEmpty()) return null
         val x = spawn["x"].toString().toDouble()
         val y = spawn["y"].toString().toDouble()
         val z = spawn["z"].toString().toDouble()

@@ -19,9 +19,9 @@ object Punishments : JsonData(File(ZCore.dataFolder, "punishments.json")) {
     private val banMap: MutableMap<UUID, Ban> = mutableMapOf()
     private val ipBanMap: MutableMap<String, IPBan> = mutableMapOf()
 
-    private var mutes: JsonObject = json.getOrDefault("mutes", JsonObject()) as JsonObject
-    private var bans: JsonObject = json.getOrDefault("bans", JsonObject()) as JsonObject
-    private var ipBans: JsonObject = json.getOrDefault("ipBans", JsonObject()) as JsonObject
+    private var mutes: JsonObject = json["mutes", JsonObject()]
+    private var bans: JsonObject = json["bans", JsonObject()]
+    private var ipBans: JsonObject = json["ipBans", JsonObject()]
 
     init {
         for (entry in mutes) {

@@ -43,4 +43,6 @@ abstract class JsonData(private val file: File) {
             fw.flush()
         }
     }
+
+    inline operator fun <reified T> JsonObject.get(key: String, def: T): T = (this[key] ?: def) as T
 }

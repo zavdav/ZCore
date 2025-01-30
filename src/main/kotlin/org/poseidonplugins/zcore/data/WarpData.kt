@@ -25,8 +25,8 @@ object WarpData : JsonData(File(ZCore.dataFolder, "warps.json")) {
 
     fun getWarps(): List<String> = json.keys.filterIsInstance<String>().toList()
 
-    fun getWarp(name: String): Location? {
-        val warp = getWarpJson(name) ?: return null
+    fun getWarpLocation(name: String): Location? {
+        val warp = getWarp(name) ?: return null
         val world = Bukkit.getWorld(warp["world"].toString())
         val x = warp["x"].toString().toDouble()
         var y = warp["y"].toString().toDouble()
@@ -38,16 +38,16 @@ object WarpData : JsonData(File(ZCore.dataFolder, "warps.json")) {
         return Location(world, x, y, z, yaw, pitch)
     }
 
-    fun getWarpJson(name: String): JsonObject? {
+    fun getWarp(name: String): JsonObject? {
         for (warp in json) {
             if (name.equals(warp.key, true)) return warp.value as JsonObject
         }
         return null
     }
 
-    fun warpExists(name: String): Boolean = getWarpJson(name) != null
+    fun warpExists(name: String): Boolean = getWarp(name) != null
 
-    fun getFinalWarpName(name: String): String {
+    fun getWarpName(name: String): String {
         for (warpName in json.keys) {
             if (name.equals(warpName, true)) return warpName
         }

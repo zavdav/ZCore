@@ -16,11 +16,11 @@ class CommandDelWarp : ZCoreCommand(
 ) {
 
     override fun execute(event: CommandEvent) {
-        val warpName = event.args[0]
+        var warpName = event.args[0]
         assert(WarpData.warpExists(warpName), "warpNotFound")
 
-        val finalName = WarpData.getFinalWarpName(warpName)
-        WarpData.removeWarp(finalName)
-        event.sender.sendTl("warpDeleted", "warp" to finalName)
+        warpName = WarpData.getWarpName(warpName)
+        WarpData.removeWarp(warpName)
+        event.sender.sendTl("warpDeleted", "warp" to warpName)
     }
 }

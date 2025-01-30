@@ -33,16 +33,16 @@ class CommandHome : ZCoreCommand(
         }
 
         assert(user.homeExists(homeName), "homeNotFound")
-        val location = user.getHome(homeName)
+        val location = user.getHomeLocation(homeName)
         val isSelf = player.uniqueId == user.uuid
         if (isSelf) charge(player)
         player.teleport(location)
 
-        val finalName = user.getFinalHomeName(homeName)
+        homeName = user.getHomeName(homeName)
         if (isSelf) {
-            event.sender.sendTl("teleportedToHome", "home" to finalName)
+            event.sender.sendTl("teleportedToHome", "home" to homeName)
         } else {
-            event.sender.sendTl("teleportedToHomeOther", "user" to user.name, "home" to finalName)
+            event.sender.sendTl("teleportedToHomeOther", "user" to user.name, "home" to homeName)
         }
     }
 }
