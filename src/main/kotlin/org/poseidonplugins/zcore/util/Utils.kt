@@ -274,4 +274,11 @@ object Utils {
 
     fun ItemStack.copy(): ItemStack = ItemStack(this.typeId, this.amount, this.durability)
 
+    @JvmStatic fun notifySocialSpy(player: Player, commandLine: String) {
+        for (target in Bukkit.getOnlinePlayers()) {
+            if (User.from(target).socialSpy) {
+                target.sendConfTl(Config.socialSpyFormat, player, "command" to commandLine)
+            }
+        }
+    }
 }

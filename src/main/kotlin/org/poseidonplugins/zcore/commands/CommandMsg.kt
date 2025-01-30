@@ -35,5 +35,7 @@ class CommandMsg : ZCoreCommand(
             targetUser.replyTo = player
             target.sendConfTl(Config.msgReceiveFormat, player, "message" to message)
         }
+
+        Utils.notifySocialSpy(player, event.fullCommand)
     }
 }

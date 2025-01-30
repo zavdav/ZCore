@@ -55,6 +55,7 @@ chatRadius: 0
 
 msgSendFormat: '§7[me -> {NAME}§7] §f{MESSAGE}'
 msgReceiveFormat: '§7[{NAME}§7 -> me] §f{MESSAGE}'
+socialSpyFormat: '§6[SocialSpy] §f{DISPLAYNAME}§f: {COMMAND}'
 
 # ┌───────────────────────────┐
 # │         Commands          │

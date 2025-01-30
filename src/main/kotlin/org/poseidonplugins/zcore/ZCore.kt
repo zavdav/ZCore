@@ -87,6 +87,7 @@ class ZCore : JavaPlugin() {
             CommandSetHome(),
             CommandSetSpawn(),
             CommandSetWarp(),
+            CommandSocialSpy(),
             CommandSpawn(),
             CommandToggleChat(),
             CommandTP(),

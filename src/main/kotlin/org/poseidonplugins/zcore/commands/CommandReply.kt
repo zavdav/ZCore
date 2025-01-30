@@ -4,6 +4,7 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.*
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.user.User
+import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendConfTl
 
@@ -35,5 +36,7 @@ class CommandReply : ZCoreCommand(
             targetUser.replyTo = player
             replyTo.sendConfTl(Config.msgReceiveFormat, player, "message" to message)
         }
+
+        Utils.notifySocialSpy(player, event.fullCommand)
     }
 }

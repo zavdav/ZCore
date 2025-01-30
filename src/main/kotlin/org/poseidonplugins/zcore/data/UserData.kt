@@ -62,6 +62,10 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData(
         get() = json["seesChat", true]
         set(value) { json["seesChat"] = value }
 
+    var socialSpy: Boolean
+        get() = json["socialSpy", false]
+        set(value) { json["socialSpy"] = value }
+
     var isGod: Boolean
         get() = json["isGod", false]
         set(value) { json["isGod"] = value }

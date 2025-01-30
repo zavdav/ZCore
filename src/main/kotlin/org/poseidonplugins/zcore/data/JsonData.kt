@@ -44,5 +44,11 @@ abstract class JsonData(private val file: File) {
         }
     }
 
-    inline operator fun <reified T> JsonObject.get(key: String, def: T): T = (this[key] ?: def) as T
+    inline operator fun <reified T> JsonObject.get(key: String, def: T): T =
+        when (def) {
+            is Int -> (this[key] as? Number ?: def).toInt() as T
+            is Long -> (this[key] as? Number ?: def).toLong() as T
+            is Double -> (this[key] as? Number ?: def).toDouble() as T
+            else -> (this[key] ?: def) as T
+        }
 }

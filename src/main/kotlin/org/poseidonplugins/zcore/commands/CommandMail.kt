@@ -41,6 +41,8 @@ class CommandMail : ZCoreCommand(
                     targetUser.addMail(player.name, joinArgs(event.args, 2))
                     if (targetUser.isOnline) targetUser.player.sendTl("newMail")
                 }
+
+                Utils.notifySocialSpy(player, event.fullCommand)
             }
             "clear" -> {
                 user.clearMail()

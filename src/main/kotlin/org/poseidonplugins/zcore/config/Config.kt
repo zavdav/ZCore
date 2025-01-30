@@ -115,6 +115,9 @@ object Config {
     val msgReceiveFormat: String
         get() = getString("msgReceiveFormat", "§7[{NAME}§7 -> me] §f{MESSAGE}")
 
+    val socialSpyFormat: String
+        get() = getString("socialSpyFormat", "§6[SocialSpy] §f{DISPLAYNAME}§f: {COMMAND}")
+
     val disabledCommands: List<String>
         get() = getStringList("disabledCommands", emptyList())
 
