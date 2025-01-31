@@ -69,7 +69,7 @@ disabledCommands:
 #  - nick
 
 # The cost to perform a certain command
-# Applicable to: /clearinv, /heal, /home, /nick, /sethome, /spawn and /warp
+# Applicable to: /clearinv, /heal, /home, /nick, /sethome, /spawn, /warp and teleports via /tpaccept
 commandCosts:
 #  nick: 10.0
 
