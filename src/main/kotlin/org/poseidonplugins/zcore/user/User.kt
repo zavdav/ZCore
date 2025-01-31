@@ -32,6 +32,10 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
         }
     }
 
+    enum class TeleportType {
+        TPA, TPAHERE
+    }
+
     val name: String
         get() = when (isOnline) {
             true -> player.name
@@ -53,6 +57,8 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
     var isAfk: Boolean = false
 
     var replyTo: Player? = null
+
+    var tpRequest: Pair<Player, TeleportType>? = null
 
     var savedInventory: Array<ItemStack>? = null
 

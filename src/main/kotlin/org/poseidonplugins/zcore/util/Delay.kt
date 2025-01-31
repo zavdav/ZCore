@@ -5,22 +5,27 @@ import org.bukkit.entity.Player
 
 class Delay(
     private val player: Player,
-    private val runnable: Runnable,
-    delay: Int) : Runnable {
+    delay: Int,
+    private val runnable: () -> Unit
+) : Runnable {
 
-    private val task: Int
-    private val check: Int
+    private var task: Int = -1
+    private var check: Int = -1
     private val health: Int = player.health
     private val location: Location = player.location
 
     init {
-        check = syncRepeatingTask({ check() }, 0, 1)
-        task = syncDelayedTask(this, delay.coerceAtLeast(0) * 20L)
+        if (delay > 0) {
+            check = syncRepeatingTask({ check() }, 0, 1)
+            task = syncDelayedTask(this, delay.coerceAtLeast(0) * 20L)
+        } else {
+            runnable.invoke()
+        }
     }
 
     override fun run() {
         cancelTask(check)
-        runnable.run()
+        runnable.invoke()
     }
 
     private fun check() {

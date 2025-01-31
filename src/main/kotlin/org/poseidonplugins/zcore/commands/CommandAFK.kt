@@ -36,7 +36,7 @@ class CommandAFK : ZCoreCommand(
             target.sendTl("commencingAfk", "delay" to delay)
             target.sendTl("doNotMove")
 
-            Delay(target, { if (!user.isAfk) user.setInactive() }, delay)
+            Delay(target, delay) { if (!user.isAfk) user.setInactive() }
         } else {
             user.setInactive()
         }

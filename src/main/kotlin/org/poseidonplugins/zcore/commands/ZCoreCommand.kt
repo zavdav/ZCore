@@ -24,7 +24,7 @@ abstract class ZCoreCommand(
     val cost: Double
         get() = Config.getCommandCost(this)
 
-    protected fun charge(player: Player) {
+    protected open fun charge(player: Player) {
         if (cost > 0.0 && !hasPermission(player, "$permission.charge.bypass")) {
             Economy.subtractBalance(player.uniqueId, cost)
             player.sendTl("commandCharge",

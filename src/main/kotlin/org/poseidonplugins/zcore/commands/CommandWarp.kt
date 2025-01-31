@@ -5,6 +5,7 @@ import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.WarpData
 import org.poseidonplugins.zcore.util.Delay
+import org.poseidonplugins.zcore.util.NoFundsException
 import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
 
@@ -33,15 +34,17 @@ class CommandWarp : ZCoreCommand(
             if (delay > 0) {
                 event.sender.sendTl("commencingTeleport", "location" to warpName, "delay" to delay)
                 event.sender.sendTl("doNotMove")
-                Delay(player, {
+            }
+            Delay(player, delay) {
+                try {
                     charge(player)
                     player.teleport(location)
                     event.sender.sendTl("teleportedToWarp", "warp" to warpName)
-                }, delay)
-            } else {
-                charge(player)
-                player.teleport(location)
-                event.sender.sendTl("teleportedToWarp", "warp" to warpName)
+                } catch (e: NoFundsException) {
+                    for (message in e.messages) {
+                        player.sendMessage(message)
+                    }
+                }
             }
         }
     }
