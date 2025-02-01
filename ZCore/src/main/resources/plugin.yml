@@ -1,6 +1,6 @@
 name: ZCore
 main: org.poseidonplugins.zcore.ZCore
-version: 1.0-SNAPSHOT
+version: ${version}
 description: Provides core functionality and many commands
 author: zavdav
-depend: [ PoseidonKotlin ]
+depend: [PoseidonKotlin]
