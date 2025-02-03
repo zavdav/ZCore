@@ -16,3 +16,7 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 }
+
+tasks.register('zcore') {
+    dependsOn "clean", ":ZImport:shadowJar"
+}

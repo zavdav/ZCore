@@ -1,0 +1,15 @@
+###############################################
+# ┌─────────────────────────────────────────┐ #
+# │                 ZImport                 │ #
+# └─────────────────────────────────────────┘ #
+###############################################
+
+# The plugin whose userdata should be transferred to ZCore
+# Supports Essentials and Fundamentals
+plugin: 'Fundamentals'
+
+# Userdata transfer options
+replaceExisting: false
+transferBalances: true
+transferHomes: true
+transferPunishments: true

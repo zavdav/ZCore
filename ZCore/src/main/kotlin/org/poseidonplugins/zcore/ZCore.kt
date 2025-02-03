@@ -122,7 +122,7 @@ class ZCore : JavaPlugin() {
             }
         }, 0, 20)
 
-        logger.info("$prefix ${plugin.description.name} ${plugin.description.version} has been enabled.")
+        logger.info("$prefix ${description.name} ${description.version} has been enabled.")
     }
 
     override fun onDisable() {
@@ -131,7 +131,7 @@ class ZCore : JavaPlugin() {
         SpawnData.saveData()
         WarpData.saveData()
 
-        logger.info("$prefix ${plugin.description.name} ${plugin.description.version} has been disabled.")
+        logger.info("$prefix ${description.name} ${description.version} has been disabled.")
     }
 
     fun setupForTesting(server: Server) {
