@@ -65,7 +65,7 @@ object Config {
         get() = getStringList("motd", emptyList())
 
     val rules: List<String>
-        get() = getStringList("motd", emptyList())
+        get() = getStringList("rules", emptyList())
 
     val afkTime: Int
         get() = getInt("afkTime", 1..Int.MAX_VALUE, 300)
