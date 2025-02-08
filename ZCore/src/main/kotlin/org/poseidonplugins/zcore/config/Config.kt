@@ -88,6 +88,15 @@ object Config {
     val broadcastFormat: String
         get() = getString("broadcastFormat", "§d[Broadcast] {MESSAGE}")
 
+    val msgSendFormat: String
+        get() = getString("msgSendFormat", "§7[me -> {NAME}§7] §f{MESSAGE}")
+
+    val msgReceiveFormat: String
+        get() = getString("msgReceiveFormat", "§7[{NAME}§7 -> me] §f{MESSAGE}")
+
+    val socialSpyFormat: String
+        get() = getString("socialSpyFormat", "§6[SocialSpy] §f{DISPLAYNAME}§f: {COMMAND}")
+
     val joinMsgFormat: String
         get() = getString("joinMsgFormat", "§e{NAME} has joined the game.")
 
@@ -109,20 +118,14 @@ object Config {
     val nickPrefix: String
         get() = getString("nickPrefix", "~")
 
-    val nickFormat: String
-        get() = getString("nickFormat", "{PREFIX} §f{NICKNAME}§f {SUFFIX}")
+    val displayNameFormat: String
+        get() = getString("displayNameFormat", "{PREFIX} §f{NICKNAME}§f {SUFFIX}")
 
     val chatRadius: Int
         get() = getInt("chatRadius", def = 0)
 
-    val msgSendFormat: String
-        get() = getString("msgSendFormat", "§7[me -> {NAME}§7] §f{MESSAGE}")
-
-    val msgReceiveFormat: String
-        get() = getString("msgReceiveFormat", "§7[{NAME}§7 -> me] §f{MESSAGE}")
-
-    val socialSpyFormat: String
-        get() = getString("socialSpyFormat", "§6[SocialSpy] §f{DISPLAYNAME}§f: {COMMAND}")
+    val firstJoinMessage: String
+        get() = getString("firstJoinMessage", "§dWelcome to the server, {DISPLAYNAME}§d!")
 
     val disabledCommands: List<String>
         get() = getStringList("disabledCommands", emptyList())

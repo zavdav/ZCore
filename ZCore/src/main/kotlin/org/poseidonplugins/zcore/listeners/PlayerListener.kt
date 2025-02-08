@@ -56,14 +56,15 @@ class PlayerListener : Listener {
         val user = User.from(event.player)
         val spawn = SpawnData.getSpawn(event.player.world)
 
-        if (isFirstJoin) {
-            user.firstJoin = LocalDateTime.now()
-            if (spawn != null) event.player.teleport(spawn)
-        }
-
         user.updateOnJoin(event.player.name)
         user.updateDisplayName()
         Utils.updateVanishedPlayers()
+
+        if (isFirstJoin) {
+            user.firstJoin = LocalDateTime.now()
+            broadcastConfTl(Config.firstJoinMessage, event.player)
+            if (spawn != null) event.player.teleport(spawn)
+        }
 
         if (Config.motd.isNotEmpty() && hasPermission(event.player, "zcore.motd")) {
             event.player.performCommand("motd")

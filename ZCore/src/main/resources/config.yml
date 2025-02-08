@@ -37,8 +37,14 @@ teleportDelay: 3
 # │           Chat            │
 # └───────────────────────────┘
 
+# Chat formats
 chatFormat: '{DISPLAYNAME}§f: {MESSAGE}'
 broadcastFormat: '§d[Broadcast] {MESSAGE}'
+msgSendFormat: '§7[me -> {NAME}§7] §f{MESSAGE}'
+msgReceiveFormat: '§7[{NAME}§7 -> me] §f{MESSAGE}'
+socialSpyFormat: '§6[SocialSpy] §f{DISPLAYNAME}§f: {COMMAND}'
+
+# Join/Leave formats
 joinMsgFormat: '§e{NAME} has joined the game'
 leaveMsgFormat: '§e{NAME} has left the game'
 kickMsgFormat: '§e{NAME} has been kicked from the server'
@@ -51,15 +57,15 @@ operatorColor: 'c'
 # The prefix to add to nicknames to differentiate them from real names
 nickPrefix: '~'
 
-nickFormat: '{PREFIX} §f{NICKNAME}§f {SUFFIX}'
+# How display names should be formatted
+displayNameFormat: '{PREFIX} §f{NICKNAME}§f {SUFFIX}'
 
 # How far away a player will be heard from when chatting
 # Set to 0 to make chat global
 chatRadius: 0
 
-msgSendFormat: '§7[me -> {NAME}§7] §f{MESSAGE}'
-msgReceiveFormat: '§7[{NAME}§7 -> me] §f{MESSAGE}'
-socialSpyFormat: '§6[SocialSpy] §f{DISPLAYNAME}§f: {COMMAND}'
+# The message that should be broadcasted when a player joins the server for the first time
+firstJoinMessage: '§dWelcome to the server, {DISPLAYNAME}§d!'
 
 # ┌───────────────────────────┐
 # │         Commands          │

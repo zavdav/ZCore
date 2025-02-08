@@ -45,6 +45,9 @@ fun broadcastTl(key: String, player: Player, vararg pairs: Pair<String, Any>) =
 fun broadcastConfTl(message: String, vararg pairs: Pair<String, Any>) =
     Bukkit.broadcastMessage(formatString(message, *pairs))
 
+fun broadcastConfTl(message: String, player: Player, vararg pairs: Pair<String, Any>) =
+    Bukkit.broadcastMessage(formatString(message, player, *pairs))
+
 fun Player.kick(key: String, vararg pairs: Pair<String, Any>) =
     kickPlayer(format(key, *pairs).safeSubstring(0, 100))
 

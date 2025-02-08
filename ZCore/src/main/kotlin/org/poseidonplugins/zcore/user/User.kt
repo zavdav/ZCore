@@ -74,7 +74,7 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
 
     fun getDisplayName(useNick: Boolean): String {
         val nickname = if (useNick) getNick() else username
-        val displayName = formatString(Config.nickFormat,
+        val displayName = formatString(Config.displayNameFormat,
             "prefix" to prefix, "nickname" to nickname, "suffix" to suffix)
         return "§f${displayName.trim()}§f"
     }
