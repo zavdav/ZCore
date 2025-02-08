@@ -2,7 +2,6 @@ package org.poseidonplugins.zcore.commands
 
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.*
-import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.Utils.isSelf
@@ -44,7 +43,7 @@ class CommandNick : ZCoreCommand(
         }
         user.updateDisplayName()
 
-        val rawNick = "${Config.nickPrefix}$nickname"
+        val rawNick = user.getNick()
         if (!isSelf) {
             if (reset) {
                 event.sender.sendTl("resetNickOther", target)

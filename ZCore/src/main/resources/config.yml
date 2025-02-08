@@ -44,6 +44,10 @@ leaveMsgFormat: '§e{NAME} has left the game'
 kickMsgFormat: '§e{NAME} has been kicked from the server'
 banMsgFormat: '§e{NAME} has been banned from the server'
 
+# The color to add to the beginning of an operator's name
+# Set to 'none' to disable
+operatorColor: 'c'
+
 # The prefix to add to nicknames to differentiate them from real names
 nickPrefix: '~'
 

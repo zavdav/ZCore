@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.block.SignChangeEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.player.*
 import org.poseidonplugins.commandapi.colorize
@@ -169,6 +170,15 @@ class PlayerListener : Listener {
     @EventHandler(priority = Event.Priority.Low)
     fun onPlayerRespawn(event: PlayerRespawnEvent) {
         event.respawnLocation = SpawnData.getSpawn(event.respawnLocation.world) ?: return
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun onPlayerChangeSign(event: SignChangeEvent) {
+        if (hasPermission(event.player, "zcore.signs.color")) {
+            for (i in event.lines.indices) {
+                event.setLine(i, colorize(event.getLine(i)))
+            }
+        }
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -64,12 +64,16 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
 
     var cachedPlayTime: Long = playTime
 
+    fun getNick(): String {
+        val sb = StringBuilder()
+        if (player.isOp) sb.append(Config.operatorColor)
+        if (nickname != username) sb.append(Config.nickPrefix)
+        sb.append(nickname)
+        return sb.toString()
+    }
+
     fun getDisplayName(useNick: Boolean): String {
-        val nickname = if (!useNick || nickname == username) {
-            username
-        } else {
-            "${Config.nickPrefix}$nickname"
-        }
+        val nickname = if (useNick) getNick() else username
         val displayName = formatString(Config.nickFormat,
             "prefix" to prefix, "nickname" to nickname, "suffix" to suffix)
         return "§f${displayName.trim()}§f"

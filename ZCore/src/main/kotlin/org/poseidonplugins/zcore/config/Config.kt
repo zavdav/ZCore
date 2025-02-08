@@ -100,6 +100,12 @@ object Config {
     val banMsgFormat: String
         get() = getString("banMsgFormat", "§e{NAME} has been banned from the server.")
 
+    val operatorColor: String
+        get() {
+            val color = getString("operatorColor", "none")
+            return if (color.matches("[0-9a-f]".toRegex())) "§$color" else ""
+        }
+
     val nickPrefix: String
         get() = getString("nickPrefix", "~")
 
