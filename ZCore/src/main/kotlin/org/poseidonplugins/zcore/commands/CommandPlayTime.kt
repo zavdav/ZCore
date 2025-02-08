@@ -7,8 +7,6 @@ import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendTl
-import java.time.Duration
-import java.time.LocalDateTime
 
 class CommandPlayTime : ZCoreCommand(
     "playtime",
@@ -30,9 +28,7 @@ class CommandPlayTime : ZCoreCommand(
         val isSelf = player.uniqueId == uuid
         assert(isSelf || hasPermission(event.sender, "zcore.playtime.others"), "noPermission")
         val user = User.from(uuid)
-        if (user.isOnline) {
-            user.playTime = user.cachedPlayTime + Duration.between(user.lastJoin, LocalDateTime.now()).toMillis()
-        }
+        if (user.isOnline) user.updatePlayTime()
 
         val duration = Utils.formatDuration(user.playTime)
         if (isSelf) {

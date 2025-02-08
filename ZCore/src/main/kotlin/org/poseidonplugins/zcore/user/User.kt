@@ -98,6 +98,10 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
         lastSeen = LocalDateTime.now()
     }
 
+    fun updatePlayTime() {
+        playTime = cachedPlayTime + Duration.between(lastJoin, LocalDateTime.now()).toMillis()
+    }
+
     fun checkIsAfk() {
         if (!isOnline) return
 
