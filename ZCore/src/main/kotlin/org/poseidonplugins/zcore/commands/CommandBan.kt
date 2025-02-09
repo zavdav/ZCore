@@ -1,11 +1,14 @@
 package org.poseidonplugins.zcore.commands
 
+import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
+import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.commandapi.joinArgs
 import org.poseidonplugins.zcore.data.Punishments
 import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.user.UserMap
 import org.poseidonplugins.zcore.util.Utils
+import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.format
 import org.poseidonplugins.zcore.util.sendTl
 import java.time.LocalDateTime
@@ -21,7 +24,19 @@ class CommandBan: ZCoreCommand(
 
     override fun execute(event: CommandEvent) {
         val uuid = Utils.getUUIDFromString(event.args[0])
-        val name = if (UserMap.isUserKnown(uuid)) User.from(uuid).name else uuid
+        var name = uuid.toString()
+
+        if (UserMap.isUserKnown(uuid)) {
+            assert(event.sender !is Player || (event.sender as Player).uniqueId != uuid, "cannotBanSelf")
+            val user = User.from(uuid)
+            if (user.isOnline) {
+                assert(!hasPermission(user.player, "zcore.ban.exempt"), "cannotBanUser")
+            } else {
+                assert(!user.banExempt, "cannotBanUser")
+            }
+            name = user.name
+        }
+
         val subArgs = joinArgs(event.args, 1, event.args.size)
         val matcher = Pattern.compile("^${Utils.TIME_PATTERN.pattern()}").matcher(subArgs)
         val sb = StringBuilder()

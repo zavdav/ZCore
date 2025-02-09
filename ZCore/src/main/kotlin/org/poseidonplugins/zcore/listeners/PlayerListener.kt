@@ -83,8 +83,12 @@ class PlayerListener : Listener {
             event.player.inventory.contents = user.savedInventory
             user.savedInventory = null
         }
+
         user.updatePlayTime()
         user.cachedPlayTime = user.playTime
+        user.banExempt = hasPermission(event.player, "zcore.ban.exempt")
+        user.muteExempt = hasPermission(event.player, "zcore.mute.exempt")
+
         event.quitMessage = formatString(Config.leaveMsgFormat, event.player)
     }
 

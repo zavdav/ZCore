@@ -1,10 +1,13 @@
 package org.poseidonplugins.zcore.commands
 
+import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
+import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.commandapi.joinArgs
 import org.poseidonplugins.zcore.data.Punishments
 import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.Utils
+import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.format
 import org.poseidonplugins.zcore.util.sendTl
 import java.time.LocalDateTime
@@ -20,7 +23,17 @@ class CommandMute : ZCoreCommand(
 
     override fun execute(event: CommandEvent) {
         val uuid = Utils.getUUIDFromUsername(event.args[0])
-        val name = User.from(uuid).name
+        val name: String
+
+        assert(event.sender !is Player || (event.sender as Player).uniqueId != uuid, "cannotMuteSelf")
+        val user = User.from(uuid)
+        if (user.isOnline) {
+            assert(!hasPermission(user.player, "zcore.mute.exempt"), "cannotMuteUser")
+        } else {
+            assert(!user.muteExempt, "cannotMuteUser")
+        }
+        name = user.name
+
         val subArgs = joinArgs(event.args, 1, event.args.size)
         val matcher = Pattern.compile("^${Utils.TIME_PATTERN.pattern()}").matcher(subArgs)
         val sb = StringBuilder()

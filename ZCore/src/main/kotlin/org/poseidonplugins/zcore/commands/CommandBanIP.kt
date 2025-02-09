@@ -1,9 +1,11 @@
 package org.poseidonplugins.zcore.commands
 
+import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.joinArgs
 import org.poseidonplugins.zcore.data.Punishments
 import org.poseidonplugins.zcore.util.Utils
+import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.format
 import org.poseidonplugins.zcore.util.sendTl
 import java.time.LocalDateTime
@@ -27,6 +29,7 @@ class CommandBanIP : ZCoreCommand(
                 player.address.address.hostAddress
             }
 
+        assert(event.sender !is Player || (event.sender as Player).address.address.hostAddress != ip, "cannotBanSelf")
         val subArgs = joinArgs(event.args , 1, event.args.size)
         val matcher = Pattern.compile("^${Utils.TIME_PATTERN.pattern()}").matcher(subArgs)
         val sb = StringBuilder()

@@ -74,6 +74,14 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData(
         get() = json["vanished", false]
         set(value) { json["vanished"] = value }
 
+    var banExempt: Boolean
+        get() = json["banExempt", false]
+        set(value) { json["banExempt"] = value }
+
+    var muteExempt: Boolean
+        get() = json["muteExempt", false]
+        set(value) { json["muteExempt"] = value }
+
     var kitCooldowns: Map<Kits.Kit, LocalDateTime>
         get() = json["kitCooldowns", emptyMap<String, String>()].entries
             .associate { Kits.getKit(it.key)!! to LocalDateTime.parse(it.value) }
