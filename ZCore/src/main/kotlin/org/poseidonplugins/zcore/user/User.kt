@@ -3,6 +3,7 @@ package org.poseidonplugins.zcore.user
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.Punishments
 import org.poseidonplugins.zcore.data.UserData
@@ -108,7 +109,9 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
         if (!isAfk && Duration.between(lastSeen, LocalDateTime.now()).seconds >= Config.afkTime) {
             setInactive()
         }
-        if (isAfk && Duration.between(lastSeen, LocalDateTime.now()).seconds >= Config.afkKickTime) {
+        if (isAfk && Duration.between(lastSeen, LocalDateTime.now()).seconds >= Config.afkKickTime &&
+            !hasPermission(player, "zcore.afk.kick.exempt"))
+        {
             player.kick("afkKickReason")
         }
     }
