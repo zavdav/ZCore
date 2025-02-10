@@ -125,10 +125,18 @@ object TimeTickParser {
 
     fun format12(ticks: Long): String = FORMAT_12.format(ticksToTime(ticks))
 
+    fun formatTicks(ticks: Long): String = "${ticks % TICKS_PER_DAY}ticks"
+
     fun ticksToTime(ticks: Long): LocalTime {
         val correctedTime = (ticks + 6000) % TICKS_PER_DAY
-        val hours = correctedTime / 1000
-        val minutes = ceil(correctedTime % 1000 / (1000.0 / 60.0))
+        var hours = correctedTime / 1000
+        var minutes = ceil(correctedTime % 1000 / (1000.0 / 60.0)).toLong()
+        if (minutes == 60L) {
+            hours += 1
+            minutes = 0
+        }
+        if (hours == 24L) hours = 0
+
         return LocalTime.of(hours.toInt(), minutes.toInt())
     }
 }

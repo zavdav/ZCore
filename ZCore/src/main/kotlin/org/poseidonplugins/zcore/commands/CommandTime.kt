@@ -24,7 +24,7 @@ class CommandTime : ZCoreCommand(
                     "world" to world.name,
                     "time24" to TimeTickParser.format24(world.time),
                     "time12" to TimeTickParser.format12(world.time),
-                    "ticks" to world.time)
+                    "ticks" to TimeTickParser.formatTicks(world.time))
             }
             return
         }
@@ -45,7 +45,7 @@ class CommandTime : ZCoreCommand(
         event.sender.sendTl("worldTimeSet",
             "time24" to TimeTickParser.format24(ticks),
             "time12" to TimeTickParser.format24(ticks),
-            "ticks" to ticks,
+            "ticks" to TimeTickParser.formatTicks(ticks),
             "world" to world.name)
     }
 }
