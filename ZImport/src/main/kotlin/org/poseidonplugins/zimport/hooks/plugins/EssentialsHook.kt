@@ -50,7 +50,7 @@ class EssentialsHook(private val essentials: Essentials) : CorePluginHook {
     }
 
     override fun isBanned(uuid: UUID): Boolean =
-        userMap[uuid]?.isBanned ?: false
+        userMap[uuid]?.isBanned == true
 
     override fun getBanExpiry(uuid: UUID): LocalDateTime {
         val banTimeout = userMap[uuid]?.banTimeout ?: return unixToDateTime(0L)
@@ -58,7 +58,7 @@ class EssentialsHook(private val essentials: Essentials) : CorePluginHook {
     }
 
     override fun isMuted(uuid: UUID): Boolean =
-        userMap[uuid]?.isMuted ?: false
+        userMap[uuid]?.isMuted == true
 
     override fun getMuteExpiry(uuid: UUID): LocalDateTime =
         unixToDateTime(userMap[uuid]?.muteTimeout ?: 0L)

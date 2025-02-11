@@ -33,7 +33,7 @@ object Config {
         yaml.getProperty(key) as? String ?: "null"
 
     private fun getBoolean(key: String): Boolean =
-        yaml.getProperty(key) as? Boolean ?: false
+        yaml.getProperty(key) as? Boolean == true
 
     val plugin: String
         get() = getString("plugin")

@@ -2,12 +2,12 @@ group = 'org.poseidonplugins.zcore'
 version = '1.0-SNAPSHOT'
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.1.10'
     implementation 'com.legacyminecraft.poseidon:poseidon-craftbukkit:1.1.8'
     implementation 'com.github.Project-Poseidon-Plugins:poseidon-commandapi:1.0.1'
     implementation 'com.github.cliftonlabs:json-simple:4.0.1'
     implementation 'com.johnymuffin.jperms:beta:1.0.1'
-    testImplementation 'org.jetbrains.kotlin:kotlin-test:1.9.22'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test:2.1.10'
 }
 
 compileKotlin {
@@ -30,8 +30,8 @@ processResources {
 
 shadowJar {
     dependencies {
-        include dependency('com.github.cliftonlabs:json-simple:4.0.1')
-        include dependency('com.github.Project-Poseidon-Plugins:poseidon-commandapi:1.0.1')
+        exclude dependency('com.legacyminecraft.poseidon:poseidon-craftbukkit:1.1.8')
+        exclude dependency('com.johnymuffin.jperms:beta:1.0.1')
     }
     archiveBaseName.set('ZCore')
     archiveClassifier.set('')
