@@ -33,6 +33,9 @@ rules:
 # How long do players have to stand still until they are teleported to a warp
 teleportDelay: 3
 
+# How many items should be given by /give when no amount is specified
+giveAmount: 64
+
 # ┌───────────────────────────┐
 # │           Chat            │
 # └───────────────────────────┘

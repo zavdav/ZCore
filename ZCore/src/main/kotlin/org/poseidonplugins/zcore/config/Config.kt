@@ -82,6 +82,9 @@ object Config {
     val teleportDelay: Int
         get() = getInt("teleportDelay", def = 3)
 
+    val giveAmount: Int
+        get() = getInt("giveAmount", def = 64).coerceAtLeast(1)
+
     val chatFormat: String
         get() = getString("chatFormat", "{DISPLAYNAME}§f: {MESSAGE}")
 

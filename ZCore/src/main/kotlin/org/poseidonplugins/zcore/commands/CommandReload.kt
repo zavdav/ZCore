@@ -3,6 +3,7 @@ package org.poseidonplugins.zcore.commands
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.ZCore
 import org.poseidonplugins.zcore.config.Config
+import org.poseidonplugins.zcore.config.Items
 import org.poseidonplugins.zcore.config.Kits
 import org.poseidonplugins.zcore.util.Backup
 import org.poseidonplugins.zcore.util.sendTl
@@ -17,6 +18,7 @@ class CommandReload : ZCoreCommand(
 
     override fun execute(event: CommandEvent) {
         Config.load()
+        Items.load()
         Kits.load()
         Backup.init()
         val desc = ZCore.plugin.description

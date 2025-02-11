@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.poseidonplugins.commandapi.CommandManager
 import org.poseidonplugins.zcore.commands.*
 import org.poseidonplugins.zcore.config.Config
+import org.poseidonplugins.zcore.config.Items
 import org.poseidonplugins.zcore.config.Kits
 import org.poseidonplugins.zcore.data.Punishments
 import org.poseidonplugins.zcore.data.SpawnData
@@ -43,6 +44,7 @@ class ZCore : JavaPlugin() {
 
         if (!dataFolder.exists()) dataFolder.mkdirs()
         Config.load()
+        Items.load()
         Kits.load()
         Backup.init()
 
@@ -58,6 +60,7 @@ class ZCore : JavaPlugin() {
             CommandDelHome(),
             CommandDelWarp(),
             CommandEconomy(),
+            CommandGive(),
             CommandGod(),
             CommandHeal(),
             CommandHelp(),
