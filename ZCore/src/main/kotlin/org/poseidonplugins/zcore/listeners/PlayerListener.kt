@@ -57,7 +57,12 @@ class PlayerListener : Listener {
     fun onPlayerJoin(event: PlayerJoinEvent) {
         val isFirstJoin = !UserMap.isUserKnown(event.player.uniqueId)
         val user = User.from(event.player)
-        val spawn = SpawnData.getSpawn(event.player.world)
+
+        if (!hasPermission(event.player, "zcore.god")) user.isGod = false
+        if (!hasPermission(event.player, "zcore.vanish")) user.vanished = false
+        if (!hasPermission(event.player, "zcore.socialspy")) user.socialSpy = false
+        if (!hasPermission(event.player, "zcore.togglechat")) user.seesChat = true
+        if (!hasPermission(event.player, "zcore.nick")) user.resetNickname()
 
         user.updateOnJoin(event.player.name)
         user.updateDisplayName()
@@ -66,6 +71,7 @@ class PlayerListener : Listener {
         if (isFirstJoin) {
             user.firstJoin = LocalDateTime.now()
             broadcastConfTl(Config.firstJoinMessage, event.player)
+            val spawn = SpawnData.getSpawn(event.player.world)
             if (spawn != null) event.player.teleport(spawn)
         }
 

@@ -21,11 +21,8 @@ class CommandMotd : ZCoreCommand(
         val player = event.sender as Player
         val motd = Config.motd.toMutableList()
         for (i in motd.indices) {
-            motd[i] = formatString(motd[i],
-                "name" to player.name,
-                "displayname" to player.displayName,
-                "playerlist" to Bukkit.getOnlinePlayers()
-                    .map { p: Player -> p.displayName }.sorted().joinToString(", "))
+            motd[i] = formatString(motd[i], player, "playerlist" to Bukkit.getOnlinePlayers()
+                .map { it.displayName }.sorted().joinToString(", "))
 
             player.sendMessage(motd[i])
         }
