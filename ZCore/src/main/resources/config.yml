@@ -8,6 +8,10 @@
 # │          General          │
 # └───────────────────────────┘
 
+# The config version
+# This should never be changed manually.
+configVersion: 20250214
+
 # In what interval should data be automatically saved
 autoSaveTime: 300
 
@@ -18,13 +22,14 @@ precacheAllPlayers: false
 # This can be a relative or absolute file path.
 backupFolder: './backup'
 
-# Message of the day
-# Set to '' to disable
+# The Message of the day
+# Leave this empty to disable
 motd:
   - '§eWelcome, {NAME}§e!'
   - '§bType /help for a list of commands.'
   - '§7Online players: §f{PLAYERLIST}'
 
+# The server rules which are displayed when typing /rules
 rules:
   - '§c1. Be respectful'
   - '§c2. No griefing'
@@ -75,7 +80,6 @@ firstJoinMessage: '§dWelcome to the server, {DISPLAYNAME}§d!'
 # └───────────────────────────┘
 
 # Make sure to use the command's primary name, not any of its aliases
-
 
 # Disabled commands will not be registered on the server
 disabledCommands:

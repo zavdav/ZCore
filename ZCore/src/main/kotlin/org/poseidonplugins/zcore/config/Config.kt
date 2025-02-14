@@ -7,6 +7,7 @@ import org.poseidonplugins.zcore.commands.ZCoreCommand
 import org.poseidonplugins.zcore.util.Utils.roundTo
 import java.io.File
 import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 
 object Config {
 
@@ -14,19 +15,38 @@ object Config {
     private lateinit var yaml: Configuration
 
     fun load() {
+        val stream = this::class.java.getResourceAsStream("/config.yml")!!
+
         if (!file.exists()) {
             try {
-                val stream = this::class.java.getResourceAsStream("/config.yml")!!
                 file.parentFile.mkdirs()
                 Files.copy(stream, file.toPath())
+                yaml = Configuration(file)
+                yaml.load()
             } catch (e: Exception) {
                 ZCore.logger.severe("${ZCore.prefix} Failed to create config.")
                 ZCore.logger.severe("${ZCore.prefix} If the issue persists, unzip the plugin JAR and copy config.yml to ${ZCore.dataFolder.path}")
                 throw e
             }
+        } else {
+            yaml = Configuration(file)
+            yaml.load()
+
+            val newFile = File(ZCore.dataFolder, "config-new.yml")
+            try {
+                Files.copy(stream, newFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
+                val newConfig = Configuration(newFile)
+                newConfig.load()
+
+                if ((newConfig.getString("configVersion").toIntOrNull() ?: 0) > configVersion) {
+                    ZCore.logger.info("${ZCore.prefix} A new config version has been detected. The new config file has been created at config-new.yml")
+                } else {
+                    newFile.delete()
+                }
+            } catch (_: Exception) {
+                ZCore.logger.warning("${ZCore.prefix} Failed to check for new config version.")
+            }
         }
-        yaml = Configuration(file)
-        yaml.load()
     }
 
     private fun getString(key: String, def: String): String =
@@ -52,6 +72,9 @@ object Config {
     private fun getMap(key: String, def: Map<String, Any>): Map<String, Any> =
         yaml.getProperty(key) as? Map<String, Any> ?: def
 
+    val configVersion: Int
+        get() = getInt("configVersion", def = 0)
+
     val autoSaveTime: Long
         get() = getLong("autoSaveTime", 1..Long.MAX_VALUE, 300)
 
@@ -66,18 +89,6 @@ object Config {
 
     val rules: List<String>
         get() = getStringList("rules", emptyList())
-
-    val afkTime: Int
-        get() = getInt("afkTime", 1..Int.MAX_VALUE, 300)
-
-    val afkKickTime: Int
-        get() = getInt("afkKickTime", 1..Int.MAX_VALUE, 1800)
-
-    val protectAfkPlayers: Boolean
-        get() = getBoolean("protectAfkPlayers", false)
-
-    val afkDelay: Int
-        get() = getInt("afkDelay", def = 3)
 
     val teleportDelay: Int
         get() = getInt("teleportDelay", def = 3)
@@ -150,6 +161,18 @@ object Config {
 
     val homesPerPage: Int
         get() = getInt("homesPerPage", 1..Int.MAX_VALUE, 50)
+
+    val afkTime: Int
+        get() = getInt("afkTime", 1..Int.MAX_VALUE, 300)
+
+    val afkKickTime: Int
+        get() = getInt("afkKickTime", 1..Int.MAX_VALUE, 1800)
+
+    val protectAfkPlayers: Boolean
+        get() = getBoolean("protectAfkPlayers", false)
+
+    val afkDelay: Int
+        get() = getInt("afkDelay", def = 3)
 
     val kits: Map<String, Any>
         get() = getMap("kits", emptyMap()).mapKeys { it.key.lowercase() }
