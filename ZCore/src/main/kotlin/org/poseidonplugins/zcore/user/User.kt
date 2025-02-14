@@ -61,6 +61,8 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
 
     var tpRequest: Pair<Player, TeleportType>? = null
 
+    var isInvSee: Boolean = false
+
     var savedInventory: Array<ItemStack>? = null
 
     var cachedPlayTime: Long = playTime

@@ -23,12 +23,14 @@ class CommandInvSee : ZCoreCommand(
             val target = Utils.getPlayerFromUsername(event.args[0])
             if (user.savedInventory == null) user.savedInventory = player.inventory.contents
             player.inventory.contents = User.from(target).savedInventory ?: target.inventory.contents
+            user.isInvSee = true
             event.sender.sendTl("lookingAtInventory", target)
         } else {
             if (user.savedInventory != null) {
                 player.inventory.contents = user.savedInventory
                 user.savedInventory = null
             }
+            user.isInvSee = false
             event.sender.sendTl("inventoryRestored")
         }
     }

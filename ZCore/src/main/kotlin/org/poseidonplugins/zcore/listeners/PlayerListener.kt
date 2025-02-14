@@ -1,9 +1,12 @@
 package org.poseidonplugins.zcore.listeners
 
+import org.bukkit.block.ContainerBlock
 import org.bukkit.entity.Player
+import org.bukkit.entity.StorageMinecart
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.block.SignChangeEvent
@@ -83,6 +86,7 @@ class PlayerListener : Listener {
             event.player.inventory.contents = user.savedInventory
             user.savedInventory = null
         }
+        user.isInvSee = false
 
         user.updatePlayTime()
         user.cachedPlayTime = user.playTime
@@ -173,17 +177,18 @@ class PlayerListener : Listener {
         }
     }
 
-    @EventHandler(priority = Event.Priority.Low)
-    fun onPlayerRespawn(event: PlayerRespawnEvent) {
-        event.respawnLocation = SpawnData.getSpawn(event.respawnLocation.world) ?: return
+    @EventHandler(ignoreCancelled = true)
+    fun onPlayerInteract(event: PlayerInteractEvent) {
+        if (event.action != Action.RIGHT_CLICK_BLOCK) return
+        if (event.clickedBlock.state is ContainerBlock && User.from(event.player).isInvSee) {
+            event.isCancelled = true
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
-    fun onPlayerChangeSign(event: SignChangeEvent) {
-        if (hasPermission(event.player, "zcore.signs.color")) {
-            for (i in event.lines.indices) {
-                event.setLine(i, colorize(event.getLine(i)))
-            }
+    fun onPlayerInteractEntity(event: PlayerInteractEntityEvent) {
+        if (event.rightClicked is StorageMinecart && User.from(event.player).isInvSee) {
+            event.isCancelled = true
         }
     }
 
@@ -194,7 +199,18 @@ class PlayerListener : Listener {
 
     @EventHandler(ignoreCancelled = true)
     fun onPlayerPlaceBlock(event: BlockPlaceEvent) {
-        User.from(event.player).updateActivity()
+        val user = User.from(event.player)
+        if (user.isInvSee) event.isCancelled = true
+        user.updateActivity()
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun onPlayerChangeSign(event: SignChangeEvent) {
+        if (hasPermission(event.player, "zcore.signs.color")) {
+            for (i in event.lines.indices) {
+                event.setLine(i, colorize(event.getLine(i)))
+            }
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -210,12 +226,21 @@ class PlayerListener : Listener {
     @EventHandler(ignoreCancelled = true)
     fun onPlayerDropItem(event: PlayerDropItemEvent) {
         val user = User.from(event.player)
-        if (user.isAfk || user.vanished) event.isCancelled = true
+        if (user.isAfk || user.vanished || user.isInvSee) {
+            event.isCancelled = true
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
     fun onPlayerPickupItem(event: PlayerPickupItemEvent) {
         val user = User.from(event.player)
-        if (user.isAfk || user.vanished) event.isCancelled = true
+        if (user.isAfk || user.vanished || user.isInvSee) {
+            event.isCancelled = true
+        }
+    }
+
+    @EventHandler(priority = Event.Priority.Low)
+    fun onPlayerRespawn(event: PlayerRespawnEvent) {
+        event.respawnLocation = SpawnData.getSpawn(event.respawnLocation.world) ?: return
     }
 }
