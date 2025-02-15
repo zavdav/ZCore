@@ -2,6 +2,7 @@ package org.poseidonplugins.zcore.user
 
 import org.poseidonplugins.zcore.ZCore
 import org.poseidonplugins.zcore.config.Config
+import org.poseidonplugins.zcore.util.Logger
 import org.poseidonplugins.zcore.util.Utils
 import java.io.File
 import java.time.Duration
@@ -23,7 +24,7 @@ object UserMap {
             if (!file.endsWith(".json")) continue
             val uuid = file.replace(".json", "")
             if (!Utils.UUID_PATTERN.matcher(uuid).matches()) {
-                ZCore.logger.warning("${ZCore.prefix} Found corrupt UUID: $uuid")
+                Logger.warning("Found corrupt UUID: $uuid")
                 continue
             }
             knownUsers.add(UUID.fromString(uuid))
@@ -34,7 +35,7 @@ object UserMap {
             for (uuid in knownUsers) {
                 User.from(uuid)
             }
-            ZCore.logger.info("${ZCore.prefix} Precached ${userMap.size} users(s).")
+            Logger.info("Precached ${userMap.size} user(s).")
         }
     }
 

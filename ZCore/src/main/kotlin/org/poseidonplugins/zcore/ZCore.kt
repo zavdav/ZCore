@@ -17,21 +17,19 @@ import org.poseidonplugins.zcore.listeners.EntityListener
 import org.poseidonplugins.zcore.listeners.PlayerListener
 import org.poseidonplugins.zcore.user.UserMap
 import org.poseidonplugins.zcore.util.Backup
+import org.poseidonplugins.zcore.util.Logger
 import org.poseidonplugins.zcore.util.asyncRepeatingTask
 import java.io.File
 import java.io.FileReader
 import java.net.URLClassLoader
 import java.time.Duration
 import java.time.LocalDateTime
-import java.util.logging.Logger
 
 class ZCore : JavaPlugin() {
 
     companion object {
-        const val prefix = "[ZCore]"
         lateinit var plugin: Plugin; private set
         lateinit var dataFolder: File; private set
-        lateinit var logger: Logger; private set
         lateinit var cmdManager: CommandManager; private set
     }
 
@@ -39,10 +37,9 @@ class ZCore : JavaPlugin() {
 
     override fun onEnable() {
         plugin = this
-        Companion.dataFolder = plugin.dataFolder
-        logger = server.logger
-
+        Companion.dataFolder = dataFolder
         if (!dataFolder.exists()) dataFolder.mkdirs()
+
         Config.load()
         Items.load()
         Kits.load()
@@ -109,17 +106,17 @@ class ZCore : JavaPlugin() {
             CommandZCore()
         ).filter { it.name !in Config.disabledCommands }
 
-        cmdManager = CommandManager(plugin)
+        cmdManager = CommandManager(this)
         cmdManager.registerCommands(*commands.toTypedArray())
 
-        server.pluginManager.registerEvents(EntityListener(), plugin)
-        server.pluginManager.registerEvents(PlayerListener(), plugin)
+        server.pluginManager.registerEvents(EntityListener(), this)
+        server.pluginManager.registerEvents(PlayerListener(), this)
 
         asyncRepeatingTask({
             UserMap.runTasks()
             if (Duration.between(lastAutoSave, LocalDateTime.now()).seconds >= Config.autoSaveTime) {
                 lastAutoSave = LocalDateTime.now()
-                logger.info("$prefix Automatically saving data")
+                Logger.info("Automatically saving data")
                 UserMap.saveData()
                 Punishments.saveData()
                 SpawnData.saveData()
@@ -127,7 +124,7 @@ class ZCore : JavaPlugin() {
             }
         }, 0, 20)
 
-        logger.info("$prefix ${description.name} ${description.version} has been enabled.")
+        Logger.info("${description.name} ${description.version} has been enabled.")
     }
 
     override fun onDisable() {
@@ -136,7 +133,7 @@ class ZCore : JavaPlugin() {
         SpawnData.saveData()
         WarpData.saveData()
 
-        logger.info("$prefix ${description.name} ${description.version} has been disabled.")
+        Logger.info("${description.name} ${description.version} has been disabled.")
     }
 
     fun setupForTesting(server: Server) {
@@ -150,10 +147,9 @@ class ZCore : JavaPlugin() {
         initialize(null, server, description, dataFolder, null, classLoader)
 
         plugin = this
-        Companion.dataFolder = plugin.dataFolder
-        logger = server.logger
-
+        Companion.dataFolder = dataFolder
         if (!dataFolder.exists()) dataFolder.mkdirs()
+
         Config.load()
         Backup.init()
     }

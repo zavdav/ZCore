@@ -4,6 +4,7 @@ import org.bukkit.util.config.Configuration
 import org.poseidonplugins.zcore.ZCore
 import org.poseidonplugins.zcore.api.Economy
 import org.poseidonplugins.zcore.commands.ZCoreCommand
+import org.poseidonplugins.zcore.util.Logger
 import org.poseidonplugins.zcore.util.Utils.roundTo
 import java.io.File
 import java.nio.file.Files
@@ -24,8 +25,8 @@ object Config {
                 yaml = Configuration(file)
                 yaml.load()
             } catch (e: Exception) {
-                ZCore.logger.severe("${ZCore.prefix} Failed to create config.")
-                ZCore.logger.severe("${ZCore.prefix} If the issue persists, unzip the plugin JAR and copy config.yml to ${ZCore.dataFolder.path}")
+                Logger.severe("Failed to create config.")
+                Logger.severe("If the issue persists, unzip the plugin JAR and copy config.yml to ${ZCore.dataFolder.path}")
                 throw e
             }
         } else {
@@ -39,12 +40,12 @@ object Config {
                 newConfig.load()
 
                 if ((newConfig.getString("configVersion").toIntOrNull() ?: 0) > configVersion) {
-                    ZCore.logger.info("${ZCore.prefix} A new config version has been detected. The new config file has been created at config-new.yml")
+                    Logger.info("A new config version has been detected. The new config file has been created at config-new.yml")
                 } else {
                     newFile.delete()
                 }
             } catch (_: Exception) {
-                ZCore.logger.warning("${ZCore.prefix} Failed to check for new config version.")
+                Logger.warning("Failed to check for new config version.")
             }
         }
     }

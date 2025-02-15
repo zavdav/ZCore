@@ -24,7 +24,7 @@ object Backup {
         root = if (path.isAbsolute) path.toFile()
                else Path(ZCore.dataFolder.path, path.toString()).normalize().toFile()
         if (root.exists() && !root.isDirectory) {
-            ZCore.logger.severe("${ZCore.prefix} The file path to the backup folder points to a file, not a folder.")
+            Logger.severe("The file path to the backup folder points to a file, not a folder.")
             throw IllegalArgumentException()
         }
     }

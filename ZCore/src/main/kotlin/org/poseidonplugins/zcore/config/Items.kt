@@ -2,7 +2,7 @@ package org.poseidonplugins.zcore.config
 
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
-import org.poseidonplugins.zcore.ZCore
+import org.poseidonplugins.zcore.util.Logger
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -16,7 +16,7 @@ object Items {
         try {
             stream = this::class.java.getResourceAsStream("/items.csv")!!
         } catch (e: Exception) {
-            ZCore.logger.severe("Failed to load items.csv")
+            Logger.severe("Failed to load items.csv")
             throw e
         }
 

@@ -3,7 +3,7 @@ package org.poseidonplugins.zcore.data
 import com.github.cliftonlabs.json_simple.JsonException
 import com.github.cliftonlabs.json_simple.JsonObject
 import com.github.cliftonlabs.json_simple.Jsoner
-import org.poseidonplugins.zcore.ZCore
+import org.poseidonplugins.zcore.util.Logger
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
@@ -23,7 +23,7 @@ abstract class JsonData(private val file: File) {
             try {
                 json = Jsoner.deserialize(FileReader(file)) as JsonObject
             } catch (e: JsonException) {
-                ZCore.logger.severe("${ZCore.prefix} FAILED TO PARSE DATA IN ${file.name}, RESETTING DATA")
+                Logger.severe("Failed to parse data in ${file.name}, resetting data.")
                 e.printStackTrace()
                 initialize = true
             }
