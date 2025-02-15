@@ -17,7 +17,7 @@ import java.util.regex.Pattern
 class CommandBan: ZCoreCommand(
     "ban",
     description = "Bans a player from the server.",
-    usage = "/ban <player/uuid> [duration] [reason]",
+    usage = "/ban <player> [duration] [reason]",
     permission = "zcore.ban",
     minArgs = 1
 ) {

@@ -8,7 +8,7 @@ class CommandUnbanIP : ZCoreCommand(
     "unbanip",
     listOf("unipban", "pardonip"),
     "Unbans an IP address from the server.",
-    "/unbanip <player/ip>",
+    "/unbanip <player|ip>",
     "zcore.unbanip",
     minArgs = 1,
     maxArgs = 1

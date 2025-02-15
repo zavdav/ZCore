@@ -13,7 +13,7 @@ class CommandHomes : ZCoreCommand(
     "homes",
     listOf("hs"),
     "Shows a list of your homes.",
-    "/homes [page/query]",
+    "/homes [page|query]",
     "zcore.homes",
     true,
     maxArgs = 2
@@ -31,7 +31,7 @@ class CommandHomes : ZCoreCommand(
                 page = event.args[1].toIntOrNull() ?: 1
             } else {
                 try { page = event.args[0].toInt() }
-                catch (e: NumberFormatException) {
+                catch (_: NumberFormatException) {
                     query = event.args[0]
                 }
             }

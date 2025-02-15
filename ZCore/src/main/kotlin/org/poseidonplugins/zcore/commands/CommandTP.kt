@@ -8,8 +8,8 @@ import org.poseidonplugins.zcore.util.*
 class CommandTP : ZCoreCommand(
     "tp",
     listOf("teleport"),
-    "Teleports you or a player to coordinates or another player.",
-    "/tp [target] <x> <y> <z>, /tp [target] <player>",
+    "Teleports you to a player or to coordinates.",
+    "/tp [target] <player|x, y, z>",
     "zcore.tp",
     true,
     1,
@@ -81,7 +81,7 @@ class CommandTP : ZCoreCommand(
                 val coord: Double =
                     if (intCoord != null && i != 1) intCoord + 0.5 else args[i].toDouble()
                 coords.add(coord)
-            } catch (e: NumberFormatException) {
+            } catch (_: NumberFormatException) {
                 if (args[i] == "=") {
                     coords.add(playerCoords[i])
                 } else if (i == 1 && args[i] == "~") {

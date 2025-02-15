@@ -8,12 +8,12 @@ import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.assert
 import org.poseidonplugins.zcore.util.sendConfTl
 
-class CommandReply : ZCoreCommand(
-    "reply",
-    listOf("r"),
+class CommandR : ZCoreCommand(
+    "r",
+    listOf("reply"),
     "Quickly replies to the last player that messaged you.",
-    "/reply <message>",
-    "zcore.reply",
+    "/r <message>",
+    "zcore.r",
     true,
     1
 ) {

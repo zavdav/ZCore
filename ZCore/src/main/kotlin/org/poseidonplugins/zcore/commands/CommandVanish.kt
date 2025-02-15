@@ -10,7 +10,7 @@ import org.poseidonplugins.zcore.util.sendTl
 
 class CommandVanish : ZCoreCommand(
     "vanish",
-    description = "Vanishes you or a player from other players.",
+    description = "Vanishes you from other players.",
     usage = "/vanish [player]",
     permission = "zcore.vanish",
     isPlayerOnly = true,

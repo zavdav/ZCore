@@ -10,8 +10,8 @@ import org.poseidonplugins.zcore.util.Utils.roundTo
 class CommandEconomy : ZCoreCommand(
     "economy",
     listOf("eco"),
-    "Manages the economy.",
-    "/economy <set/give/take> <player/uuid> <amount>",
+    "Modifies a player's balance.",
+    "/economy <set|give|take> <player> <amount>",
     "zcore.economy",
     true,
     3,

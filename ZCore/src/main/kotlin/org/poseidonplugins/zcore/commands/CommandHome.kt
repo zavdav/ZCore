@@ -9,7 +9,7 @@ import org.poseidonplugins.zcore.util.*
 class CommandHome : ZCoreCommand(
     "home",
     listOf("h"),
-    "Teleports you to your specified home.",
+    "Teleports you to the specified home.",
     "/home <name>",
     "zcore.home",
     true,

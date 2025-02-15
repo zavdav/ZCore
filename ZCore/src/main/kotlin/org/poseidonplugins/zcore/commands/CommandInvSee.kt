@@ -8,7 +8,7 @@ import org.poseidonplugins.zcore.util.sendTl
 
 class CommandInvSee : ZCoreCommand(
     "invsee",
-    description = "Shows the contents of another player's inventory.",
+    description = "Shows the contents of a player's inventory.",
     usage = "/invsee <player>",
     permission = "zcore.invsee",
     isPlayerOnly = true,

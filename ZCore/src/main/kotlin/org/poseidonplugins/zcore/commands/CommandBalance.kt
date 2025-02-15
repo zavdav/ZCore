@@ -12,8 +12,8 @@ import org.poseidonplugins.zcore.util.sendTl
 class CommandBalance : ZCoreCommand(
     "balance",
     listOf("bal"),
-    "Shows your or a player's balance.",
-    "/balance [player/uuid]",
+    "Shows a player's balance.",
+    "/balance [player]",
     "zcore.balance",
     true,
     maxArgs = 1

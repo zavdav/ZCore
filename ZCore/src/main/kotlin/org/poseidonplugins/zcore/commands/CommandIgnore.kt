@@ -7,7 +7,7 @@ import org.poseidonplugins.zcore.util.*
 
 class CommandIgnore : ZCoreCommand(
     "ignore",
-    description = "Makes you ignore a player.",
+    description = "Toggles whether or not you ignore a player.",
     usage = "/ignore <player>",
     permission = "zcore.ignore",
     isPlayerOnly = true,

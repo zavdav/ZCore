@@ -8,7 +8,7 @@ import org.poseidonplugins.zcore.util.sendTl
 class CommandWeather : ZCoreCommand(
     "weather",
     description = "Changes the world's weather.",
-    usage = "/weather <clear/rain/thunder>",
+    usage = "/weather <clear|rain|thunder>",
     permission = "zcore.weather",
     isPlayerOnly = true,
     minArgs = 1,

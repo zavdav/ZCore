@@ -15,7 +15,7 @@ class CommandBanIP : ZCoreCommand(
     "banip",
     listOf("ipban"),
     "Bans an IP address from the server.",
-    "/banip <player/ip> [duration] [reason]",
+    "/banip <player|ip> [duration] [reason]",
     "zcore.banip",
     minArgs = 1
 ) {

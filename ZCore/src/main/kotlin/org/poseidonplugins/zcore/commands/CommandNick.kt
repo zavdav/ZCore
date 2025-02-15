@@ -11,7 +11,7 @@ import org.poseidonplugins.zcore.util.sendTl
 class CommandNick : ZCoreCommand(
     "nick",
     listOf("nickname"),
-    "Sets your or a player's nickname.",
+    "Changes your nickname.",
     "/nick [player] <nickname>",
     "zcore.nick",
     true,

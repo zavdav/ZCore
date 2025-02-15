@@ -10,7 +10,7 @@ class CommandUnban : ZCoreCommand(
     "unban",
     listOf("pardon"),
     "Unbans a player from the server.",
-    "/unban <player/uuid>",
+    "/unban <player>",
     "zcore.unban",
     minArgs = 1,
     maxArgs = 1

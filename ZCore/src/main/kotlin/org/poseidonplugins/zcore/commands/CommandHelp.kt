@@ -10,7 +10,7 @@ import kotlin.math.ceil
 class CommandHelp : ZCoreCommand(
     "help",
     description = "Shows a list of available commands.",
-    usage = "/help [page/query]",
+    usage = "/help [page|query]",
     permission = "zcore.help"
 ) {
 
