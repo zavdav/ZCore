@@ -53,7 +53,7 @@ class ZImport : JavaPlugin() {
                     return
                 }
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Logger.severe("Plugin could not be hooked.")
             disablePlugin()
             return
@@ -61,7 +61,7 @@ class ZImport : JavaPlugin() {
 
         if (isEnabled) {
             Logger.info("Transfer will start in 10 seconds...")
-            syncDelayedTask(TransferTask(pluginHook), 200)
+            syncDelayedTask(200, TransferTask(pluginHook))
         }
     }
 

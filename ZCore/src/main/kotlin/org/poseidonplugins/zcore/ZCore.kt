@@ -112,7 +112,7 @@ class ZCore : JavaPlugin() {
         server.pluginManager.registerEvents(EntityListener(), this)
         server.pluginManager.registerEvents(PlayerListener(), this)
 
-        asyncRepeatingTask({
+        asyncRepeatingTask(0, 20) {
             UserMap.runTasks()
             if (Duration.between(lastAutoSave, LocalDateTime.now()).seconds >= Config.autoSaveTime) {
                 lastAutoSave = LocalDateTime.now()
@@ -122,7 +122,7 @@ class ZCore : JavaPlugin() {
                 SpawnData.saveData()
                 WarpData.saveData()
             }
-        }, 0, 20)
+        }
 
         Logger.info("${description.name} ${description.version} has been enabled.")
     }

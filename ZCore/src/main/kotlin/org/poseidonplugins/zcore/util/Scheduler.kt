@@ -8,10 +8,10 @@ import org.poseidonplugins.zcore.ZCore
 fun syncDelayedTask(runnable: Runnable): Int =
     Bukkit.getScheduler().scheduleSyncDelayedTask(ZCore.plugin, runnable)
 
-fun syncDelayedTask(runnable: Runnable, delay: Long): Int =
+fun syncDelayedTask(delay: Long, runnable: Runnable): Int =
     Bukkit.getScheduler().scheduleSyncDelayedTask(ZCore.plugin, runnable, delay)
 
-fun syncRepeatingTask(runnable: Runnable, delay: Long, interval: Long): Int =
+fun syncRepeatingTask(delay: Long, interval: Long, runnable: Runnable): Int =
     Bukkit.getScheduler().scheduleSyncRepeatingTask(ZCore.plugin, runnable, delay, interval)
 
 fun asyncDelayedTask(runnable: Runnable): Int =
@@ -25,7 +25,7 @@ fun asyncDelayedTask(runnable: Runnable): Int =
         }
     }
 
-fun asyncDelayedTask(runnable: Runnable, delay: Long): Int =
+fun asyncDelayedTask(delay: Long, runnable: Runnable): Int =
     Bukkit.getScheduler().scheduleAsyncDelayedTask(ZCore.plugin, {
         try {
             runnable.run()
@@ -36,7 +36,7 @@ fun asyncDelayedTask(runnable: Runnable, delay: Long): Int =
         }
     }, delay)
 
-fun asyncRepeatingTask(runnable: Runnable, delay: Long, interval: Long): Int =
+fun asyncRepeatingTask(delay: Long, interval: Long, runnable: Runnable): Int =
     Bukkit.getScheduler().scheduleAsyncRepeatingTask(ZCore.plugin, {
         try {
             runnable.run()

@@ -6,7 +6,7 @@ import org.bukkit.entity.Player
 class Delay(
     private val player: Player,
     delay: Int,
-    private val runnable: () -> Unit
+    private val function: () -> Unit
 ) : Runnable {
 
     private var task: Int = -1
@@ -16,16 +16,16 @@ class Delay(
 
     init {
         if (delay > 0) {
-            check = syncRepeatingTask({ check() }, 0, 1)
-            task = syncDelayedTask(this, delay.coerceAtLeast(0) * 20L)
+            check = syncRepeatingTask(0, 1) { check() }
+            task = syncDelayedTask(delay.coerceAtLeast(0) * 20L, this)
         } else {
-            runnable.invoke()
+            function.invoke()
         }
     }
 
     override fun run() {
         cancelTask(check)
-        runnable.invoke()
+        function.invoke()
     }
 
     private fun check() {
