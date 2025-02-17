@@ -14,9 +14,8 @@ class CommandGive : ZCoreCommand(
     "Gives a player an item.",
     "/give <player> <item> [amount]",
     "zcore.give",
-    true,
-    2,
-    3
+    minArgs = 2,
+    maxArgs = 3
 ) {
 
     override fun execute(event: CommandEvent) {
@@ -28,7 +27,8 @@ class CommandGive : ZCoreCommand(
             itemStack!!.amount = event.args[2].toInt().coerceAtLeast(1)
         }
 
-        if (target.isSelf(event.sender as Player)) {
+        val isSelf = event.sender is Player && (event.sender as Player).isSelf(target)
+        if (isSelf) {
             event.sender.sendTl("itemGiven", "amount" to itemStack!!.amount, "item" to itemStack.type)
         } else {
             event.sender.sendTl("itemGivenOther", target, "amount" to itemStack!!.amount, "item" to itemStack.type)
