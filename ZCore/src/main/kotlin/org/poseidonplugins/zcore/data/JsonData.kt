@@ -8,10 +8,10 @@ import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
 
-abstract class JsonData(private val file: File) {
+abstract class JsonData(protected val file: File) {
 
     protected var json: JsonObject = JsonObject()
-    private var hashCode: Int = -1
+    protected var hashCode: Int = -1
     protected var initialize = false
 
     init {
@@ -31,13 +31,13 @@ abstract class JsonData(private val file: File) {
     }
 
     @Synchronized
-    fun saveData() {
+    open fun saveData() {
         if (hashCode == json.hashCode()) return
         hashCode = json.hashCode()
         saveTo(file)
     }
 
-    fun saveTo(file: File) {
+    open fun saveTo(file: File) {
         FileWriter(file).use { fw ->
             fw.write(Jsoner.prettyPrint(json.toJson()))
             fw.flush()

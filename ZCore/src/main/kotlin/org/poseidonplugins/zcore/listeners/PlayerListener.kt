@@ -17,6 +17,7 @@ import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.Punishments
 import org.poseidonplugins.zcore.data.SpawnData
+import org.poseidonplugins.zcore.data.UUIDCache
 import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.user.UserMap
 import org.poseidonplugins.zcore.util.*
@@ -31,6 +32,7 @@ class PlayerListener : Listener {
     @EventHandler(priority = Event.Priority.High)
     fun onPlayerLogin(event: PlayerLoginEvent) {
         val player = event.player
+        UUIDCache.addEntry(player.uniqueId, player.name)
 
         if (Punishments.isIPBanned(event.address.hostAddress)) {
             val ip = event.address.hostAddress

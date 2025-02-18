@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.inventory.ItemStack
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
+import org.poseidonplugins.zcore.data.UUIDCache
 import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.util.Utils.safeSubstring
 import java.text.NumberFormat
@@ -123,7 +124,8 @@ object Utils {
             return getPlayerFromUsername(name).uniqueId
         } catch (_: PlayerNotFoundException) {}
 
-        return when (PoseidonUUID.getPlayerUUIDCacheStatus(name)) {
+        return UUIDCache.getUUIDFromUsername(name) ?:
+        when (PoseidonUUID.getPlayerUUIDCacheStatus(name)) {
             UUIDType.ONLINE -> PoseidonUUID.getPlayerUUIDFromCache(name, true)
             UUIDType.OFFLINE -> PoseidonUUID.getPlayerUUIDFromCache(name, false)
             else -> throw PlayerNotFoundException(name)

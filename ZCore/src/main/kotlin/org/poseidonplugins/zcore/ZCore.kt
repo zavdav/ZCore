@@ -12,6 +12,7 @@ import org.poseidonplugins.zcore.config.Items
 import org.poseidonplugins.zcore.config.Kits
 import org.poseidonplugins.zcore.data.Punishments
 import org.poseidonplugins.zcore.data.SpawnData
+import org.poseidonplugins.zcore.data.UUIDCache
 import org.poseidonplugins.zcore.data.WarpData
 import org.poseidonplugins.zcore.listeners.EntityListener
 import org.poseidonplugins.zcore.listeners.PlayerListener
@@ -40,6 +41,7 @@ class ZCore : JavaPlugin() {
         Companion.dataFolder = dataFolder
         if (!dataFolder.exists()) dataFolder.mkdirs()
 
+        UUIDCache.load()
         Config.load()
         Items.load()
         Kits.load()
@@ -117,10 +119,7 @@ class ZCore : JavaPlugin() {
             if (Duration.between(lastAutoSave, LocalDateTime.now()).seconds >= Config.autoSaveTime) {
                 lastAutoSave = LocalDateTime.now()
                 Logger.info("Automatically saving data")
-                UserMap.saveData()
-                Punishments.saveData()
-                SpawnData.saveData()
-                WarpData.saveData()
+                saveData()
             }
         }
 
@@ -128,12 +127,16 @@ class ZCore : JavaPlugin() {
     }
 
     override fun onDisable() {
+        saveData()
+        Logger.info("${description.name} ${description.version} has been disabled.")
+    }
+
+    fun saveData() {
         UserMap.saveData()
+        UUIDCache.saveData()
         Punishments.saveData()
         SpawnData.saveData()
         WarpData.saveData()
-
-        Logger.info("${description.name} ${description.version} has been disabled.")
     }
 
     fun setupForTesting(server: Server) {
