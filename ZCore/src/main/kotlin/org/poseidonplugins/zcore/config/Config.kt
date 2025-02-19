@@ -95,7 +95,13 @@ object Config {
         get() = getInt("teleportDelay", def = 3)
 
     val giveAmount: Int
-        get() = getInt("giveAmount", def = 64).coerceAtLeast(1)
+        get() = getInt("giveAmount", 1..Int.MAX_VALUE, 64)
+
+    val listOtherCommands: Boolean
+        get() = getBoolean("listOtherCommands", true)
+
+    val commandsPerPage: Int
+        get() = getInt("commandsPerPage", 1..Int.MAX_VALUE, 10)
 
     val chatFormat: String
         get() = getString("chatFormat", "{DISPLAYNAME}§f: {MESSAGE}")

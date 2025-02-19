@@ -10,7 +10,7 @@
 
 # The config version
 # This should never be changed manually.
-configVersion: 20250214
+configVersion: 20250219
 
 # In what interval should data be automatically saved
 autoSaveTime: 300
@@ -40,6 +40,16 @@ teleportDelay: 3
 
 # How many items should be given by /give when no amount is specified
 giveAmount: 64
+
+# ┌───────────────────────────┐
+# │           Help            │
+# └───────────────────────────┘
+
+# If /help should show commands from other plugins as well
+listOtherCommands: true
+
+# How many commands should be shown on a page in /help
+commandsPerPage: 10
 
 # ┌───────────────────────────┐
 # │           Chat            │
