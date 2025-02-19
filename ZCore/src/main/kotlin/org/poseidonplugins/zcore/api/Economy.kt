@@ -14,13 +14,16 @@ object Economy {
 
     const val MAX_BALANCE: Double = 10000000000000.0
 
+    @JvmStatic
     fun userExists(uuid: UUID): Boolean = UserMap.isUserKnown(uuid)
 
+    @JvmStatic
     fun getBalance(uuid: UUID): Double {
         if (!userExists(uuid)) throw UnknownUserException(uuid)
         return User.from(uuid).balance
     }
 
+    @JvmStatic
     fun setBalance(uuid: UUID, amount: Double): Double {
         if (!userExists(uuid)) throw UnknownUserException(uuid)
         if (isOutOfBounds(amount)) throw BalanceOutOfBoundsException(uuid)
@@ -28,15 +31,18 @@ object Economy {
         return getBalance(uuid)
     }
 
+    @JvmStatic
     fun addBalance(uuid: UUID, amount: Double) {
         setBalance(uuid, getBalance(uuid) + amount.roundTo(2))
     }
 
+    @JvmStatic
     fun subtractBalance(uuid: UUID, amount: Double) {
         if (!hasEnough(uuid, amount)) throw NoFundsException()
         setBalance(uuid, getBalance(uuid) - amount.roundTo(2))
     }
 
+    @JvmStatic
     fun transferBalance(sender: UUID, receiver: UUID, amount: Double) {
         if (isOutOfBounds(getBalance(receiver) + amount.roundTo(2))) {
             throw BalanceOutOfBoundsException(receiver)
@@ -45,10 +51,13 @@ object Economy {
         addBalance(receiver, amount)
     }
 
+    @JvmStatic
     fun hasEnough(uuid: UUID, amount: Double): Boolean =
         getBalance(uuid) >= amount.roundTo(2)
 
+    @JvmStatic
     fun isOutOfBounds(amount: Double) = amount.roundTo(2) > Config.maxBalance
 
+    @JvmStatic
     fun formatBalance(amount: Double): String = Utils.formatBalance(amount)
 }
