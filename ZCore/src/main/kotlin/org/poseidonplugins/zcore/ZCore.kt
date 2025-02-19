@@ -90,6 +90,7 @@ class ZCore : JavaPlugin() {
             CommandSetHome(),
             CommandSetSpawn(),
             CommandSetWarp(),
+            CommandSmite(),
             CommandSocialSpy(),
             CommandSpawn(),
             CommandSummon(),
