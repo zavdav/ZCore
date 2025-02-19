@@ -27,7 +27,7 @@ class CommandSeen : ZCoreCommand(
         val user = User.from(uuid)
         if (user.isOnline) {
             val isSelf = event.sender is Player && (event.sender as Player).uniqueId == user.uuid
-            val duration = Utils.formatDateDiff(user.lastSeen, LocalDateTime.now())
+            val duration = Utils.formatDateDiff(user.lastJoin, LocalDateTime.now())
 
             if (isSelf) {
                 event.sender.sendTl("seenOnline", "duration" to duration)
