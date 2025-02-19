@@ -36,6 +36,10 @@ object UUIDCache : JsonData(File(ZCore.dataFolder, "uuidcache.json")) {
         nameLookupByUuid.entries.firstOrNull { ignoreCase && it.value.equals(username, true) }?.key
 
     @Synchronized
+    fun getUsernameFromUUID(uuid: UUID): String? =
+        nameLookupByUuid[uuid]
+
+    @Synchronized
     override fun saveData() {
         if (hashCode == nameLookupByUuid.hashCode()) return
         hashCode = nameLookupByUuid.hashCode()

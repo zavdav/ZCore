@@ -11,10 +11,9 @@ class JohnyPermsHook : PermissionHook {
 
     private val api: JohnyPermsAPI = JohnyPerms.getJPermsAPI()
 
-    override fun hasPermission(sender: CommandSender, permission: String): Boolean {
-        if (sender !is Player) return true
-        return sender.isOp || api.getUser(sender.uniqueId).hasPermission(permission)
-    }
+    override fun hasPermission(sender: CommandSender, permission: String): Boolean =
+        if (sender !is Player) true
+        else sender.isOp || api.getUser(sender.uniqueId).hasPermission(permission)
 
     override fun getPrefix(uuid: UUID): String =
         colorize(api.getUser(uuid).prefix ?: api.getUser(uuid).group.prefix ?: "")

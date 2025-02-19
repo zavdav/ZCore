@@ -11,13 +11,17 @@ object PermissionHandler {
     init {
         if (Bukkit.getPluginManager().isPluginEnabled("JPerms")) {
             hook = JohnyPermsHook()
+        } else if (Bukkit.getPluginManager().isPluginEnabled("PermissionsEx")) {
+            hook = PermissionsExHook()
         }
     }
 
-    fun hasPermission(sender: CommandSender, permission: String) =
+    fun hasPermission(sender: CommandSender, permission: String): Boolean =
         hook.hasPermission(sender, permission)
 
-    fun getPrefix(user: User) = hook.getPrefix(user.uuid)
+    fun getPrefix(user: User): String =
+        hook.getPrefix(user.uuid)
 
-    fun getSuffix(user: User) = hook.getSuffix(user.uuid)
+    fun getSuffix(user: User): String =
+        hook.getSuffix(user.uuid)
 }
