@@ -1,8 +1,9 @@
-package me.zavdav.zcore.data
+package me.zavdav.zcore.api
 
 import com.github.cliftonlabs.json_simple.JsonArray
 import com.github.cliftonlabs.json_simple.JsonObject
 import me.zavdav.zcore.ZCore
+import me.zavdav.zcore.data.JsonData
 import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.kick
 import me.zavdav.zcore.util.sendTl

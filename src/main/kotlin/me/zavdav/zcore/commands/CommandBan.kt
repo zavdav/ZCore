@@ -1,6 +1,6 @@
 package me.zavdav.zcore.commands
 
-import me.zavdav.zcore.data.Punishments
+import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.user.UserMap
 import me.zavdav.zcore.util.Utils

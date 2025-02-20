@@ -1,7 +1,7 @@
 package me.zavdav.zcore.user
 
+import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.config.Config
-import me.zavdav.zcore.data.Punishments
 import me.zavdav.zcore.data.UserData
 import me.zavdav.zcore.hooks.permissions.PermissionHandler
 import me.zavdav.zcore.util.broadcastTl

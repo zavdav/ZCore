@@ -1,8 +1,8 @@
 package me.zavdav.zcore.util
 
 import me.zavdav.zcore.ZCore
+import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.config.Config
-import me.zavdav.zcore.data.Punishments
 import me.zavdav.zcore.data.SpawnData
 import me.zavdav.zcore.data.WarpData
 import me.zavdav.zcore.user.UserMap

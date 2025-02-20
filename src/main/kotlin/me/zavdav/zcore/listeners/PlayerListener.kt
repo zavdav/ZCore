@@ -1,7 +1,7 @@
 package me.zavdav.zcore.listeners
 
+import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.config.Config
-import me.zavdav.zcore.data.Punishments
 import me.zavdav.zcore.data.SpawnData
 import me.zavdav.zcore.data.UUIDCache
 import me.zavdav.zcore.user.User
