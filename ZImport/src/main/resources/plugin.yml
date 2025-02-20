@@ -1,6 +1,0 @@
-name: ZImport
-main: org.poseidonplugins.zimport.ZImport
-version: ${version}
-description: Transfers data from other core plugins to ZCore.
-author: zavdav
-depend: [ZCore]

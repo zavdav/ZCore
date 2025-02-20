@@ -1,3 +1,1 @@
-rootProject.name = 'ZCore-root'
-include 'ZCore'
-include 'ZImport'
+rootProject.name = 'ZCore'

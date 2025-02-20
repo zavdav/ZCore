@@ -1,0 +1,6 @@
+name: ZCore
+main: me.zavdav.zcore.ZCore
+version: ${version}
+description: Provides core functionality and many commands
+author: zavdav
+website: https://github.com/zavdav/ZCore

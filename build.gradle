@@ -1,22 +1,52 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '2.1.10'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
-allprojects {
-    apply plugin: 'java'
-    apply plugin: 'org.jetbrains.kotlin.jvm'
-    apply plugin: 'com.github.johnrengelman.shadow'
+group = 'me.zavdav.zcore'
+version = '1.0-SNAPSHOT'
 
-    repositories {
-        mavenCentral()
-        maven { url 'https://repository.johnymuffin.com/repository/maven-public' }
-        maven { url 'https://m2.dv8tion.net/releases' }
-        maven { url 'https://jitpack.io' }
+repositories {
+    mavenCentral()
+    maven { url 'https://repository.johnymuffin.com/repository/maven-public' }
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.1.10'
+    implementation 'com.legacyminecraft.poseidon:poseidon-craftbukkit:1.1.8'
+    implementation 'com.github.Project-Poseidon-Plugins:poseidon-commandapi:1.0.1'
+    implementation 'com.github.cliftonlabs:json-simple:4.0.1'
+    implementation 'com.johnymuffin.jperms:beta:1.0.1'
+    implementation 'com.earth2me.essentials:essentials-libraries-rollup:0.0.1'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test:2.1.10'
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_1_8)
     }
 }
 
-tasks.register('ZCore') {
-    dependsOn "clean", ":ZImport:shadowJar"
+test {
+    useJUnitPlatform()
+}
+
+processResources {
+    filesMatching('plugin.yml') {
+        expand(version: version)
+    }
+}
+
+shadowJar {
+    dependencies {
+        exclude dependency('com.legacyminecraft.poseidon:poseidon-craftbukkit:1.1.8')
+        exclude dependency('com.johnymuffin.jperms:beta:1.0.1')
+        exclude dependency('com.earth2me.essentials:essentials-libraries-rollup:0.0.1')
+    }
+    archiveBaseName.set('ZCore')
+    archiveClassifier.set('')
 }

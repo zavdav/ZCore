@@ -1,0 +1,63 @@
+package me.zavdav.zcore.api
+
+import me.zavdav.zcore.config.Config
+import me.zavdav.zcore.user.User
+import me.zavdav.zcore.user.UserMap
+import me.zavdav.zcore.util.BalanceOutOfBoundsException
+import me.zavdav.zcore.util.NoFundsException
+import me.zavdav.zcore.util.UnknownUserException
+import me.zavdav.zcore.util.Utils
+import me.zavdav.zcore.util.Utils.roundTo
+import java.util.*
+
+object Economy {
+
+    const val MAX_BALANCE: Double = 10000000000000.0
+
+    @JvmStatic
+    fun userExists(uuid: UUID): Boolean = UserMap.isUserKnown(uuid)
+
+    @JvmStatic
+    fun getBalance(uuid: UUID): Double {
+        if (!userExists(uuid)) throw UnknownUserException(uuid)
+        return User.from(uuid).balance
+    }
+
+    @JvmStatic
+    fun setBalance(uuid: UUID, amount: Double): Double {
+        if (!userExists(uuid)) throw UnknownUserException(uuid)
+        if (isOutOfBounds(amount)) throw BalanceOutOfBoundsException(uuid)
+        User.from(uuid).balance = amount.roundTo(2)
+        return getBalance(uuid)
+    }
+
+    @JvmStatic
+    fun addBalance(uuid: UUID, amount: Double) {
+        setBalance(uuid, getBalance(uuid) + amount.roundTo(2))
+    }
+
+    @JvmStatic
+    fun subtractBalance(uuid: UUID, amount: Double) {
+        if (!hasEnough(uuid, amount)) throw NoFundsException()
+        setBalance(uuid, getBalance(uuid) - amount.roundTo(2))
+    }
+
+    @JvmStatic
+    fun transferBalance(sender: UUID, receiver: UUID, amount: Double) {
+        if (isOutOfBounds(getBalance(receiver) + amount.roundTo(2))) {
+            throw BalanceOutOfBoundsException(receiver)
+        }
+        subtractBalance(sender, amount)
+        addBalance(receiver, amount)
+    }
+
+    @JvmStatic
+    fun hasEnough(uuid: UUID, amount: Double): Boolean =
+        getBalance(uuid) >= amount.roundTo(2)
+
+    @JvmStatic
+    fun isOutOfBounds(amount: Double) = amount.roundTo(2) > Config.maxBalance
+
+    @JvmStatic
+    fun formatBalance(amount: Double): String = Utils.formatBalance(amount)
+}
