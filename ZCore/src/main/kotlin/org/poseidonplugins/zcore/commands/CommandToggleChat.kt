@@ -33,8 +33,8 @@ class CommandToggleChat : ZCoreCommand(
 
         if (!isSelf) {
             event.sender.sendTl(if (user.seesChat)
-                "chatEnabledOther" else "chatDisabledOther", user.player)
+                "enabledChatOther" else "disabledChatOther", user.player)
         }
-        user.player.sendTl(if (user.seesChat) "chatEnabled" else "chatDisabled")
+        user.player.sendTl(if (user.seesChat) "enabledChat" else "disabledChat")
     }
 }

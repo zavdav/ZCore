@@ -22,7 +22,7 @@ class CommandEconomy : ZCoreCommand(
         val uuid = Utils.getUUIDFromString(event.args[1])
         val name = User.from(uuid).name
         var amount = event.args[2].toDoubleOrNull()?.roundTo(2)
-        assert(amount != null && amount >= 0, "invalidAmount")
+        assert(amount != null && amount >= 0, "invalidAmount", "string" to amount.toString())
 
         when (event.args[0].lowercase()) {
             "set" -> {

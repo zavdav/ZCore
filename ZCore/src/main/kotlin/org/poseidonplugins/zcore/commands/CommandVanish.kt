@@ -33,8 +33,8 @@ class CommandVanish : ZCoreCommand(
 
         if (!isSelf) {
             event.sender.sendTl(if (user.vanished)
-                "vanishEnabledOther" else "vanishDisabledOther", user.player)
+                "enabledVanishOther" else "disabledVanishOther", user.player)
         }
-        user.player.sendTl(if (user.vanished) "vanishEnabled" else "vanishDisabled")
+        user.player.sendTl(if (user.vanished) "enabledVanish" else "disabledVanish")
     }
 }

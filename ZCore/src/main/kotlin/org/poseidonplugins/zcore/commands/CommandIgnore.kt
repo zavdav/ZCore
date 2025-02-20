@@ -22,10 +22,10 @@ class CommandIgnore : ZCoreCommand(
 
         if (uuid in user.ignores) {
             user.setIgnored(uuid, false)
-            event.sender.sendTl("notIgnoringPlayer", "name" to User.from(uuid).name)
+            event.sender.sendTl("unignoredPlayer", "name" to User.from(uuid).name)
         } else {
             user.setIgnored(uuid, true)
-            event.sender.sendTl("ignoringPlayer", "name" to User.from(uuid).name)
+            event.sender.sendTl("ignoredPlayer", "name" to User.from(uuid).name)
         }
     }
 }

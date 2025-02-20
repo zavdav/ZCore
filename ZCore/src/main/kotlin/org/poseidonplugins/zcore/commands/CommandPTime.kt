@@ -34,10 +34,10 @@ class CommandPTime : ZCoreCommand(
 
         val ticks = try {
             TimeTickParser.parse(string)
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             if (string.equals("reset", true)) {
                 player.resetPlayerTime()
-                event.sender.sendTl("playerTimeReset")
+                event.sender.sendTl("resetPlayerTime")
                 return
             }
             throw InvalidUsageException(this)
@@ -49,7 +49,7 @@ class CommandPTime : ZCoreCommand(
             player.setPlayerTime(ticks, false)
         }
 
-        event.sender.sendTl("playerTimeSet",
+        event.sender.sendTl("setPlayerTime",
             "time24" to TimeTickParser.format24(ticks),
             "time12" to TimeTickParser.format12(ticks),
             "ticks" to TimeTickParser.formatTicks(ticks))

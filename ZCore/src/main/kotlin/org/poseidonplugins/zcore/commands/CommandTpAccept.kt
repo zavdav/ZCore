@@ -31,8 +31,8 @@ class CommandTpAccept : ZCoreCommand(
         val requestType = request.second
         val delay = Config.teleportDelay
         user.tpRequest = null
-        player.sendTl("tpRequestAccepted", target)
-        target.sendTl("playerAcceptedRequest", player)
+        player.sendTl("acceptedTpRequest", target)
+        target.sendTl("otherAcceptedRequest", player)
 
         if (requestType == User.TeleportType.TPA) {
             if (delay > 0) {

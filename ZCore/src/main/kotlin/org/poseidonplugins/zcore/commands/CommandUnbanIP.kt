@@ -21,12 +21,12 @@ class CommandUnbanIP : ZCoreCommand(
             } else {
                 val uuid = Utils.getUUIDFromString(event.args[0])
                 val ipBan = Punishments.getIPBan(uuid)
-                assert(ipBan != null, "ipNotBanned")
+                assert(ipBan != null, "ipNotBanned", "user" to uuid)
                 ipBan!!.ip
             }
 
-        assert(Punishments.isIPBanned(ip), "ipNotBanned")
+        assert(Punishments.isIPBanned(ip), "ipNotBanned", "user" to ip)
         Punishments.unbanIP(ip)
-        event.sender.sendTl("ipUnbanned", "ip" to ip)
+        event.sender.sendTl("unbannedIp", "ip" to ip)
     }
 }

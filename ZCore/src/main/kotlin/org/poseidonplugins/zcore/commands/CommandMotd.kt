@@ -5,7 +5,7 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.util.assert
-import org.poseidonplugins.zcore.util.formatString
+import org.poseidonplugins.zcore.util.format
 
 class CommandMotd : ZCoreCommand(
     "motd",
@@ -17,11 +17,11 @@ class CommandMotd : ZCoreCommand(
 ) {
 
     override fun execute(event: CommandEvent) {
-        assert(Config.motd.isNotEmpty(), "noMotdSet")
+        assert(Config.motd.isNotEmpty(), "noMotd")
         val player = event.sender as Player
         val motd = Config.motd.toMutableList()
         for (i in motd.indices) {
-            motd[i] = formatString(motd[i], player, "playerlist" to Bukkit.getOnlinePlayers()
+            motd[i] = format(motd[i], player, "playerlist" to Bukkit.getOnlinePlayers()
                 .map { it.displayName }.sorted().joinToString(", "))
 
             player.sendMessage(motd[i])

@@ -21,7 +21,7 @@ class CommandTpaHere : ZCoreCommand(
         val player = event.sender as Player
         val target = Utils.getPlayerFromUsername(event.args[0])
         val targetUser = User.from(target)
-        player.sendTl("tpRequestSent", target)
+        player.sendTl("sentTpRequest", target)
 
         if (player.uniqueId !in targetUser.ignores ||
             hasPermission(player, "zcore.ignore.exempt")) {

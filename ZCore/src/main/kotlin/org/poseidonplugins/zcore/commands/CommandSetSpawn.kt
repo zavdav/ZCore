@@ -19,11 +19,11 @@ class CommandSetSpawn : ZCoreCommand(
         val loc = player.location
         if (event.args.size == 1 && event.args[0].equals("none", true)) {
             SpawnData.removeSpawn(loc.world.name)
-            player.sendTl("spawnReset", "world" to loc.world.name)
+            player.sendTl("resetSpawn", "world" to loc.world.name)
 
         } else {
             SpawnData.setSpawn(loc.world.name, loc)
-            event.sender.sendTl("spawnSet",
+            event.sender.sendTl("setSpawn",
                 "world" to loc.world.name,
                 "coordinates" to "${loc.blockX}, ${loc.blockY}, ${loc.blockZ}")
         }

@@ -31,7 +31,7 @@ class CommandInvSee : ZCoreCommand(
                 user.savedInventory = null
             }
             user.isInvSee = false
-            event.sender.sendTl("inventoryRestored")
+            event.sender.sendTl("restoredInventory")
         }
     }
 }

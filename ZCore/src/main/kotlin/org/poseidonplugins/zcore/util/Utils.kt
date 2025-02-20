@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.inventory.ItemStack
+import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.zcore.config.Config
 import org.poseidonplugins.zcore.data.UUIDCache
@@ -22,65 +23,62 @@ import java.util.*
 import java.util.regex.Pattern
 import kotlin.math.*
 
+fun CommandSender.send(message: String, vararg pairs: Pair<String, Any>) =
+    sendMessage(format(message, *pairs))
+
+fun CommandSender.send(message: String, player: Player, vararg pairs: Pair<String, Any>) =
+    sendMessage(format(message, player, *pairs))
+
 fun CommandSender.sendTl(key: String, vararg pairs: Pair<String, Any>) =
-    sendMessage(format(key, *pairs))
+    sendMessage(tl(key, *pairs))
 
 fun CommandSender.sendTl(key: String, player: Player, vararg pairs: Pair<String, Any>) =
-    sendMessage(format(key, player, *pairs))
+    sendMessage(tl(key, player, *pairs))
 
-fun CommandSender.sendConfTl(message: String, vararg pairs: Pair<String, Any>) =
-    sendMessage(formatString(message, *pairs))
+fun broadcast(message: String, vararg pairs: Pair<String, Any>) =
+    Bukkit.broadcastMessage(format(message, *pairs))
 
-fun CommandSender.sendConfTl(message: String, player: Player, vararg pairs: Pair<String, Any>) =
-    sendMessage(formatString(message, player, *pairs))
-
-fun CommandSender.sendErrTl(key: String, vararg pairs: Pair<String, Any>) =
-    sendMessage(formatError(key, *pairs))
+fun broadcast(message: String, player: Player, vararg pairs: Pair<String, Any>) =
+    Bukkit.broadcastMessage(format(message, player, *pairs))
 
 fun broadcastTl(key: String, vararg pairs: Pair<String, Any>) =
-    Bukkit.broadcastMessage(format(key, *pairs))
+    Bukkit.broadcastMessage(tl(key, *pairs))
 
 fun broadcastTl(key: String, player: Player, vararg pairs: Pair<String, Any>) =
-    Bukkit.broadcastMessage(format(key, player, *pairs))
+    Bukkit.broadcastMessage(tl(key, player, *pairs))
 
-fun broadcastConfTl(message: String, vararg pairs: Pair<String, Any>) =
-    Bukkit.broadcastMessage(formatString(message, *pairs))
+fun getMessage(key: String): String = Utils.bundle.getString(key)
 
-fun broadcastConfTl(message: String, player: Player, vararg pairs: Pair<String, Any>) =
-    Bukkit.broadcastMessage(formatString(message, player, *pairs))
+fun tl(key: String, vararg pairs: Pair<String, Any>): String =
+    format(getMessage(key), *pairs)
 
-fun Player.kick(key: String, vararg pairs: Pair<String, Any>) =
-    kickPlayer(format(key, *pairs).safeSubstring(0, 100))
+fun tl(key: String, player: Player, vararg pairs: Pair<String, Any>): String =
+    tl(key, *pairs, "name" to player.name, "displayname" to player.displayName)
+
+fun tlError(key: String, vararg pairs: Pair<String, Any>): String =
+    tl("errorMessage", "message" to tl(key, *pairs))
+
+fun format(string: String, player: Player, vararg pairs: Pair<String, Any>): String =
+    format(string, "name" to player.name, "displayname" to player.displayName, *pairs)
+
+fun format(string: String, vararg pairs: Pair<String, Any>): String {
+    var message = colorize(string)
+    for (pair in pairs) {
+        message = message.replace("{${pair.first.uppercase()}}", pair.second.toString())
+    }
+    return message
+}
 
 fun assert(condition: Boolean, key: String, vararg pairs: Pair<String, Any>) {
-    if (!condition) throw CommandException(formatError(key, *pairs))
+    if (!condition) throw CommandException(tlError(key, *pairs))
 }
 
 fun assert(condition: Boolean, exception: CommandException) {
     if (!condition) throw exception
 }
 
-fun getMessage(key: String): String = Utils.bundle.getString(key)
-
-fun format(key: String, vararg pairs: Pair<String, Any>): String =
-    formatString(getMessage(key), *pairs)
-
-fun format(key: String, player: Player, vararg pairs: Pair<String, Any>): String =
-    format(key, *pairs, "name" to player.name, "displayname" to player.displayName)
-
-fun formatError(key: String, vararg pairs: Pair<String, Any>): String =
-    format("errorMessage", "message" to format(key, *pairs))
-
-fun formatString(string: String, player: Player, vararg pairs: Pair<String, Any>): String =
-    formatString(string, "name" to player.name, "displayname" to player.displayName, *pairs)
-
-fun formatString(string: String, vararg pairs: Pair<String, Any>): String {
-    var message = string
-    for (pair in pairs) {
-        message = message.replace("{${pair.first.uppercase()}}", pair.second.toString())
-    }
-    return message
-}
+fun Player.kick(key: String, vararg pairs: Pair<String, Any>) =
+    kickPlayer(tl(key, *pairs).safeSubstring(0, 100))
 
 object Utils {
 
@@ -139,10 +137,10 @@ object Utils {
     fun Player.isSelf(other: Player) = uniqueId == other.uniqueId
 
     fun PlayerLoginEvent.kickBanned(key: String, vararg pairs: Pair<String, Any>) =
-        disallow(PlayerLoginEvent.Result.KICK_BANNED, format(key, *pairs).safeSubstring(0, 100))
+        disallow(PlayerLoginEvent.Result.KICK_BANNED, tl(key, *pairs).safeSubstring(0, 100))
 
     fun PlayerLoginEvent.kickBannedIp(key: String, vararg pairs: Pair<String, Any>) =
-        disallow(PlayerLoginEvent.Result.KICK_BANNED_IP, format(key, *pairs).safeSubstring(0, 100))
+        disallow(PlayerLoginEvent.Result.KICK_BANNED_IP, tl(key, *pairs).safeSubstring(0, 100))
 
     @JvmStatic fun updateVanishedPlayers() {
         for (target in Bukkit.getOnlinePlayers()) {
@@ -282,7 +280,7 @@ object Utils {
     @JvmStatic fun notifySocialSpy(player: Player, commandLine: String) {
         for (target in Bukkit.getOnlinePlayers()) {
             if (User.from(target).socialSpy) {
-                target.sendConfTl(Config.socialSpyFormat, player, "command" to commandLine)
+                target.send(Config.socialSpy, player, "command" to commandLine)
             }
         }
     }

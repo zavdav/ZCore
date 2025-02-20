@@ -32,7 +32,7 @@ class CommandHome : ZCoreCommand(
             homeName = strings[1]
         }
 
-        assert(user.homeExists(homeName), "homeNotFound")
+        assert(user.homeExists(homeName), "homeNotFound", "home" to homeName)
         val location = user.getHomeLocation(homeName)
         val isSelf = player.uniqueId == user.uuid
         if (isSelf) charge(player)

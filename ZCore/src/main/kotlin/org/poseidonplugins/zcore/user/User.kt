@@ -9,7 +9,7 @@ import org.poseidonplugins.zcore.data.Punishments
 import org.poseidonplugins.zcore.data.UserData
 import org.poseidonplugins.zcore.hooks.permissions.PermissionHandler
 import org.poseidonplugins.zcore.util.broadcastTl
-import org.poseidonplugins.zcore.util.formatString
+import org.poseidonplugins.zcore.util.format
 import org.poseidonplugins.zcore.util.kick
 import org.poseidonplugins.zcore.util.sendTl
 import java.time.Duration
@@ -77,7 +77,7 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
 
     fun getDisplayName(useNick: Boolean): String {
         val nickname = if (useNick) getNick() else username
-        val displayName = formatString(Config.displayNameFormat,
+        val displayName = format(Config.displayNameFormat,
             "prefix" to prefix, "nickname" to nickname, "suffix" to suffix)
         return "§f${displayName.trim()}§f"
     }
@@ -124,8 +124,8 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
         if (Punishments.isMuted(uuid)) {
             val mute = Punishments.getMute(uuid) ?: return false
             when (mute.until == null) {
-                true -> player.sendTl("permaMuted", "reason" to mute.reason)
-                false -> player.sendTl("tempMuted",
+                true -> player.sendTl("muteScreen", "reason" to mute.reason)
+                false -> player.sendTl("tempMuteScreen",
                     "datetime" to mute.until.truncatedTo(ChronoUnit.MINUTES),
                     "reason" to mute.reason
                 )

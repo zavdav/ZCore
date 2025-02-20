@@ -24,7 +24,7 @@ class CommandTpDeny : ZCoreCommand(
 
         user.tpRequest = null
         val target = request!!.first
-        player.sendTl("tpRequestDenied", target)
-        target.sendTl("playerDeniedRequest", player)
+        player.sendTl("deniedTpRequest", target)
+        target.sendTl("otherDeniedRequest", player)
     }
 }

@@ -25,7 +25,7 @@ class CommandWarp : ZCoreCommand(
         } else {
             val player = event.sender as Player
             var warpName = event.args[0]
-            assert(WarpData.warpExists(warpName), "warpNotFound")
+            assert(WarpData.warpExists(warpName), "warpNotFound", "warp" to warpName)
 
             val location = WarpData.getWarpLocation(warpName)
             val delay = Config.teleportDelay

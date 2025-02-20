@@ -22,7 +22,7 @@ class CommandSummon : ZCoreCommand(
     override fun execute(event: CommandEvent) {
         val player = event.sender as Player
         val type = event.args[0].lowercase()
-        assert(type in types.keys, "mobNotFound")
+        assert(type in types.keys, "mobNotFound", "mob" to type)
 
         val creatureType = types[type]!!
         var amount = 1
@@ -34,6 +34,6 @@ class CommandSummon : ZCoreCommand(
         repeat(amount) {
             player.world.spawnCreature(targetBlock.location, creatureType)
         }
-        player.sendTl("mobSummoned", "amount" to amount, "mob" to creatureType.name)
+        player.sendTl("summonedMob", "amount" to amount, "mob" to creatureType.name)
     }
 }

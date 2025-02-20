@@ -32,17 +32,17 @@ class CommandTime : ZCoreCommand(
         var world = (event.sender as Player).world
         if (event.args.size == 2) {
             world = Bukkit.getWorld(event.args[1])
-            assert(world != null, "worldNotFound")
+            assert(world != null, "worldNotFound", "world" to event.args[1])
         }
 
         val ticks = try {
             TimeTickParser.parse(event.args[0])
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             throw InvalidUsageException(this)
         }
 
         world.time = ticks
-        event.sender.sendTl("worldTimeSet",
+        event.sender.sendTl("setTime",
             "time24" to TimeTickParser.format24(ticks),
             "time12" to TimeTickParser.format24(ticks),
             "ticks" to TimeTickParser.formatTicks(ticks),

@@ -32,15 +32,15 @@ class CommandSetHome : ZCoreCommand(
 
         if (!hasPermission(event.sender, "zcore.sethome.unlimited")) {
             if (!hasPermission(event.sender, "zcore.sethome.multiple")) {
-                assert(homeCount == 0, "homeLimitSingle")
+                assert(homeCount == 0, "homeLimit", "amount" to 1)
             } else {
-                assert(homeCount < limit, "homeLimitMultiple", "amount" to limit)
+                assert(homeCount < limit, "homeLimit", "amount" to limit)
             }
         }
 
-        assert(!user.homeExists(homeName), "homeAlreadyExists")
+        assert(!user.homeExists(homeName), "homeAlreadyExists", "home" to homeName)
         charge(player)
         user.addHome(homeName, (event.sender as Player).location)
-        event.sender.sendTl("homeSet", "home" to homeName)
+        event.sender.sendTl("setHome", "home" to homeName)
     }
 }

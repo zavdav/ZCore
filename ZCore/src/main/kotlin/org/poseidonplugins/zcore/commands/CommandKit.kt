@@ -25,12 +25,12 @@ class CommandKit : ZCoreCommand(
         val kits = Kits.getKits().filter { hasPermission(player, "zcore.kit.${it.key}") }
 
         if (event.args.isEmpty()) {
-            assert(kits.isNotEmpty(), "noKitsSet")
+            assert(kits.isNotEmpty(), "noKits")
             event.sender.sendTl("kitList")
             event.sender.sendMessage(kits.keys.sorted().joinToString(", "))
         } else {
             val name = event.args[0].lowercase()
-            assert(name in kits.keys, "kitNotFound")
+            assert(name in kits.keys, "kitNotFound", "kit" to name)
             val kit = kits[name]!!
 
             user.checkKitCooldowns()
@@ -52,11 +52,11 @@ class CommandKit : ZCoreCommand(
                 }
             } else {
                 player.inventory.contents = currentInv
-                throw CommandException(formatError("noInventorySpace"))
+                throw CommandException(tlError("noInventorySpace"))
             }
 
             if (kit.cooldown > 0) user.addKitCooldown(kit, kit.cooldown)
-            player.sendTl("kitEquipped", "name" to name)
+            player.sendTl("equippedKit", "name" to name)
         }
     }
 

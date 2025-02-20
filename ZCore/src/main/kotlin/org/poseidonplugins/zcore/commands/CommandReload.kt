@@ -22,6 +22,6 @@ class CommandReload : ZCoreCommand(
         Kits.load()
         Backup.init()
         val desc = ZCore.plugin.description
-        event.sender.sendTl("pluginReloaded", "plugin" to desc.name, "version" to desc.version)
+        event.sender.sendTl("reloadedPlugin", "plugin" to desc.name, "version" to desc.version)
     }
 }

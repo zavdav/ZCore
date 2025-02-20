@@ -13,17 +13,17 @@ class AsyncCommandException(val sender: CommandSender, vararg messages: String) 
 
 class InvalidUsageException(command: Command) : CommandException(command.description, "Usage: ${command.usage}")
 
-class PlayerNotFoundException(val name: String) : CommandException(formatError("playerNotFound", "name" to name))
+class PlayerNotFoundException(val name: String) : CommandException(tlError("playerNotFound", "name" to name))
 
-class UnknownUserException(val uuid: UUID) : CommandException(formatError("unknownUser", "uuid" to uuid))
+class UnknownUserException(val uuid: UUID) : CommandException(tlError("unknownUser", "user" to uuid))
 
-class NoFundsException : CommandException(formatError("noFunds"))
+class NoFundsException : CommandException(tlError("noFunds"))
 
 class BalanceOutOfBoundsException(val uuid: UUID) : CommandException(
-    formatError("balanceOutOfBounds",
+    tlError("balanceOutOfBounds",
         "user" to User.from(uuid).name,
         "amount" to Economy.formatBalance(Config.maxBalance)
     )
 )
 
-class UnsafeDestinationException : CommandException(formatError("unsafeDestination"))
+class UnsafeDestinationException : CommandException(tlError("unsafeDestination"))

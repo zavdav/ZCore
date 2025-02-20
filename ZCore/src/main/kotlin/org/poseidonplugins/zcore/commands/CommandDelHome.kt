@@ -32,14 +32,14 @@ class CommandDelHome : ZCoreCommand(
             homeName = strings[1]
         }
 
-        assert(user.homeExists(homeName), "homeNotFound")
+        assert(user.homeExists(homeName), "homeNotFound", "home" to homeName)
         homeName = user.getHomeName(homeName)
         user.removeHome(homeName)
 
         if (player.uniqueId == user.uuid) {
-            event.sender.sendTl("homeDeleted", "home" to homeName)
+            event.sender.sendTl("deletedHome", "home" to homeName)
         } else {
-            event.sender.sendTl("homeDeletedOther", "user" to user.name, "home" to homeName)
+            event.sender.sendTl("deletedHomeOther", "user" to user.name, "home" to homeName)
         }
     }
 }

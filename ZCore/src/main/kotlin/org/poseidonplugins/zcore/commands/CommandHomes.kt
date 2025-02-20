@@ -56,13 +56,13 @@ class CommandHomes : ZCoreCommand(
     private fun printHomes(sender: CommandSender, page: Int, homes: List<String>) {
         val homesPerPage = Config.homesPerPage
         val pages = ceil(homes.size.toDouble() / homesPerPage).toInt()
-        assert(page <= pages, "pageTooHigh")
+        assert(page <= pages, "pageTooHigh", "page" to page)
         sender.sendTl("homesPage", "page" to page, "pages" to pages)
 
         val sb = StringBuilder()
         for (i in (page * homesPerPage - homesPerPage)..<page * homesPerPage) {
             if (i >= homes.size) break
-            sb.append(format("homesEntry", "home" to homes[i]) + " ")
+            sb.append(tl("homesEntry", "home" to homes[i]) + " ")
         }
         sender.sendMessage(sb.substring(0, sb.length - 2))
     }

@@ -18,6 +18,6 @@ class CommandSocialSpy: ZCoreCommand(
         val user = User.from(event.sender as Player)
 
         user.socialSpy = !user.socialSpy
-        user.player.sendTl(if (user.socialSpy) "socialSpyEnabled" else "socialSpyDisabled")
+        user.player.sendTl(if (user.socialSpy) "enabledSocialSpy" else "disabledSocialSpy")
     }
 }

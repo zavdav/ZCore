@@ -10,7 +10,7 @@
 
 # The config version
 # This should never be changed manually.
-configVersion: 20250219
+configVersion: 20250220
 
 # In what interval should data be automatically saved
 autoSaveTime: 300
@@ -25,15 +25,15 @@ backupFolder: './backup'
 # The Message of the day
 # Leave this empty to disable
 motd:
-  - '§eWelcome, {NAME}§e!'
-  - '§bType /help for a list of commands.'
-  - '§7Online players: §f{PLAYERLIST}'
+  - '&eWelcome, {NAME}&e!'
+  - '&bType /help for a list of commands.'
+  - '&7Online players: &f{PLAYERLIST}'
 
 # The server rules which are displayed when typing /rules
 rules:
-  - '§c1. Be respectful'
-  - '§c2. No griefing'
-  - '§c3. No cheating'
+  - '&c1. Be respectful'
+  - '&c2. No griefing'
+  - '&c3. No cheating'
 
 # How long do players have to stand still until they are teleported to a warp
 teleportDelay: 3
@@ -56,17 +56,17 @@ commandsPerPage: 10
 # └───────────────────────────┘
 
 # Chat formats
-chatFormat: '{DISPLAYNAME}§f: {MESSAGE}'
-broadcastFormat: '§d[Broadcast] {MESSAGE}'
-msgSendFormat: '§7[me -> {NAME}§7] §f{MESSAGE}'
-msgReceiveFormat: '§7[{NAME}§7 -> me] §f{MESSAGE}'
-socialSpyFormat: '§6[SocialSpy] §f{DISPLAYNAME}§f: {COMMAND}'
+chat: '{DISPLAYNAME}&f: {MESSAGE}'
+broadcast: '&d[Broadcast] {MESSAGE}'
+sendMsg: '&7[me -> {NAME}&7] &f{MESSAGE}'
+receiveMsg: '&7[{NAME}&7 -> me] &f{MESSAGE}'
+socialSpy: '&6[SocialSpy] &f{DISPLAYNAME}&f: {COMMAND}'
 
 # Join/Leave formats
-joinMsgFormat: '§e{NAME} has joined the game'
-leaveMsgFormat: '§e{NAME} has left the game'
-kickMsgFormat: '§e{NAME} has been kicked from the server'
-banMsgFormat: '§e{NAME} has been banned from the server'
+joinMsg: '&e{NAME} has joined the game'
+leaveMsg: '&e{NAME} has left the game'
+kickMsg: '&e{NAME} has been kicked from the server'
+banMsg: '&e{NAME} has been banned from the server'
 
 # The color to add to the beginning of an operator's name
 # Set to 'none' to disable
@@ -76,14 +76,14 @@ operatorColor: 'c'
 nickPrefix: '~'
 
 # How display names should be formatted
-displayNameFormat: '{PREFIX} §f{NICKNAME}§f {SUFFIX}'
+displayNameFormat: '{PREFIX} &f{NICKNAME}&f {SUFFIX}'
 
 # How far away a player will be heard from when chatting
 # Set to 0 to make chat global
 chatRadius: 0
 
 # The message that should be broadcasted when a player joins the server for the first time
-firstJoinMessage: '§dWelcome to the server, {DISPLAYNAME}§d!'
+firstJoinMessage: '&dWelcome to the server, {DISPLAYNAME}&d!'
 
 # ┌───────────────────────────┐
 # │         Commands          │

@@ -17,10 +17,10 @@ class CommandDelWarp : ZCoreCommand(
 
     override fun execute(event: CommandEvent) {
         var warpName = event.args[0]
-        assert(WarpData.warpExists(warpName), "warpNotFound")
+        assert(WarpData.warpExists(warpName), "warpNotFound", "warp" to warpName)
 
         warpName = WarpData.getWarpName(warpName)
         WarpData.removeWarp(warpName)
-        event.sender.sendTl("warpDeleted", "warp" to warpName)
+        event.sender.sendTl("deletedWarp", "warp" to warpName)
     }
 }

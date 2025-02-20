@@ -64,7 +64,7 @@ object Backup {
                 sender.sendTl("backupSuccess", "file" to folder.name, "millis" to time)
             } catch (e: Exception) {
                 e.printStackTrace()
-                throw AsyncCommandException(sender, formatError("backupFailed"))
+                throw AsyncCommandException(sender, tlError("backupFailed"))
             } finally {
                 lock.unlock()
             }

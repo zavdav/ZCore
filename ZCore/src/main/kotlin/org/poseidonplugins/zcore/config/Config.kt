@@ -103,32 +103,32 @@ object Config {
     val commandsPerPage: Int
         get() = getInt("commandsPerPage", 1..Int.MAX_VALUE, 10)
 
-    val chatFormat: String
-        get() = getString("chatFormat", "{DISPLAYNAME}§f: {MESSAGE}")
+    val chat: String
+        get() = getString("chat", "{DISPLAYNAME}§f: {MESSAGE}")
 
-    val broadcastFormat: String
-        get() = getString("broadcastFormat", "§d[Broadcast] {MESSAGE}")
+    val broadcast: String
+        get() = getString("broadcast", "§d[Broadcast] {MESSAGE}")
 
-    val msgSendFormat: String
-        get() = getString("msgSendFormat", "§7[me -> {NAME}§7] §f{MESSAGE}")
+    val sendMsg: String
+        get() = getString("sendMsg", "§7[me -> {NAME}§7] §f{MESSAGE}")
 
-    val msgReceiveFormat: String
-        get() = getString("msgReceiveFormat", "§7[{NAME}§7 -> me] §f{MESSAGE}")
+    val receiveMsg: String
+        get() = getString("receiveMsg", "§7[{NAME}§7 -> me] §f{MESSAGE}")
 
-    val socialSpyFormat: String
-        get() = getString("socialSpyFormat", "§6[SocialSpy] §f{DISPLAYNAME}§f: {COMMAND}")
+    val socialSpy: String
+        get() = getString("socialSpy", "§6[SocialSpy] §f{DISPLAYNAME}§f: {COMMAND}")
 
-    val joinMsgFormat: String
-        get() = getString("joinMsgFormat", "§e{NAME} has joined the game.")
+    val joinMsg: String
+        get() = getString("joinMsg", "§e{NAME} has joined the game.")
 
-    val leaveMsgFormat: String
-        get() = getString("leaveMsgFormat", "§e{NAME} has left the game.")
+    val leaveMsg: String
+        get() = getString("leaveMsg", "§e{NAME} has left the game.")
 
-    val kickMsgFormat: String
-        get() = getString("kickMsgFormat", "§e{NAME} has been kicked from the server.")
+    val kickMsg: String
+        get() = getString("kickMsg", "§e{NAME} has been kicked from the server.")
 
-    val banMsgFormat: String
-        get() = getString("banMsgFormat", "§e{NAME} has been banned from the server.")
+    val banMsg: String
+        get() = getString("banMsg", "§e{NAME} has been banned from the server.")
 
     val operatorColor: String
         get() {

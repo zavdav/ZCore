@@ -39,16 +39,16 @@ class PlayerListener : Listener {
             val ipBan = Punishments.getIPBan(ip)!!
             if (player.uniqueId !in ipBan.uuids) ipBan.addUUID(player.uniqueId)
             when (ipBan.until == null) {
-                true -> event.kickBannedIp("permaIpBanned", "reason" to ipBan.reason)
-                false -> event.kickBannedIp("tempIpBanned",
+                true -> event.kickBannedIp("ipBanScreen", "reason" to ipBan.reason)
+                false -> event.kickBannedIp("tempIpBanScreen",
                     "datetime" to ipBan.until.truncatedTo(ChronoUnit.MINUTES),
                     "reason" to ipBan.reason)
             }
         } else if (Punishments.isBanned(player.uniqueId)) {
             val ban = Punishments.getBan(player.uniqueId)!!
             when (ban.until == null) {
-                true -> event.kickBanned("permaBanned", "reason" to ban.reason)
-                false -> event.kickBanned("tempBanned",
+                true -> event.kickBanned("banScreen", "reason" to ban.reason)
+                false -> event.kickBanned("tempBanScreen",
                     "datetime" to ban.until.truncatedTo(ChronoUnit.MINUTES),
                     "reason" to ban.reason)
             }
@@ -72,7 +72,7 @@ class PlayerListener : Listener {
 
         if (isFirstJoin) {
             user.firstJoin = LocalDateTime.now()
-            broadcastConfTl(Config.firstJoinMessage, event.player)
+            broadcast(Config.firstJoinMessage, event.player)
             val spawn = SpawnData.getSpawn(event.player.world)
             if (spawn != null) event.player.teleport(spawn)
         }
@@ -82,7 +82,7 @@ class PlayerListener : Listener {
         }
         if (user.mails.isNotEmpty()) event.player.sendTl("newMail")
 
-        event.joinMessage = formatString(Config.joinMsgFormat, event.player)
+        event.joinMessage = format(Config.joinMsg, event.player)
     }
 
     @EventHandler(priority = Event.Priority.Low)
@@ -101,14 +101,14 @@ class PlayerListener : Listener {
         user.banExempt = hasPermission(event.player, "zcore.ban.exempt")
         user.muteExempt = hasPermission(event.player, "zcore.mute.exempt")
 
-        event.quitMessage = formatString(Config.leaveMsgFormat, event.player)
+        event.quitMessage = format(Config.leaveMsg, event.player)
     }
 
     @EventHandler(ignoreCancelled = true, priority = Event.Priority.Low)
     fun onPlayerKick(event: PlayerKickEvent) {
         val isBanned = Punishments.isBanned(event.player.uniqueId)
                     || Punishments.isIPBanned(event.player.address.address.hostAddress)
-        event.leaveMessage = formatString(if (isBanned) Config.banMsgFormat else Config.kickMsgFormat, event.player)
+        event.leaveMessage = format(if (isBanned) Config.banMsg else Config.kickMsg, event.player)
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -121,7 +121,7 @@ class PlayerListener : Listener {
         if (hasPermission(event.player, "zcore.chat.color")) {
             event.message = colorize(event.message)
         }
-        event.format = formatString(Config.chatFormat, "displayname" to "%1\$s", "message" to "%2\$s")
+        event.format = format(Config.chat, "displayname" to "%1\$s", "message" to "%2\$s")
 
         val radius = Config.chatRadius
         if (radius != 0) {

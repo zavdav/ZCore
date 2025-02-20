@@ -19,9 +19,9 @@ class CommandSetWarp : ZCoreCommand(
     override fun execute(event: CommandEvent) {
         val warpName = event.args[0]
         assert(warpName.matches("^[a-zA-Z0-9_-]+$".toRegex()), "invalidWarpName")
-        assert(!WarpData.warpExists(warpName), "warpAlreadyExists")
+        assert(!WarpData.warpExists(warpName), "warpAlreadyExists", "warp" to warpName)
 
         WarpData.setWarp(warpName, (event.sender as Player).location)
-        event.sender.sendTl("warpSet", "warp" to warpName)
+        event.sender.sendTl("setWarp", "warp" to warpName)
     }
 }

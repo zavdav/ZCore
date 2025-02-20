@@ -22,11 +22,11 @@ class CommandSmite : ZCoreCommand(
             val target = Utils.getPlayerFromUsername(event.args[0])
             val location = target.location
             location.world.strikeLightning(location)
-            player.sendTl("playerSmitten", target)
+            player.sendTl("struckPlayer", target)
         } else {
             val location = player.getTargetBlock(null, 100).location
             location.world.strikeLightning(location)
-            player.sendTl("lightningStruck")
+            player.sendTl("struckLightning")
         }
     }
 }

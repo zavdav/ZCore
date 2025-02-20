@@ -9,7 +9,7 @@ import org.poseidonplugins.zcore.user.User
 import org.poseidonplugins.zcore.user.UserMap
 import org.poseidonplugins.zcore.util.Utils
 import org.poseidonplugins.zcore.util.assert
-import org.poseidonplugins.zcore.util.format
+import org.poseidonplugins.zcore.util.tl
 import org.poseidonplugins.zcore.util.sendTl
 import java.time.LocalDateTime
 import java.util.regex.Pattern
@@ -29,12 +29,12 @@ class CommandBan: ZCoreCommand(
         if (UserMap.isUserKnown(uuid)) {
             assert(event.sender !is Player || (event.sender as Player).uniqueId != uuid, "cannotBanSelf")
             val user = User.from(uuid)
-            if (user.isOnline) {
-                assert(!hasPermission(user.player, "zcore.ban.exempt"), "cannotBanUser")
-            } else {
-                assert(!user.banExempt, "cannotBanUser")
-            }
             name = user.name
+            if (user.isOnline) {
+                assert(!hasPermission(user.player, "zcore.ban.exempt"), "cannotBanUser", "name" to name)
+            } else {
+                assert(!user.banExempt, "cannotBanUser", "name" to name)
+            }
         }
 
         val subArgs = joinArgs(event.args, 1, event.args.size)
@@ -54,28 +54,28 @@ class CommandBan: ZCoreCommand(
             0 -> when (reason.length) {
                 0 -> {
                     Punishments.ban(uuid)
-                    event.sender.sendTl("playerPermaBanned",
+                    event.sender.sendTl("bannedPlayer",
                         "user" to name,
-                        "reason" to format("banReason"))
+                        "reason" to tl("banReason"))
                 }
                 else -> {
                     Punishments.ban(uuid, reason)
-                    event.sender.sendTl("playerPermaBanned", "user" to name, "reason" to reason)
+                    event.sender.sendTl("bannedPlayer", "user" to name, "reason" to reason)
                 }
             }
             else -> when (reason.length) {
                 0 -> {
                     val until = Utils.parseDateDiff(duration)
                     Punishments.ban(uuid, until)
-                    event.sender.sendTl("playerTempBanned",
+                    event.sender.sendTl("tempBannedPlayer",
                         "user" to name,
                         "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
-                        "reason" to format("banReason"))
+                        "reason" to tl("banReason"))
                 }
                 else -> {
                     val until = Utils.parseDateDiff(duration)
                     Punishments.ban(uuid, until, reason)
-                    event.sender.sendTl("playerTempBanned",
+                    event.sender.sendTl("tempBannedPlayer",
                         "user" to name,
                         "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
                         "reason" to reason)

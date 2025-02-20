@@ -29,7 +29,7 @@ class CommandClearInv : ZCoreCommand(
         if (isSelf) charge(player)
         target.inventory.clear()
 
-        if (!isSelf) event.sender.sendTl("inventoryClearedOther", target)
-        target.sendTl("inventoryCleared")
+        if (!isSelf) event.sender.sendTl("clearedInventoryOther", target)
+        target.sendTl("clearedInventory")
     }
 }

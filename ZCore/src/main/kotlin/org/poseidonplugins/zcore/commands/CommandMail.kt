@@ -23,7 +23,7 @@ class CommandMail : ZCoreCommand(
         when (event.args[0].lowercase()) {
             "read" -> {
                 assert(user.mails.isNotEmpty(), "noMail")
-                player.sendTl("mailRead")
+                player.sendTl("readMail")
                 for (mail in user.mails) {
                     player.sendMessage(mail)
                 }
@@ -34,7 +34,7 @@ class CommandMail : ZCoreCommand(
 
                 val uuid = Utils.getUUIDFromUsername(event.args[1])
                 val targetUser = User.from(uuid)
-                player.sendTl("mailSent", "name" to targetUser.name)
+                player.sendTl("sentMail", "name" to targetUser.name)
 
                 if (player.uniqueId !in targetUser.ignores ||
                     hasPermission(player, "zcore.ignore.exempt")) {
@@ -46,7 +46,7 @@ class CommandMail : ZCoreCommand(
             }
             "clear" -> {
                 user.clearMail()
-                player.sendTl("mailCleared")
+                player.sendTl("clearedMail")
             }
             else -> throw InvalidUsageException(this)
         }

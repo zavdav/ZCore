@@ -62,7 +62,7 @@ class CommandHelp : ZCoreCommand(
     private fun printHelp(sender: CommandSender, page: Int, commands: List<Command>) {
         val commandsPerPage = Config.commandsPerPage
         val pages = ceil(commands.size.toDouble() / commandsPerPage).toInt()
-        assert(page <= pages, "pageTooHigh")
+        assert(page <= pages, "pageTooHigh", "page" to page)
         sender.sendTl("helpPage", "page" to page, "pages" to pages)
 
         for (i in (page * commandsPerPage - commandsPerPage)..<page * commandsPerPage) {

@@ -22,10 +22,10 @@ class CommandPay : ZCoreCommand(
         val receiver = User.from(Utils.getUUIDFromString(event.args[0]))
 
         val amount = event.args[1].toDoubleOrNull()?.roundTo(2)
-        assert(amount != null && amount > 0, "invalidAmount")
+        assert(amount != null && amount > 0, "invalidAmount", "string" to amount.toString())
         Economy.transferBalance(sender.uuid, receiver.uuid, amount!!)
 
-        event.sender.sendTl("paidUser",
+        event.sender.sendTl("paidMoney",
             "user" to receiver.name, "amount" to Economy.formatBalance(amount))
         if (receiver.isOnline) receiver.player.sendTl("receivedMoney",
             "player" to sender.name, "amount" to Economy.formatBalance(amount))

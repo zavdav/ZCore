@@ -33,8 +33,8 @@ class CommandGod : ZCoreCommand(
 
         if (!isSelf) {
             event.sender.sendTl(if (user.isGod)
-                "godEnabledOther" else "godDisabledOther", user.player)
+                "enabledGodOther" else "disabledGodOther", user.player)
         }
-        user.player.sendTl(if (user.isGod) "godEnabled" else "godDisabled")
+        user.player.sendTl(if (user.isGod) "enabledGod" else "disabledGod")
     }
 }

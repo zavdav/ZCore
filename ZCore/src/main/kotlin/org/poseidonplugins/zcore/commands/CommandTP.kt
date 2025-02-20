@@ -62,9 +62,9 @@ class CommandTP : ZCoreCommand(
 
         val coordinates = "${coords[0].toFloat()}, ${coords[1].toFloat()}, ${coords[2].toFloat()}"
         if (player == target) {
-            player.sendTl("teleportedToCoordinates", "coordinates" to coordinates)
+            player.sendTl("teleportedToCoords", "coordinates" to coordinates)
         } else {
-            player.sendTl("teleportedPlayerToCoordinates",
+            player.sendTl("teleportedPlayerToCoords",
                 "player" to target.name, "coordinates" to coordinates)
         }
     }
@@ -88,8 +88,8 @@ class CommandTP : ZCoreCommand(
                     coords.add(loc.y)
                     computeY = true
                 } else {
-                    throw CommandException(formatError(
-                        "errorParsingCoordinates", "string" to args.joinToString(" ")
+                    throw CommandException(tlError(
+                        "invalidCoords", "string" to args.joinToString(" ")
                     ))
                 }
             }
