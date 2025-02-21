@@ -74,6 +74,14 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData(
         get() = json["vanished", false]
         set(value) { json["vanished"] = value }
 
+    var ban: JsonObject?
+        get() = json["ban", null]
+        set(value) { if (value != null) json["ban"] = value else json.remove("ban") }
+
+    var mute: JsonObject?
+        get() = json["mute", null]
+        set(value) { if (value != null) json["mute"] = value else json.remove("mute") }
+
     var banExempt: Boolean
         get() = json["banExempt", false]
         set(value) { json["banExempt"] = value }

@@ -7,40 +7,16 @@ import me.zavdav.zcore.data.JsonData
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.tl
-import org.bukkit.entity.Player
 import java.io.File
 import java.time.LocalDateTime
 import java.util.*
 
 object Punishments : JsonData(File(ZCore.dataFolder, "punishments.json")) {
 
-    private val muteMap: MutableMap<UUID, Mute> = mutableMapOf()
-    private val banMap: MutableMap<UUID, Ban> = mutableMapOf()
     private val ipBanMap: MutableMap<String, IPBan> = mutableMapOf()
-
-    private var mutes: JsonObject = json["mutes", JsonObject()]
-    private var bans: JsonObject = json["bans", JsonObject()]
     private var ipBans: JsonObject = json["ipBans", JsonObject()]
 
     init {
-        for (entry in mutes) {
-            val mute = entry.value as JsonObject
-            val uuid = UUID.fromString(entry.key)
-            muteMap[uuid] = Mute(
-                uuid,
-                if (mute["until"] == "forever") null else LocalDateTime.parse(mute["until"].toString()),
-                mute["reason"].toString()
-            )
-        }
-        for (entry in bans) {
-            val ban = entry.value as JsonObject
-            val uuid = UUID.fromString(entry.key)
-            banMap[uuid] = Ban(
-                uuid,
-                if (ban["until"] == "forever") null else LocalDateTime.parse(ban["until"].toString()),
-                ban["reason"].toString()
-            )
-        }
         for (entry in ipBans) {
             val ipBan = entry.value as JsonObject
             ipBanMap[entry.key] = IPBan(
@@ -94,14 +70,13 @@ object Punishments : JsonData(File(ZCore.dataFolder, "punishments.json")) {
         mute(uuid, until, tl("muteReason"))
 
     fun mute(uuid: UUID, until: LocalDateTime?, reason: String) {
-        muteMap[uuid] = Mute(uuid, until, reason)
-        mutes[uuid.toString()] = JsonObject(mapOf(
+        val user = User.from(uuid)
+        user.mute = JsonObject(mapOf(
             "until" to (until ?: "forever").toString(),
             "reason" to reason
         ))
-        json["mutes"] = mutes
 
-        User.from(uuid).checkIsMuted()
+        user.checkIsMuted()
     }
 
     fun ban(uuid: UUID) =
@@ -114,14 +89,13 @@ object Punishments : JsonData(File(ZCore.dataFolder, "punishments.json")) {
         ban(uuid, until, tl("banReason"))
 
     fun ban(uuid: UUID, until: LocalDateTime?, reason: String) {
-        banMap[uuid] = Ban(uuid, until, reason)
-        bans[uuid.toString()] = JsonObject(mapOf(
+        val user = User.from(uuid)
+        user.ban = JsonObject(mapOf(
             "until" to (until ?: "forever").toString(),
             "reason" to reason
         ))
-        json["bans"] = bans
 
-        User.from(uuid).checkIsBanned()
+        user.checkIsBanned()
     }
 
     fun banIP(ip: String) =
@@ -149,15 +123,11 @@ object Punishments : JsonData(File(ZCore.dataFolder, "punishments.json")) {
     }
 
     fun unmute(uuid: UUID) {
-        muteMap.remove(uuid)
-        mutes.remove(uuid.toString())
-        json["mutes"] = mutes
+        User.from(uuid).mute = null
     }
 
     fun unban(uuid: UUID) {
-        banMap.remove(uuid)
-        bans.remove(uuid.toString())
-        json["bans"] = bans
+        User.from(uuid).ban = null
     }
 
     fun unbanIP(ip: String) {
@@ -167,22 +137,18 @@ object Punishments : JsonData(File(ZCore.dataFolder, "punishments.json")) {
     }
 
     fun isMuted(uuid: UUID): Boolean {
-        val mute = muteMap[uuid]
-
-        if (mute == null || mute.until != null && !mute.until.isAfter(LocalDateTime.now())) {
-            muteMap.remove(uuid)
-            mutes.remove(uuid.toString())
+        val mute = getMute(uuid) ?: return false
+        if (mute.until != null && !mute.until.isAfter(LocalDateTime.now())) {
+            unmute(uuid)
             return false
         }
         return true
     }
 
     fun isBanned(uuid: UUID): Boolean {
-        val ban = banMap[uuid]
-
-        if (ban == null || ban.until != null && !ban.until.isAfter(LocalDateTime.now())) {
-            banMap.remove(uuid)
-            bans.remove(uuid.toString())
+        val ban = getBan(uuid) ?: return false
+        if (ban.until != null && !ban.until.isAfter(LocalDateTime.now())) {
+            unban(uuid)
             return false
         }
         return true
@@ -199,18 +165,36 @@ object Punishments : JsonData(File(ZCore.dataFolder, "punishments.json")) {
         return true
     }
 
-    fun getMute(player: Player): Mute? = getMute(player.uniqueId)
+    fun getMute(uuid: UUID): Mute? {
+        val user = User.from(uuid)
+        val mute = user.mute ?: return null
 
-    fun getMute(uuid: UUID): Mute? = muteMap[uuid]
+        return try {
+            val until = if (mute["until"] == "forever") null
+                        else LocalDateTime.parse(mute["until"].toString())
+            val reason = mute["reason"].toString()
+            Mute(uuid, until, reason)
+        } catch (_: Exception) {
+            null
+        }
+    }
 
-    fun getBan(player: Player): Ban? = getBan(player.uniqueId)
+    fun getBan(uuid: UUID): Ban? {
+        val user = User.from(uuid)
+        val ban = user.ban ?: return null
 
-    fun getBan(uuid: UUID): Ban? = banMap[uuid]
-
-    fun getIPBan(player: Player): IPBan? = getIPBan(player.address.address.hostAddress)
+        return try {
+            val until = if (ban["until"] == "forever") null
+            else LocalDateTime.parse(ban["until"].toString())
+            val reason = ban["reason"].toString()
+            Ban(uuid, until, reason)
+        } catch (_: Exception) {
+            null
+        }
+    }
 
     fun getIPBan(uuid: UUID): IPBan? =
-        ipBanMap.entries.firstOrNull { entry -> uuid in entry.value.uuids }?.value
+        ipBanMap.entries.firstOrNull { uuid in it.value.uuids }?.value
 
     fun getIPBan(ip: String): IPBan? = ipBanMap[ip]
 }
