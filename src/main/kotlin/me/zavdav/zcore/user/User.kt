@@ -2,6 +2,7 @@ package me.zavdav.zcore.user
 
 import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.config.Config
+import me.zavdav.zcore.data.BannedIPs
 import me.zavdav.zcore.data.UserData
 import me.zavdav.zcore.hooks.permissions.PermissionHandler
 import me.zavdav.zcore.util.Utils.kickBanned
@@ -178,8 +179,8 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
         val ip = player.address.address.hostAddress
         if (Punishments.isIPBanned(ip)) {
             val ipBan = Punishments.getIPBan(ip)!!
-            if (player.uniqueId !in ipBan.uuids) {
-                ipBan.addUUID(player.uniqueId)
+            if (uuid !in ipBan.uuids) {
+                BannedIPs.addUUID(uuid, ip)
             }
 
             when (ipBan.until == null) {
@@ -197,7 +198,7 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
         if (Punishments.isIPBanned(event.address.hostAddress)) {
             val ip = event.address.hostAddress
             val ipBan = Punishments.getIPBan(ip) ?: return false
-            if (uuid !in ipBan.uuids) ipBan.addUUID(uuid)
+            if (uuid !in ipBan.uuids) BannedIPs.addUUID(uuid, ip)
             when (ipBan.until == null) {
                 true -> event.kickBannedIp("ipBanScreen", "reason" to ipBan.reason)
                 false -> event.kickBannedIp("tempIpBanScreen",

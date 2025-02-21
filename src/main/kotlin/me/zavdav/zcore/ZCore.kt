@@ -1,10 +1,10 @@
 package me.zavdav.zcore
 
-import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.commands.*
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.config.Items
 import me.zavdav.zcore.config.Kits
+import me.zavdav.zcore.data.BannedIPs
 import me.zavdav.zcore.data.SpawnData
 import me.zavdav.zcore.data.UUIDCache
 import me.zavdav.zcore.data.WarpData
@@ -134,7 +134,7 @@ class ZCore : JavaPlugin() {
     fun saveData() {
         UserMap.saveData()
         UUIDCache.saveData()
-        Punishments.saveData()
+        BannedIPs.saveData()
         SpawnData.saveData()
         WarpData.saveData()
     }

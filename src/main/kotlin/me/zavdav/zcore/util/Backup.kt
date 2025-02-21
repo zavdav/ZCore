@@ -1,8 +1,8 @@
 package me.zavdav.zcore.util
 
 import me.zavdav.zcore.ZCore
-import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.config.Config
+import me.zavdav.zcore.data.BannedIPs
 import me.zavdav.zcore.data.SpawnData
 import me.zavdav.zcore.data.WarpData
 import me.zavdav.zcore.user.UserMap
@@ -40,9 +40,9 @@ object Backup {
                 val folder = File(root, "ZCore-${dtf.format(LocalDateTime.now())}")
                 folder.mkdirs()
 
-                val punishments = File(folder, "punishments.json")
-                punishments.createNewFile()
-                Punishments.saveTo(punishments)
+                val bannedIps = File(folder, "bannedips.json")
+                bannedIps.createNewFile()
+                BannedIPs.saveTo(bannedIps)
 
                 val spawns = File(folder, "spawns.json")
                 spawns.createNewFile()
