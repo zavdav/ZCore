@@ -23,8 +23,6 @@ import org.poseidonplugins.commandapi.CommandManager
 import java.io.File
 import java.io.FileReader
 import java.net.URLClassLoader
-import java.time.Duration
-import java.time.LocalDateTime
 
 class ZCore : JavaPlugin() {
 
@@ -34,7 +32,7 @@ class ZCore : JavaPlugin() {
         lateinit var cmdManager: CommandManager; private set
     }
 
-    private var lastAutoSave: LocalDateTime = LocalDateTime.now()
+    private var lastAutoSave: Long = System.currentTimeMillis()
 
     override fun onEnable() {
         plugin = this
@@ -118,8 +116,8 @@ class ZCore : JavaPlugin() {
 
         asyncRepeatingTask(0, 20) {
             UserMap.runTasks()
-            if (Duration.between(lastAutoSave, LocalDateTime.now()).seconds >= Config.autoSaveTime) {
-                lastAutoSave = LocalDateTime.now()
+            if (System.currentTimeMillis() - lastAutoSave >= Config.autoSaveTime * 1000) {
+                lastAutoSave = System.currentTimeMillis()
                 Logger.info("Automatically saving data")
                 saveData()
             }

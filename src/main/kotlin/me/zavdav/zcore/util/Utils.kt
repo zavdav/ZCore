@@ -239,7 +239,7 @@ object Utils {
     }
 
     @JvmStatic fun formatDuration(millis: Long): String {
-        val start = LocalDateTime.MIN
+        val start = LocalDateTime.of(1970, 1, 1, 0, 0)
         return formatDateDiff(start, start.plus(millis, ChronoUnit.MILLIS))
     }
 

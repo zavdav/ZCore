@@ -10,7 +10,6 @@ import me.zavdav.zcore.util.Utils.roundTo
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import java.io.File
-import java.time.LocalDateTime
 import java.util.*
 import kotlin.math.floor
 
@@ -21,17 +20,17 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData(
         get() = json["username", ""]
         private set(value) { json["username"] = value }
 
-    var firstJoin: LocalDateTime
-        get() = LocalDateTime.parse(json["firstJoin", ""])
-        set(value) { json["firstJoin"] = value.toString() }
+    var firstJoin: Long
+        get() = json["firstJoin", 0L]
+        set(value) { json["firstJoin"] = value }
 
-    var lastJoin: LocalDateTime
-        get() = LocalDateTime.parse(json["lastJoin", ""])
-        set(value) { json["lastJoin"] = value.toString() }
+    var lastJoin: Long
+        get() = json["lastJoin", 0L]
+        set(value) { json["lastJoin"] = value }
 
-    var lastSeen: LocalDateTime
-        get() = LocalDateTime.parse(json["lastSeen", ""])
-        set(value) { json["lastSeen"] = value.toString() }
+    var lastSeen: Long
+        get() = json["lastSeen", 0L]
+        set(value) { json["lastSeen"] = value }
 
     var playTime: Long
         get() = json["playTime", 0L]
@@ -90,12 +89,12 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData(
         get() = json["muteExempt", false]
         set(value) { json["muteExempt"] = value }
 
-    var kitCooldowns: Map<Kits.Kit, LocalDateTime>
-        get() = json["kitCooldowns", emptyMap<String, String>()].entries
-            .associate { Kits.getKit(it.key)!! to LocalDateTime.parse(it.value) }
+    var kitCooldowns: Map<Kits.Kit, Long>
+        get() = json["kitCooldowns", emptyMap<String, Long>()].entries
+            .associate { Kits.getKit(it.key)!! to it.value }
         set(value) {
             json["kitCooldowns"] = JsonObject(value.entries
-                .associate { it.key.name to it.value.toString() })
+                .associate { it.key.name to it.value })
         }
 
     init {
@@ -105,7 +104,7 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData(
     private fun initData() {
         json["uuid"] = uuid.toString()
         val player = Bukkit.getOnlinePlayers().firstOrNull { it.uniqueId == uuid }
-        val now = LocalDateTime.now()
+        val now = System.currentTimeMillis()
         username = player?.name ?: ""
         firstJoin = now
         lastJoin = now
@@ -113,7 +112,7 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData(
     }
 
     fun updateOnJoin(username: String) {
-        val now = LocalDateTime.now()
+        val now = System.currentTimeMillis()
         this.username = username
         lastJoin = now
         lastSeen = now
@@ -188,7 +187,7 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData(
 
     fun addKitCooldown(kit: Kits.Kit, cooldown: Int) {
         val kitCooldowns = kitCooldowns.toMutableMap()
-        kitCooldowns[kit] = LocalDateTime.now().plusSeconds(cooldown.toLong())
+        kitCooldowns[kit] = System.currentTimeMillis() + cooldown * 1000
         this.kitCooldowns = kitCooldowns
     }
 }

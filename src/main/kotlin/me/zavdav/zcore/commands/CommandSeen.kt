@@ -7,7 +7,6 @@ import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
-import java.time.LocalDateTime
 
 class CommandSeen : ZCoreCommand(
     "seen",
@@ -27,7 +26,7 @@ class CommandSeen : ZCoreCommand(
         val user = User.from(uuid)
         if (user.isOnline) {
             val isSelf = event.sender is Player && (event.sender as Player).uniqueId == user.uuid
-            val duration = Utils.formatDateDiff(user.lastJoin, LocalDateTime.now())
+            val duration = Utils.formatDuration(System.currentTimeMillis() - user.lastJoin)
 
             if (isSelf) {
                 event.sender.sendTl("seenOnline", "duration" to duration)
@@ -37,7 +36,7 @@ class CommandSeen : ZCoreCommand(
         } else {
             event.sender.sendTl("seenOffline",
                 "user" to user.name,
-                "duration" to Utils.formatDateDiff(user.lastSeen, LocalDateTime.now()))
+                "duration" to Utils.formatDuration(System.currentTimeMillis() - user.lastSeen))
         }
     }
 }

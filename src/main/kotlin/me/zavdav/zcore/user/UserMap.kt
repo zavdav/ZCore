@@ -5,8 +5,6 @@ import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.util.Logger
 import me.zavdav.zcore.util.Utils
 import java.io.File
-import java.time.Duration
-import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -51,7 +49,7 @@ object UserMap {
     fun runTasks() {
         userMap.entries.removeIf { entry ->
             val user = User.from(entry.key)
-            if (!user.isOnline && Duration.between(user.lastSeen, LocalDateTime.now()).seconds >= 600) {
+            if (!user.isOnline && System.currentTimeMillis() - user.lastSeen >= 600 * 1000) {
                 user.saveData()
                 !precacheAll
             } else {

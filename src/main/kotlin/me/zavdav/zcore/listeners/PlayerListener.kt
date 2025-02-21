@@ -21,7 +21,6 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.player.*
 import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.commandapi.hasPermission
-import java.time.LocalDateTime
 
 class PlayerListener : Listener {
 
@@ -51,7 +50,7 @@ class PlayerListener : Listener {
         Utils.updateVanishedPlayers()
 
         if (isFirstJoin) {
-            user.firstJoin = LocalDateTime.now()
+            user.firstJoin = System.currentTimeMillis()
             broadcast(Config.firstJoinMessage, event.player)
             val spawn = SpawnData.getSpawn(event.player.world)
             if (spawn != null) event.player.teleport(spawn)

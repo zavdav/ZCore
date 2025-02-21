@@ -15,8 +15,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.inventory.ItemStack
 import org.poseidonplugins.commandapi.hasPermission
-import java.time.Duration
-import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
 
@@ -47,10 +45,10 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
         }
 
     val isOnline: Boolean
-        get() = uuid in Bukkit.getOnlinePlayers().map { player -> player.uniqueId }
+        get() = uuid in Bukkit.getOnlinePlayers().map { it.uniqueId }
 
     val player: Player
-        get() = Bukkit.getOnlinePlayers().first { player -> player.uniqueId == uuid }
+        get() = Bukkit.getOnlinePlayers().first { it.uniqueId == uuid }
 
     val prefix: String
         get() = PermissionHandler.getPrefix(this)
@@ -101,26 +99,26 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
             isAfk = false
             broadcastTl("noLongerAfk", player)
         }
-        lastSeen = LocalDateTime.now()
+        lastSeen = System.currentTimeMillis()
     }
 
     fun updatePlayTime() {
-        playTime = cachedPlayTime + Duration.between(lastJoin, LocalDateTime.now()).toMillis()
+        playTime = cachedPlayTime + System.currentTimeMillis() - lastJoin
     }
 
     fun checkKitCooldowns() {
         val kitCooldowns = kitCooldowns.toMutableMap()
-        kitCooldowns.entries.removeIf { LocalDateTime.now().isAfter(it.value) }
+        kitCooldowns.entries.removeIf { System.currentTimeMillis() > it.value }
         this.kitCooldowns = kitCooldowns
     }
 
     fun checkIsAfk() {
         if (!isOnline) return
 
-        if (!isAfk && Duration.between(lastSeen, LocalDateTime.now()).seconds >= Config.afkTime) {
+        if (!isAfk && System.currentTimeMillis() - lastSeen >= Config.afkTime * 1000) {
             setInactive()
         }
-        if (isAfk && Duration.between(lastSeen, LocalDateTime.now()).seconds >= Config.afkKickTime &&
+        if (isAfk && System.currentTimeMillis() - lastSeen >= Config.afkKickTime * 1000 &&
             !hasPermission(player, "zcore.afk.kick.exempt"))
         {
             player.kick("afkKickReason")

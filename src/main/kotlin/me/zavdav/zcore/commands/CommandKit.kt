@@ -8,7 +8,6 @@ import me.zavdav.zcore.util.Utils.copy
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
-import java.time.LocalDateTime
 
 class CommandKit : ZCoreCommand(
     "kit",
@@ -36,9 +35,9 @@ class CommandKit : ZCoreCommand(
             user.checkKitCooldowns()
             val kitCooldown = user.kitCooldowns[kit]
             if (kitCooldown != null) {
-                assert(LocalDateTime.now().isAfter(kitCooldown), "kitOnCooldown",
+                assert(System.currentTimeMillis() > kitCooldown, "kitOnCooldown",
                     "name" to name,
-                    "duration" to Utils.formatDateDiff(LocalDateTime.now(), kitCooldown))
+                    "duration" to Utils.formatDuration(kitCooldown - System.currentTimeMillis()))
             }
 
             val currentInv = player.inventory.contents.map { it?.copy() }.toTypedArray()
