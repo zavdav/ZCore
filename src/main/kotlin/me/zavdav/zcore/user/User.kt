@@ -4,12 +4,15 @@ import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.data.UserData
 import me.zavdav.zcore.hooks.permissions.PermissionHandler
+import me.zavdav.zcore.util.Utils.kickBanned
+import me.zavdav.zcore.util.Utils.kickBannedIp
 import me.zavdav.zcore.util.broadcastTl
 import me.zavdav.zcore.util.format
 import me.zavdav.zcore.util.kick
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.inventory.ItemStack
 import org.poseidonplugins.commandapi.hasPermission
 import java.time.Duration
@@ -105,6 +108,12 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
         playTime = cachedPlayTime + Duration.between(lastJoin, LocalDateTime.now()).toMillis()
     }
 
+    fun checkKitCooldowns() {
+        val kitCooldowns = kitCooldowns.toMutableMap()
+        kitCooldowns.entries.removeIf { LocalDateTime.now().isAfter(it.value) }
+        this.kitCooldowns = kitCooldowns
+    }
+
     fun checkIsAfk() {
         if (!isOnline) return
 
@@ -135,9 +144,70 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
         return false
     }
 
-    fun checkKitCooldowns() {
-        val kitCooldowns = kitCooldowns.toMutableMap()
-        kitCooldowns.entries.removeIf { LocalDateTime.now().isAfter(it.value) }
-        this.kitCooldowns = kitCooldowns
+    fun checkIsBanned(): Boolean {
+        if (!isOnline) return false
+
+        if (Punishments.isBanned(uuid)) {
+            val ban = Punishments.getBan(uuid) ?: return false
+            when (ban.until == null) {
+                true -> player.kick("banScreen", "reason" to ban.reason)
+                false -> player.kick("tempBanScreen",
+                    "datetime" to ban.until.truncatedTo(ChronoUnit.MINUTES),
+                    "reason" to ban.reason)
+            }
+            return true
+        }
+        return false
+    }
+
+    fun checkIsBanned(event: PlayerLoginEvent): Boolean {
+        if (Punishments.isBanned(event.player.uniqueId)) {
+            val ban = Punishments.getBan(event.player.uniqueId) ?: return false
+            when (ban.until == null) {
+                true -> event.kickBanned("banScreen", "reason" to ban.reason)
+                false -> event.kickBanned("tempBanScreen",
+                    "datetime" to ban.until.truncatedTo(ChronoUnit.MINUTES),
+                    "reason" to ban.reason)
+            }
+            return true
+        }
+        return false
+    }
+
+    fun checkIsIPBanned(): Boolean {
+        if (!isOnline) return false
+
+        val ip = player.address.address.hostAddress
+        if (Punishments.isIPBanned(ip)) {
+            val ipBan = Punishments.getIPBan(ip)!!
+            if (player.uniqueId !in ipBan.uuids) {
+                ipBan.addUUID(player.uniqueId)
+            }
+
+            when (ipBan.until == null) {
+                true -> player.kick("ipBanScreen", "reason" to ipBan.reason)
+                false -> player.kick("tempIpBanScreen",
+                    "datetime" to ipBan.until.truncatedTo(ChronoUnit.MINUTES),
+                    "reason" to ipBan.reason)
+            }
+            return true
+        }
+        return false
+    }
+
+    fun checkIsIPBanned(event: PlayerLoginEvent): Boolean {
+        if (Punishments.isIPBanned(event.address.hostAddress)) {
+            val ip = event.address.hostAddress
+            val ipBan = Punishments.getIPBan(ip) ?: return false
+            if (uuid !in ipBan.uuids) ipBan.addUUID(uuid)
+            when (ipBan.until == null) {
+                true -> event.kickBannedIp("ipBanScreen", "reason" to ipBan.reason)
+                false -> event.kickBannedIp("tempIpBanScreen",
+                    "datetime" to ipBan.until.truncatedTo(ChronoUnit.MINUTES),
+                    "reason" to ipBan.reason)
+            }
+            return true
+        }
+        return false
     }
 }

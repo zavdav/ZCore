@@ -7,8 +7,6 @@ import me.zavdav.zcore.data.UUIDCache
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.user.UserMap
 import me.zavdav.zcore.util.*
-import me.zavdav.zcore.util.Utils.kickBanned
-import me.zavdav.zcore.util.Utils.kickBannedIp
 import org.bukkit.block.ContainerBlock
 import org.bukkit.entity.Player
 import org.bukkit.entity.StorageMinecart
@@ -24,7 +22,6 @@ import org.bukkit.event.player.*
 import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.commandapi.hasPermission
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 
 class PlayerListener : Listener {
 
@@ -33,25 +30,9 @@ class PlayerListener : Listener {
         val player = event.player
         UUIDCache.addEntry(player.uniqueId, player.name)
 
-        if (Punishments.isIPBanned(event.address.hostAddress)) {
-            val ip = event.address.hostAddress
-            val ipBan = Punishments.getIPBan(ip)!!
-            if (player.uniqueId !in ipBan.uuids) ipBan.addUUID(player.uniqueId)
-            when (ipBan.until == null) {
-                true -> event.kickBannedIp("ipBanScreen", "reason" to ipBan.reason)
-                false -> event.kickBannedIp("tempIpBanScreen",
-                    "datetime" to ipBan.until.truncatedTo(ChronoUnit.MINUTES),
-                    "reason" to ipBan.reason)
-            }
-        } else if (Punishments.isBanned(player.uniqueId)) {
-            val ban = Punishments.getBan(player.uniqueId)!!
-            when (ban.until == null) {
-                true -> event.kickBanned("banScreen", "reason" to ban.reason)
-                false -> event.kickBanned("tempBanScreen",
-                    "datetime" to ban.until.truncatedTo(ChronoUnit.MINUTES),
-                    "reason" to ban.reason)
-            }
-        }
+        val user = User.from(event.player)
+        if (user.checkIsIPBanned(event)) return
+        user.checkIsBanned(event)
     }
 
     @EventHandler(priority = Event.Priority.Low)

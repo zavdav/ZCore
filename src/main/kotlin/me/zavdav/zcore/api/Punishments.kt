@@ -4,14 +4,12 @@ import com.github.cliftonlabs.json_simple.JsonArray
 import com.github.cliftonlabs.json_simple.JsonObject
 import me.zavdav.zcore.ZCore
 import me.zavdav.zcore.data.JsonData
+import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.Utils
-import me.zavdav.zcore.util.kick
-import me.zavdav.zcore.util.sendTl
 import me.zavdav.zcore.util.tl
 import org.bukkit.entity.Player
 import java.io.File
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 import java.util.*
 
 object Punishments : JsonData(File(ZCore.dataFolder, "punishments.json")) {
@@ -103,14 +101,7 @@ object Punishments : JsonData(File(ZCore.dataFolder, "punishments.json")) {
         ))
         json["mutes"] = mutes
 
-        val player = Utils.getPlayerFromUUID(uuid) ?: return
-        when (until == null) {
-            true -> player.sendTl("muteScreen", "reason" to reason)
-            false -> player.sendTl("tempMuteScreen",
-                "datetime" to until.truncatedTo(ChronoUnit.MINUTES),
-                "reason" to reason
-            )
-        }
+        User.from(uuid).checkIsMuted()
     }
 
     fun ban(uuid: UUID) =
@@ -130,13 +121,7 @@ object Punishments : JsonData(File(ZCore.dataFolder, "punishments.json")) {
         ))
         json["bans"] = bans
 
-        val player = Utils.getPlayerFromUUID(uuid) ?: return
-        when (until == null) {
-            true -> player.kick("banScreen", "reason" to reason)
-            false -> player.kick("tempBanScreen",
-                "datetime" to until.truncatedTo(ChronoUnit.MINUTES),
-                "reason" to reason)
-        }
+        User.from(uuid).checkIsBanned()
     }
 
     fun banIP(ip: String) =
@@ -150,25 +135,16 @@ object Punishments : JsonData(File(ZCore.dataFolder, "punishments.json")) {
 
     fun banIP(ip: String, until: LocalDateTime?, reason: String) {
         val players = Utils.getPlayersFromIP(ip)
-        ipBanMap[ip] = IPBan(
-            ip, players.map { player -> player.uniqueId }.toSet(), until, reason
-        )
+        ipBanMap[ip] = IPBan(ip, players.map { it.uniqueId }.toSet(), until, reason)
         ipBans[ip] = JsonObject(mapOf(
-            "uuids" to JsonArray(players.map { player -> player.uniqueId.toString() }),
+            "uuids" to JsonArray(players.map { it.uniqueId.toString() }),
             "until" to (until ?: "forever").toString(),
             "reason" to reason
         ))
         json["ipBans"] = ipBans
 
-        when (until == null) {
-            true -> for (player in players) {
-                player.kick("ipBanScreen", "reason" to reason)
-            }
-            false -> for (player in players) {
-                player.kick("tempIpBanScreen",
-                    "datetime" to until.truncatedTo(ChronoUnit.MINUTES),
-                    "reason" to reason)
-            }
+        for (player in players) {
+            User.from(player).checkIsIPBanned()
         }
     }
 
