@@ -2,19 +2,16 @@ package me.zavdav.zcore.data
 
 import com.github.cliftonlabs.json_simple.JsonArray
 import com.github.cliftonlabs.json_simple.JsonObject
-import me.zavdav.zcore.ZCore
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.config.Kits
 import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.Utils.roundTo
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import java.io.File
 import java.util.*
 import kotlin.math.floor
 
-abstract class UserData protected constructor(val uuid: UUID) : JsonData(
-    File(ZCore.dataFolder, "${File.separator}userdata${File.separator}$uuid.json")) {
+abstract class UserData protected constructor(val uuid: UUID) : JsonData("userdata/$uuid.json") {
 
     protected var username: String
         get() = json["username", ""]

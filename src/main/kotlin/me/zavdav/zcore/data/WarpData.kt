@@ -1,13 +1,11 @@
 package me.zavdav.zcore.data
 
 import com.github.cliftonlabs.json_simple.JsonObject
-import me.zavdav.zcore.ZCore
 import me.zavdav.zcore.util.Utils
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import java.io.File
 
-object WarpData : JsonData(File(ZCore.dataFolder, "warps.json")) {
+object WarpData : JsonData("warps.json") {
 
     fun setWarp(name: String, location: Location) {
         val warp = JsonObject()

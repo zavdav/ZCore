@@ -1,13 +1,11 @@
 package me.zavdav.zcore.data
 
 import com.github.cliftonlabs.json_simple.JsonObject
-import me.zavdav.zcore.ZCore
 import me.zavdav.zcore.util.Utils
 import org.bukkit.Location
 import org.bukkit.World
-import java.io.File
 
-object SpawnData : JsonData(File(ZCore.dataFolder, "spawns.json")) {
+object SpawnData : JsonData("spawns.json") {
 
     fun setSpawn(world: String, location: Location) {
         val spawn = JsonObject()

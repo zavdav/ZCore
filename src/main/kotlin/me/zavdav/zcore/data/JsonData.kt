@@ -3,13 +3,15 @@ package me.zavdav.zcore.data
 import com.github.cliftonlabs.json_simple.JsonException
 import com.github.cliftonlabs.json_simple.JsonObject
 import com.github.cliftonlabs.json_simple.Jsoner
+import me.zavdav.zcore.ZCore
 import me.zavdav.zcore.util.Logger
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
 
-abstract class JsonData(protected val file: File) {
+abstract class JsonData(filePath: String) {
 
+    protected val file: File = File(ZCore.dataFolder, filePath)
     protected var json: JsonObject = JsonObject()
     protected var hashCode: Int = -1
     protected var initialize = false
@@ -17,7 +19,6 @@ abstract class JsonData(protected val file: File) {
     init {
         if (!file.exists()) {
             file.parentFile.mkdirs()
-            file.createNewFile()
             initialize = true
         } else {
             try {

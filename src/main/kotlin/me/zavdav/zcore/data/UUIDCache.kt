@@ -1,14 +1,13 @@
 package me.zavdav.zcore.data
 
 import com.github.cliftonlabs.json_simple.Jsoner
-import me.zavdav.zcore.ZCore
 import me.zavdav.zcore.util.Logger
 import me.zavdav.zcore.util.Utils
 import java.io.File
 import java.io.FileWriter
 import java.util.*
 
-object UUIDCache : JsonData(File(ZCore.dataFolder, "uuidcache.json")) {
+object UUIDCache : JsonData("uuidcache.json") {
 
     val nameLookupByUuid: MutableMap<UUID, String> = LinkedHashMap()
     val uuidLookupByName: MutableMap<String, UUID> = LinkedHashMap()

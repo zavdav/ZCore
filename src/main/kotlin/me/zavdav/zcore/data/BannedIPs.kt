@@ -2,14 +2,12 @@ package me.zavdav.zcore.data
 
 import com.github.cliftonlabs.json_simple.JsonArray
 import com.github.cliftonlabs.json_simple.JsonObject
-import me.zavdav.zcore.ZCore
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.Utils
-import java.io.File
 import java.time.LocalDateTime
 import java.util.UUID
 
-object BannedIPs : JsonData(File(ZCore.dataFolder, "bannedips.json")) {
+object BannedIPs : JsonData("bannedips.json") {
 
     fun getEntry(ip: String): JsonObject? = json[ip] as? JsonObject
 
