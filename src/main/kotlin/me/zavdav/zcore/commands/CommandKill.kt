@@ -2,9 +2,11 @@ package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.Utils.isSelf
+import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
+import org.poseidonplugins.commandapi.hasPermission
 
 class CommandKill : ZCoreCommand(
     "kill",
@@ -16,17 +18,17 @@ class CommandKill : ZCoreCommand(
 ) {
 
     override fun execute(event: CommandEvent) {
-        var target = event.sender as Player
+        val player = event.sender as Player
+        var target = player
         if (event.args.isNotEmpty()) {
             target = Utils.getPlayerFromUsername(event.args[0])
         }
+
+        val isSelf = player.isSelf(target)
+        assert(isSelf || hasPermission(event.sender, "zcore.kill.others"), "noPermission")
         target.health = 0
 
-        val isSelf = (event.sender as Player).isSelf(target)
-        if (isSelf) {
-            event.sender.sendTl("killed")
-        } else {
-            event.sender.sendTl("killedOther", target)
-        }
+        if (!isSelf) event.sender.sendTl("killedOther", target)
+        target.sendTl("killed")
     }
 }
