@@ -1,6 +1,6 @@
 package me.zavdav.zcore.commands
 
-import me.zavdav.zcore.data.SpawnData
+import me.zavdav.zcore.data.Spawnpoints
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
@@ -18,11 +18,11 @@ class CommandSetSpawn : ZCoreCommand(
         val player = event.sender as Player
         val loc = player.location
         if (event.args.size == 1 && event.args[0].equals("none", true)) {
-            SpawnData.removeSpawn(loc.world.name)
+            Spawnpoints.removeSpawn(loc.world.name)
             player.sendTl("resetSpawn", "world" to loc.world.name)
 
         } else {
-            SpawnData.setSpawn(loc.world.name, loc)
+            Spawnpoints.setSpawn(loc.world.name, loc)
             event.sender.sendTl("setSpawn",
                 "world" to loc.world.name,
                 "coordinates" to "${loc.blockX}, ${loc.blockY}, ${loc.blockZ}")

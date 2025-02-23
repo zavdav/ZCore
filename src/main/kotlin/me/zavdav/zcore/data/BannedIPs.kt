@@ -9,17 +9,38 @@ import java.util.UUID
 
 object BannedIPs : JsonData("bannedips.json") {
 
-    fun getEntry(ip: String): JsonObject? = json[ip] as? JsonObject
+    var entries: MutableList<IPBan> = mutableListOf()
 
-    fun getEntries(): JsonObject = json
+    init { deserialize() }
+
+    override fun deserialize() {
+        entries = json.map {
+            val ipBan = it.value as JsonObject
+            IPBan(
+                it.key,
+                (ipBan["uuids"] as JsonArray).map { UUID.fromString(it.toString()) },
+                ipBan["until"]?.let { LocalDateTime.parse(it.toString()) },
+                ipBan["reason"].toString()
+            )
+        }.toMutableList()
+    }
+
+    override fun serialize() {
+        json = JsonObject(entries.associate {
+            it.ip to
+            JsonObject(mapOf(
+                "uuids" to JsonArray(it.uuids.map { it.toString() }),
+                "until" to it.until?.toString(),
+                "reason" to it.reason
+            ))
+        })
+    }
+
+    fun getEntry(ip: String): IPBan? = entries.firstOrNull { it.ip == ip }
 
     fun addEntry(ip: String, until: LocalDateTime?, reason: String) {
         val players = Utils.getPlayersFromIP(ip)
-        json[ip] = JsonObject(mapOf(
-            "uuids" to JsonArray(players.map { it.uniqueId.toString() }),
-            "until" to (until ?: "forever").toString(),
-            "reason" to reason
-        ))
+        entries.add(IPBan(ip, players.map { it.uniqueId }, until, reason))
 
         for (player in players) {
             User.from(player).checkIsIPBanned()
@@ -27,14 +48,10 @@ object BannedIPs : JsonData("bannedips.json") {
     }
 
     fun addUUID(uuid: UUID, ip: String) {
-        val entry = json[ip] as? JsonObject ?: return
-        val uuids = entry["uuids"] as? JsonArray ?: JsonArray()
-        uuids.add(uuid.toString())
-        entry["uuids"] = uuids
-        json[ip] = entry
+        getEntry(ip)?.uuids += uuid
     }
 
     fun removeEntry(ip: String) {
-        json.remove(ip)
+        entries.removeIf { it.ip == ip }
     }
 }

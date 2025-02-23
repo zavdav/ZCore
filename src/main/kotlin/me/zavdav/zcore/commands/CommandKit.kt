@@ -2,6 +2,7 @@ package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.api.Economy
 import me.zavdav.zcore.config.Kits
+import me.zavdav.zcore.data.Kit
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.*
 import me.zavdav.zcore.util.Utils.copy
@@ -33,7 +34,7 @@ class CommandKit : ZCoreCommand(
             val kit = kits[name]!!
 
             user.checkKitCooldowns()
-            val kitCooldown = user.kitCooldowns[kit]
+            val kitCooldown = user.kitCooldowns[kit.name]
             if (kitCooldown != null) {
                 assert(System.currentTimeMillis() > kitCooldown, "kitOnCooldown",
                     "name" to name,
@@ -59,7 +60,7 @@ class CommandKit : ZCoreCommand(
         }
     }
 
-    private fun charge(player: Player, kit: Kits.Kit) {
+    private fun charge(player: Player, kit: Kit) {
         if (kit.cost > 0.0 && !hasPermission(player, "$permission.charge.bypass")) {
             Economy.subtractBalance(player.uniqueId, kit.cost)
             player.sendTl("kitCharge", "amount" to Economy.formatBalance(kit.cost), "name" to kit.name)

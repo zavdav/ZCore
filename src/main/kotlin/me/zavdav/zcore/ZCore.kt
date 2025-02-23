@@ -5,15 +5,15 @@ import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.config.Items
 import me.zavdav.zcore.config.Kits
 import me.zavdav.zcore.data.BannedIPs
-import me.zavdav.zcore.data.SpawnData
+import me.zavdav.zcore.data.Spawnpoints
 import me.zavdav.zcore.data.UUIDCache
-import me.zavdav.zcore.data.WarpData
+import me.zavdav.zcore.data.Warps
 import me.zavdav.zcore.listeners.EntityListener
 import me.zavdav.zcore.listeners.PlayerListener
 import me.zavdav.zcore.user.UserMap
 import me.zavdav.zcore.util.Backup
 import me.zavdav.zcore.util.Logger
-import me.zavdav.zcore.util.asyncRepeatingTask
+import me.zavdav.zcore.util.syncRepeatingTask
 import org.bukkit.Bukkit
 import org.bukkit.Server
 import org.bukkit.plugin.Plugin
@@ -39,11 +39,15 @@ class ZCore : JavaPlugin() {
         Companion.dataFolder = dataFolder
         if (!dataFolder.exists()) dataFolder.mkdirs()
 
-        UUIDCache.load()
         Config.load()
         Items.load()
         Kits.load()
-        Backup.init()
+        Backup.load()
+        UserMap
+        UUIDCache
+        BannedIPs
+        Spawnpoints
+        Warps
 
         val commands = listOf(
             CommandAFK(),
@@ -114,29 +118,31 @@ class ZCore : JavaPlugin() {
         server.pluginManager.registerEvents(EntityListener(), this)
         server.pluginManager.registerEvents(PlayerListener(), this)
 
-        asyncRepeatingTask(0, 20) {
-            UserMap.runTasks()
-            if (System.currentTimeMillis() - lastAutoSave >= Config.autoSaveTime * 1000) {
-                lastAutoSave = System.currentTimeMillis()
-                Logger.info("Automatically saving data")
-                saveData()
-            }
+        syncRepeatingTask(0, 20) {
+            runCatching {
+                UserMap.checkOnlineUsers()
+                if (System.currentTimeMillis() - lastAutoSave >= Config.autoSaveTime * 1000) {
+                    lastAutoSave = System.currentTimeMillis()
+                    Logger.info("Automatically saving data")
+                    saveData(true, false)
+                }
+            }.onFailure { it.printStackTrace() }
         }
 
         Logger.info("${description.name} ${description.version} has been enabled.")
     }
 
     override fun onDisable() {
-        saveData()
+        saveData(false, true)
         Logger.info("${description.name} ${description.version} has been disabled.")
     }
 
-    fun saveData() {
-        UserMap.saveData()
-        UUIDCache.saveData()
-        BannedIPs.saveData()
-        SpawnData.saveData()
-        WarpData.saveData()
+    fun saveData(async: Boolean, force: Boolean) {
+        UserMap.saveData(async, force)
+        UUIDCache.saveData(async, force)
+        BannedIPs.saveData(async, force)
+        Spawnpoints.saveData(async, force)
+        Warps.saveData(async, force)
     }
 
     fun setupForTesting(server: Server) {
@@ -154,6 +160,6 @@ class ZCore : JavaPlugin() {
         if (!dataFolder.exists()) dataFolder.mkdirs()
 
         Config.load()
-        Backup.init()
+        Backup.load()
     }
 }

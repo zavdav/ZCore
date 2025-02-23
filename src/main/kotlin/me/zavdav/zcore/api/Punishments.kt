@@ -1,33 +1,15 @@
 package me.zavdav.zcore.api
 
-import com.github.cliftonlabs.json_simple.JsonArray
-import com.github.cliftonlabs.json_simple.JsonObject
+import me.zavdav.zcore.data.Ban
 import me.zavdav.zcore.data.BannedIPs
+import me.zavdav.zcore.data.IPBan
+import me.zavdav.zcore.data.Mute
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.tl
 import java.time.LocalDateTime
 import java.util.*
 
 object Punishments {
-
-    class Mute(
-        val uuid: UUID,
-        val until: LocalDateTime?,
-        val reason: String
-    )
-
-    class Ban(
-        val uuid: UUID,
-        val until: LocalDateTime?,
-        val reason: String
-    )
-
-    class IPBan(
-        val ip: String,
-        val uuids: Set<UUID>,
-        val until: LocalDateTime?,
-        val reason: String
-    )
 
     fun mute(uuid: UUID) =
         mute(uuid, tl("muteReason"))
@@ -40,11 +22,7 @@ object Punishments {
 
     fun mute(uuid: UUID, until: LocalDateTime?, reason: String) {
         val user = User.from(uuid)
-        user.mute = JsonObject(mapOf(
-            "until" to (until ?: "forever").toString(),
-            "reason" to reason
-        ))
-
+        user.mute = Mute(uuid, until, reason)
         user.checkIsMuted()
     }
 
@@ -59,11 +37,7 @@ object Punishments {
 
     fun ban(uuid: UUID, until: LocalDateTime?, reason: String) {
         val user = User.from(uuid)
-        user.ban = JsonObject(mapOf(
-            "until" to (until ?: "forever").toString(),
-            "reason" to reason
-        ))
-
+        user.ban = Ban(uuid, until, reason)
         user.checkIsBanned()
     }
 
@@ -120,53 +94,12 @@ object Punishments {
         return true
     }
 
-    fun getMute(uuid: UUID): Mute? {
-        val user = User.from(uuid)
-        val mute = user.mute ?: return null
+    fun getMute(uuid: UUID): Mute? = User.from(uuid).mute
 
-        return try {
-            val until = if (mute["until"] == "forever") null
-            else LocalDateTime.parse(mute["until"].toString())
-            val reason = mute["reason"].toString()
-            Mute(uuid, until, reason)
-        } catch (_: Exception) {
-            null
-        }
-    }
+    fun getBan(uuid: UUID): Ban? = User.from(uuid).ban
 
-    fun getBan(uuid: UUID): Ban? {
-        val user = User.from(uuid)
-        val ban = user.ban ?: return null
+    fun getIPBan(ip: String): IPBan? = BannedIPs.getEntry(ip)
 
-        return try {
-            val until = if (ban["until"] == "forever") null
-            else LocalDateTime.parse(ban["until"].toString())
-            val reason = ban["reason"].toString()
-            Ban(uuid, until, reason)
-        } catch (_: Exception) {
-            null
-        }
-    }
-
-    fun getIPBan(uuid: UUID): IPBan? {
-        val entry = BannedIPs.getEntries().entries.firstOrNull {
-            uuid.toString() in (it.value as JsonObject)["uuids"] as JsonArray
-        } ?: return null
-        return getIPBan(entry.key)
-    }
-
-    fun getIPBan(ip: String): IPBan? {
-        val ipBan = BannedIPs.getEntry(ip) ?: return null
-
-        return try {
-            val uuids = (ipBan["uuids"] as? JsonArray)
-                ?.map { UUID.fromString(it.toString()) }?.toSet() ?: emptySet<UUID>()
-            val until = if (ipBan["until"] == "forever") null
-            else LocalDateTime.parse(ipBan["until"].toString())
-            val reason = ipBan["reason"].toString()
-            IPBan(ip, uuids, until, reason)
-        } catch (_: Exception) {
-            null
-        }
-    }
+    fun getIPBan(uuid: UUID): IPBan? =
+        BannedIPs.entries.firstOrNull { uuid in it.uuids }
 }

@@ -1,5 +1,6 @@
 package me.zavdav.zcore.config
 
+import me.zavdav.zcore.data.Kit
 import me.zavdav.zcore.util.Utils.roundTo
 import org.bukkit.inventory.ItemStack
 
@@ -34,11 +35,4 @@ object Kits {
     fun getKits(): Map<String, Kit> = kits.toMap()
 
     fun getKit(name: String): Kit? = kits[name.lowercase()]
-
-    class Kit(
-        val name: String,
-        val items: Array<out ItemStack>,
-        val cost: Double,
-        val cooldown: Int
-    )
 }

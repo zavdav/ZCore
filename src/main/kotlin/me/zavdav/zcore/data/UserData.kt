@@ -3,109 +3,135 @@ package me.zavdav.zcore.data
 import com.github.cliftonlabs.json_simple.JsonArray
 import com.github.cliftonlabs.json_simple.JsonObject
 import me.zavdav.zcore.config.Config
-import me.zavdav.zcore.config.Kits
 import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.Utils.roundTo
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import java.time.LocalDateTime
 import java.util.*
-import kotlin.math.floor
 
 abstract class UserData protected constructor(val uuid: UUID) : JsonData("userdata/$uuid.json") {
 
-    protected var username: String
-        get() = json["username", ""]
-        private set(value) { json["username"] = value }
+    var username: String = "null"
+    var firstJoin: Long = -1
+    var lastJoin: Long = -1
+    var lastSeen: Long = -1
+    var playTime: Long = 0
+    @Volatile
+    var balance: Double = 0.0
+        get() = field.coerceIn(0.0..Config.maxBalance).roundTo(2)
+        set(value) { field = value.coerceIn(0.0..Config.maxBalance).roundTo(2) }
+    var nickname: String? = null
+    var homes: MutableMap<String, Location> = mutableMapOf()
+    var ignores: MutableList<UUID> = mutableListOf()
+    var mails: MutableList<String> = mutableListOf()
+    var kitCooldowns: MutableMap<String, Long> = mutableMapOf()
+    var seesChat: Boolean = true
+    var socialSpy: Boolean = false
+    var isGod: Boolean = false
+    var isVanished: Boolean = false
+    var mute: Mute? = null
+    var ban: Ban? = null
+    var muteExempt: Boolean = false
+    var banExempt: Boolean = false
 
-    var firstJoin: Long
-        get() = json["firstJoin", 0L]
-        set(value) { json["firstJoin"] = value }
+    init { deserialize() }
 
-    var lastJoin: Long
-        get() = json["lastJoin", 0L]
-        set(value) { json["lastJoin"] = value }
-
-    var lastSeen: Long
-        get() = json["lastSeen", 0L]
-        set(value) { json["lastSeen"] = value }
-
-    var playTime: Long
-        get() = json["playTime", 0L]
-        set(value) { json["playTime"] = value }
-
-    var balance: Double
-        get() = json["balance", 0.0].coerceIn(0.0..Config.maxBalance).roundTo(2)
-        set(value) { json["balance"] = value.coerceIn(0.0..Config.maxBalance).roundTo(2) }
-
-    var nickname: String
-        get() = json["nickname", username]
-        set(value) { json["nickname"] = value }
-
-    var homes: JsonObject
-        get() = json["homes", JsonObject()]
-        set(value) { json["homes"] = value }
-
-    var ignores: Set<UUID>
-        get() = json["ignores", JsonArray()].map { UUID.fromString(it.toString()) }.toSet()
-        set(value) { json["ignores"] = JsonArray(value.map { it.toString() }) }
-
-    var mails: List<String>
-        @Suppress("UNCHECKED_CAST")
-        get() = json["mails", JsonArray()].toList() as List<String>
-        set(value) { json["mails"] = JsonArray(value) }
-
-    var seesChat: Boolean
-        get() = json["seesChat", true]
-        set(value) { json["seesChat"] = value }
-
-    var socialSpy: Boolean
-        get() = json["socialSpy", false]
-        set(value) { json["socialSpy"] = value }
-
-    var isGod: Boolean
-        get() = json["isGod", false]
-        set(value) { json["isGod"] = value }
-
-    var vanished: Boolean
-        get() = json["vanished", false]
-        set(value) { json["vanished"] = value }
-
-    var ban: JsonObject?
-        get() = json["ban", null]
-        set(value) { if (value != null) json["ban"] = value else json.remove("ban") }
-
-    var mute: JsonObject?
-        get() = json["mute", null]
-        set(value) { if (value != null) json["mute"] = value else json.remove("mute") }
-
-    var banExempt: Boolean
-        get() = json["banExempt", false]
-        set(value) { json["banExempt"] = value }
-
-    var muteExempt: Boolean
-        get() = json["muteExempt", false]
-        set(value) { json["muteExempt"] = value }
-
-    var kitCooldowns: Map<Kits.Kit, Long>
-        get() = json["kitCooldowns", emptyMap<String, Long>()].entries
-            .associate { Kits.getKit(it.key)!! to it.value }
-        set(value) {
-            json["kitCooldowns"] = JsonObject(value.entries
-                .associate { it.key.name to it.value })
+    override fun deserialize() {
+        json["username"]?.let { username = it.toString() }
+        json["firstJoin"]?.let { firstJoin = it.toString().toLong()}
+        json["lastJoin"]?.let { lastJoin = it.toString().toLong() }
+        json["lastSeen"]?.let { lastSeen = it.toString().toLong() }
+        json["playTime"]?.let { playTime = it.toString().toLong() }
+        json["balance"]?.let { balance = it.toString().toDouble() }
+        json["nickname"]?.let { nickname = it.toString() }
+        json["homes"]?.let {
+            homes = (it as JsonObject).map {
+                val home = it.value as JsonObject
+                it.key to
+                Location(
+                    Bukkit.getWorld(home["world"].toString()),
+                    home["x"].toString().toDouble(),
+                    home["y"].toString().toDouble(),
+                    home["z"].toString().toDouble(),
+                    home["yaw"].toString().toFloat(),
+                    home["pitch"].toString().toFloat()
+                )
+            }.toMap().toMutableMap()
         }
-
-    init {
-        if (initialize) initData()
+        json["ignores"]?.let {
+            ignores = (it as JsonArray).map { UUID.fromString(it.toString()) }.toMutableList()
+        }
+        json["mails"]?.let {
+            mails = (it as JsonArray).map { it.toString() }.toMutableList()
+        }
+        json["kitCooldowns"]?.let {
+            kitCooldowns = (it as JsonObject).map { it.key to it.value.toString().toLong() }.toMap().toMutableMap()
+        }
+        json["seesChat"]?.let { seesChat = it as Boolean }
+        json["socialSpy"]?.let { socialSpy = it as Boolean }
+        json["isGod"]?.let { isGod = it as Boolean }
+        json["isVanished"]?.let { isVanished = it as Boolean }
+        json["mute"]?.let {
+            val mute = (it as JsonObject)
+            this.mute = Mute(
+                uuid,
+                mute["until"]?.let { LocalDateTime.parse(it.toString()) },
+                mute["reason"].toString()
+            )
+        }
+        json["ban"]?.let {
+            val ban = (it as JsonObject)
+            this.ban = Ban(
+                uuid,
+                ban["until"]?.let { LocalDateTime.parse(it.toString()) },
+                ban["reason"].toString()
+            )
+        }
+        json["muteExempt"]?.let { muteExempt = it as Boolean }
+        json["banExempt"]?.let { banExempt = it as Boolean }
     }
 
-    private fun initData() {
-        json["uuid"] = uuid.toString()
-        val player = Bukkit.getOnlinePlayers().firstOrNull { it.uniqueId == uuid }
-        val now = System.currentTimeMillis()
-        username = player?.name ?: ""
-        firstJoin = now
-        lastJoin = now
-        lastSeen = now
+    override fun serialize() {
+        json["username"] = username
+        json["firstJoin"] = firstJoin
+        json["lastJoin"] = lastJoin
+        json["lastSeen"] = lastSeen
+        json["playTime"] = playTime
+        json["balance"] = balance
+        json["nickname"] = nickname
+        json["homes"] = JsonObject(homes.map {
+            it.key to
+            JsonObject(mapOf(
+                "world" to it.value.world.name,
+                "x" to it.value.x,
+                "y" to it.value.y,
+                "z" to it.value.z,
+                "pitch" to it.value.pitch,
+                "yaw" to it.value.yaw
+            ))
+        }.toMap())
+        json["ignores"] = JsonArray(ignores.map { it.toString() })
+        json["mails"] = JsonArray(mails)
+        json["kitCooldowns"] = JsonObject(kitCooldowns)
+        json["seesChat"] = seesChat
+        json["socialSpy"] = socialSpy
+        json["isGod"] = isGod
+        json["isVanished"] = isVanished
+        json["mute"] = if (mute != null) {
+            JsonObject(mapOf(
+                "until" to mute!!.until?.toString(),
+                "reason" to mute!!.reason
+            ))
+        } else null
+        json["ban"] = if (ban != null) {
+            JsonObject(mapOf(
+                "until" to ban!!.until?.toString(),
+                "reason" to ban!!.reason
+            ))
+        } else null
+        json["muteExempt"] = muteExempt
+        json["banExempt"] = banExempt
     }
 
     fun updateOnJoin(username: String) {
@@ -116,75 +142,38 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData("userda
     }
 
     fun addHome(name: String, location: Location) {
-        val home = JsonObject()
-        home["world"] = location.world.name
-        home["x"] = location.blockX
-        home["y"] = location.blockY
-        home["z"] = location.blockZ
-        home["pitch"] = location.pitch
-        home["yaw"] = location.yaw
-
-        val homes = this.homes
-        homes[name] = home
-        this.homes = homes
+        homes[name] = location
     }
 
     fun removeHome(name: String) {
-        val homes = this.homes
-        if (name in homes.keys) homes.remove(name)
-        this.homes = homes
+        homes.entries.removeIf { it.key.equals(name, true) }
     }
 
     fun homeExists(name: String): Boolean = getHome(name) != null
 
     fun getHomeLocation(name: String): Location? {
-        val home = getHome(name) ?: return null
-        val world = Bukkit.getWorld(home["world"].toString())
-        val x = floor(home["x"].toString().toDouble()) + 0.5
-        var y = home["y"].toString().toDouble()
-        val z = floor(home["z"].toString().toDouble()) + 0.5
-        y = Utils.getSafeHeight(Location(world, x, y, z)).toDouble()
-        val pitch = home["pitch"].toString().toFloat()
-        val yaw = home["yaw"].toString().toFloat()
-        return Location(world, x, y, z, yaw, pitch)
+        val location = getHome(name) ?: return null
+        location.y = Utils.getSafeHeight(location).toDouble()
+        return location
     }
 
-    fun getHome(name: String): JsonObject? {
-        for (home in homes) {
-            if (name.equals(home.key, true)) return home.value as JsonObject
-        }
-        return null
-    }
+    fun getHome(name: String): Location? =
+        homes.entries.firstOrNull { it.key.equals(name, true) }?.value
 
-    fun getHomeName(name: String): String {
-        for (homeName in homes.keys) {
-            if (name.equals(homeName, true)) return homeName
-        }
-        return name
-    }
+    fun getHomeName(name: String): String =
+        homes.keys.firstOrNull { it.equals(name, true) } ?: name
 
-    fun getHomes(): List<String> =
-        homes.keys.filterIsInstance<String>().toList()
+    fun getHomes(): List<String> = homes.map { it.key }
 
-    fun resetNickname() = json.remove("nickname")
-
-    fun setIgnored(uuid: UUID, ignore: Boolean) {
-        val ignores = ignores.toMutableSet()
+    fun setIgnored(uuid: UUID, ignore: Boolean) =
         if (ignore) ignores.add(uuid) else ignores.remove(uuid)
-        this.ignores = ignores
-    }
 
-    fun addMail(name: String, message: String) {
-        mails += "$name: $message"
-    }
+    fun addMail(name: String, message: String) =
+        mails.add("$name: $message")
 
-    fun clearMail() {
-        mails = emptyList()
-    }
+    fun clearMail() = mails.clear()
 
-    fun addKitCooldown(kit: Kits.Kit, cooldown: Int) {
-        val kitCooldowns = kitCooldowns.toMutableMap()
-        kitCooldowns[kit] = System.currentTimeMillis() + cooldown * 1000
-        this.kitCooldowns = kitCooldowns
+    fun addKitCooldown(kit: Kit, cooldown: Int) {
+        kitCooldowns[kit.name] = System.currentTimeMillis() + cooldown * 1000
     }
 }

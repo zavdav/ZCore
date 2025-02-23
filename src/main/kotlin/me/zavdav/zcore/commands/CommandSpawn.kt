@@ -1,6 +1,6 @@
 package me.zavdav.zcore.commands
 
-import me.zavdav.zcore.data.SpawnData
+import me.zavdav.zcore.data.Spawnpoints
 import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.entity.Player
@@ -20,7 +20,7 @@ class CommandSpawn : ZCoreCommand(
         var loc = player.world.spawnLocation
         loc.x = loc.blockX + 0.5
         loc.z = loc.blockZ + 0.5
-        loc = SpawnData.getSpawn(player.world) ?: loc
+        loc = Spawnpoints.getSpawn(player.world) ?: loc
         loc.y = Utils.getSafeHeight(loc).toDouble()
 
         charge(player)

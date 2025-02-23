@@ -72,8 +72,11 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
     fun getNick(): String {
         val sb = StringBuilder()
         if (player.isOp) sb.append(Config.operatorColor)
-        if (nickname != username) sb.append(Config.nickPrefix)
-        sb.append(nickname)
+        if (nickname != null) {
+            sb.append(Config.nickPrefix + nickname)
+        } else {
+            sb.append(username)
+        }
         return sb.toString()
     }
 
@@ -100,6 +103,7 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
             isAfk = false
             broadcastTl("noLongerAfk", player)
         }
+        updateDisplayName()
         lastSeen = System.currentTimeMillis()
     }
 

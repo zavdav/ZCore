@@ -1,7 +1,7 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.config.Config
-import me.zavdav.zcore.data.WarpData
+import me.zavdav.zcore.data.Warps
 import me.zavdav.zcore.util.Delay
 import me.zavdav.zcore.util.NoFundsException
 import me.zavdav.zcore.util.assert
@@ -21,15 +21,15 @@ class CommandWarp : ZCoreCommand(
     override fun execute(event: CommandEvent) {
         if (event.args.isEmpty()) {
             event.sender.sendTl("warpList")
-            event.sender.sendMessage(WarpData.getWarps().sorted().joinToString(", "))
+            event.sender.sendMessage(Warps.getWarps().sorted().joinToString(", "))
         } else {
             val player = event.sender as Player
             var warpName = event.args[0]
-            assert(WarpData.warpExists(warpName), "warpNotFound", "warp" to warpName)
+            assert(Warps.warpExists(warpName), "warpNotFound", "warp" to warpName)
 
-            val location = WarpData.getWarpLocation(warpName)
+            val location = Warps.getWarpLocation(warpName)
             val delay = Config.teleportDelay
-            warpName = WarpData.getWarpName(warpName)
+            warpName = Warps.getWarpName(warpName)
 
             if (delay > 0) {
                 event.sender.sendTl("commencingTeleport", "location" to warpName, "delay" to delay)

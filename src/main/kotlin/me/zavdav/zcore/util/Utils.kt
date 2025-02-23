@@ -145,7 +145,7 @@ object Utils {
     @JvmStatic fun updateVanishedPlayers() {
         for (target in Bukkit.getOnlinePlayers()) {
             val user = User.from(target)
-            when (user.vanished) {
+            when (user.isVanished) {
                 true -> Bukkit.getOnlinePlayers()
                     .filter { player -> !hasPermission(player, "zcore.vanish.bypass") }
                     .forEach { player -> player.hidePlayer(target) }

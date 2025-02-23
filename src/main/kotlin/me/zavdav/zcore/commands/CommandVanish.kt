@@ -28,13 +28,13 @@ class CommandVanish : ZCoreCommand(
 
         val isSelf = player.uniqueId == user.uuid
         assert(isSelf || hasPermission(event.sender, "zcore.vanish.others"), "noPermission")
-        user.vanished = !user.vanished
+        user.isVanished = !user.isVanished
         Utils.updateVanishedPlayers()
 
         if (!isSelf) {
-            event.sender.sendTl(if (user.vanished)
+            event.sender.sendTl(if (user.isVanished)
                 "enabledVanishOther" else "disabledVanishOther", user.player)
         }
-        user.player.sendTl(if (user.vanished) "enabledVanish" else "disabledVanish")
+        user.player.sendTl(if (user.isVanished) "enabledVanish" else "disabledVanish")
     }
 }

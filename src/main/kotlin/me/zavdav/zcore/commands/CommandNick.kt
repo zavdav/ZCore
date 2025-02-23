@@ -38,7 +38,7 @@ class CommandNick : ZCoreCommand(
 
         val user = User.from(target)
         if (reset) {
-            user.resetNickname()
+            user.nickname = null
         } else {
             if (isSelf) charge(player)
             user.nickname = nickname

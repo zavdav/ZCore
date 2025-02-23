@@ -37,6 +37,6 @@ class EntityListener : Listener {
     fun onEntityTarget(event: EntityTargetEvent) {
         if (event.target !is Player) return
         val user = User.from(event.target as Player)
-        if (user.isAfk || user.vanished) event.isCancelled = true
+        if (user.isAfk || user.isVanished) event.isCancelled = true
     }
 }

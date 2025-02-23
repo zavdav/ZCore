@@ -3,23 +3,21 @@ package me.zavdav.zcore.util
 import me.zavdav.zcore.ZCore
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.data.BannedIPs
-import me.zavdav.zcore.data.SpawnData
-import me.zavdav.zcore.data.WarpData
+import me.zavdav.zcore.data.Spawnpoints
+import me.zavdav.zcore.data.Warps
 import me.zavdav.zcore.user.UserMap
 import org.bukkit.command.CommandSender
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.concurrent.locks.ReentrantLock
 import kotlin.io.path.Path
 
 object Backup {
 
     private val dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH.mm.ss.SSS")
-    private val lock: ReentrantLock = ReentrantLock(true)
     private lateinit var root: File
 
-    fun init() {
+    fun load() {
         val path = Path(Config.backupFolder)
         root = if (path.isAbsolute) path.toFile()
                else Path(ZCore.dataFolder.path, path.toString()).normalize().toFile()
@@ -34,40 +32,28 @@ object Backup {
         if (!root.exists()) root.mkdirs()
         sender.sendTl("backupStarted")
 
-        asyncDelayedTask {
-            try {
-                lock.lock()
-                val folder = File(root, "ZCore-${dtf.format(LocalDateTime.now())}")
-                folder.mkdirs()
+        try {
+            val folder = File(root, "ZCore-${dtf.format(LocalDateTime.now())}")
+            folder.mkdirs()
 
-                val bannedIps = File(folder, "bannedips.json")
-                bannedIps.createNewFile()
-                BannedIPs.saveTo(bannedIps)
-
-                val spawns = File(folder, "spawns.json")
-                spawns.createNewFile()
-                SpawnData.saveTo(spawns)
-
-                val warps = File(folder, "warps.json")
-                warps.createNewFile()
-                WarpData.saveTo(warps)
-
-                val userdata = File(folder, "userdata")
-                userdata.mkdirs()
-                for (user in UserMap.getAllUsers()) {
-                    val data = File(userdata, "${user.uuid}.json")
-                    data.createNewFile()
-                    user.saveTo(data)
-                }
-
-                val time = System.currentTimeMillis() - start
-                sender.sendTl("backupSuccess", "file" to folder.name, "millis" to time)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                throw AsyncCommandException(sender, tlError("backupFailed"))
-            } finally {
-                lock.unlock()
+            val userdata = File(folder, "userdata")
+            val bannedIps = File(folder, "bannedips.json")
+            val spawnpoints = File(folder, "spawnpoints.json")
+            val warps = File(folder, "warps.json")
+            BannedIPs.saveData(false, true, bannedIps)
+            Spawnpoints.saveData(false, true, spawnpoints)
+            Warps.saveData(false, true, warps)
+            userdata.mkdirs()
+            for (user in UserMap.getAllUsers()) {
+                val data = File(userdata, "${user.uuid}.json")
+                user.saveData(false, true, data)
             }
+
+            val time = System.currentTimeMillis() - start
+            sender.sendTl("backupSuccess", "file" to folder.name, "millis" to time)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw CommandException(tlError("backupFailed"))
         }
     }
 }

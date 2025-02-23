@@ -2,10 +2,9 @@ package me.zavdav.zcore.listeners
 
 import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.config.Config
-import me.zavdav.zcore.data.SpawnData
+import me.zavdav.zcore.data.Spawnpoints
 import me.zavdav.zcore.data.UUIDCache
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.user.UserMap
 import me.zavdav.zcore.util.*
 import org.bukkit.block.ContainerBlock
 import org.bukkit.entity.Player
@@ -36,25 +35,25 @@ class PlayerListener : Listener {
 
     @EventHandler(priority = Event.Priority.Low)
     fun onPlayerJoin(event: PlayerJoinEvent) {
-        val isFirstJoin = !UserMap.isUserKnown(event.player.uniqueId)
         val user = User.from(event.player)
-
-        if (!hasPermission(event.player, "zcore.god")) user.isGod = false
-        if (!hasPermission(event.player, "zcore.vanish")) user.vanished = false
-        if (!hasPermission(event.player, "zcore.socialspy")) user.socialSpy = false
-        if (!hasPermission(event.player, "zcore.togglechat")) user.seesChat = true
-        if (!hasPermission(event.player, "zcore.nick")) user.resetNickname()
-
-        user.updateOnJoin(event.player.name)
-        user.updateDisplayName()
-        Utils.updateVanishedPlayers()
+        val isFirstJoin = user.firstJoin == -1L
 
         if (isFirstJoin) {
             user.firstJoin = System.currentTimeMillis()
             broadcast(Config.firstJoinMessage, event.player)
-            val spawn = SpawnData.getSpawn(event.player.world)
+            val spawn = Spawnpoints.getSpawn(event.player.world)
             if (spawn != null) event.player.teleport(spawn)
         }
+        user.updateOnJoin(event.player.name)
+
+        if (!hasPermission(event.player, "zcore.god")) user.isGod = false
+        if (!hasPermission(event.player, "zcore.vanish")) user.isVanished = false
+        if (!hasPermission(event.player, "zcore.socialspy")) user.socialSpy = false
+        if (!hasPermission(event.player, "zcore.togglechat")) user.seesChat = true
+        if (!hasPermission(event.player, "zcore.nick")) user.nickname = null
+
+        user.updateDisplayName()
+        Utils.updateVanishedPlayers()
 
         if (Config.motd.isNotEmpty() && hasPermission(event.player, "zcore.motd")) {
             event.player.performCommand("motd")
@@ -213,7 +212,7 @@ class PlayerListener : Listener {
     @EventHandler(ignoreCancelled = true)
     fun onPlayerDropItem(event: PlayerDropItemEvent) {
         val user = User.from(event.player)
-        if (user.isAfk || user.vanished || user.isInvSee) {
+        if (user.isAfk || user.isVanished || user.isInvSee) {
             event.isCancelled = true
         }
     }
@@ -221,13 +220,13 @@ class PlayerListener : Listener {
     @EventHandler(ignoreCancelled = true)
     fun onPlayerPickupItem(event: PlayerPickupItemEvent) {
         val user = User.from(event.player)
-        if (user.isAfk || user.vanished || user.isInvSee) {
+        if (user.isAfk || user.isVanished || user.isInvSee) {
             event.isCancelled = true
         }
     }
 
     @EventHandler(priority = Event.Priority.Low)
     fun onPlayerRespawn(event: PlayerRespawnEvent) {
-        event.respawnLocation = SpawnData.getSpawn(event.respawnLocation.world) ?: return
+        event.respawnLocation = Spawnpoints.getSpawn(event.respawnLocation.world) ?: return
     }
 }

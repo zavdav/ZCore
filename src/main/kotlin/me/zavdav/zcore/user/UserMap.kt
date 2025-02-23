@@ -37,20 +37,15 @@ object UserMap {
         }
     }
 
-    fun getAllUsers(): Set<User> {
-        if (precacheAll) return userMap.values.toSet()
-        val players = mutableSetOf<User>()
-        for (uuid in knownUsers) {
-            players.add(User.from(uuid, false))
-        }
-        return players.toSet()
-    }
+    fun getAllUsers(): Set<User> =
+        if (precacheAll) userMap.values.toSet()
+        else knownUsers.map { User.from(it, false) }.toSet()
 
-    fun runTasks() {
-        userMap.entries.removeIf { entry ->
-            val user = User.from(entry.key)
+    fun checkOnlineUsers() {
+        userMap.entries.removeIf {
+            val user = it.value
             if (!user.isOnline && System.currentTimeMillis() - user.lastSeen >= 600 * 1000) {
-                user.saveData()
+                user.saveData(true)
                 !precacheAll
             } else {
                 user.checkIsAfk()
@@ -61,9 +56,9 @@ object UserMap {
 
     fun isUserKnown(uuid: UUID): Boolean = uuid in knownUsers
 
-    fun saveData() {
+    fun saveData(async: Boolean, force: Boolean) {
         for (user in userMap.values) {
-            user.saveData()
+            user.saveData(async, force)
         }
     }
 }

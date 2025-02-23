@@ -1,6 +1,6 @@
 package me.zavdav.zcore.commands
 
-import me.zavdav.zcore.data.WarpData
+import me.zavdav.zcore.data.Warps
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.sendTl
 import org.poseidonplugins.commandapi.CommandEvent
@@ -17,10 +17,10 @@ class CommandDelWarp : ZCoreCommand(
 
     override fun execute(event: CommandEvent) {
         var warpName = event.args[0]
-        assert(WarpData.warpExists(warpName), "warpNotFound", "warp" to warpName)
+        assert(Warps.warpExists(warpName), "warpNotFound", "warp" to warpName)
 
-        warpName = WarpData.getWarpName(warpName)
-        WarpData.removeWarp(warpName)
+        warpName = Warps.getWarpName(warpName)
+        Warps.removeWarp(warpName)
         event.sender.sendTl("deletedWarp", "warp" to warpName)
     }
 }
