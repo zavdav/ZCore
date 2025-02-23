@@ -1,5 +1,6 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.util.Utils.isSelf
 import me.zavdav.zcore.util.kick
 import me.zavdav.zcore.util.sendTl
 import me.zavdav.zcore.util.tl
@@ -7,6 +8,7 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.colorize
+import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.commandapi.joinArgs
 
 class CommandKickAll : ZCoreCommand(
@@ -21,7 +23,8 @@ class CommandKickAll : ZCoreCommand(
             else tl("kickReason"))
 
         for (player in Bukkit.getOnlinePlayers()) {
-            if (event.sender !is Player || !player.equals(event.sender as Player)) {
+            if (hasPermission(player, "zcore.kick.exempt")) continue
+            if (event.sender !is Player || !player.isSelf(event.sender as Player)) {
                 player.kick("kickScreen", "reason" to reason)
             }
         }
