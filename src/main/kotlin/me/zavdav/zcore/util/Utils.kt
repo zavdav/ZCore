@@ -16,8 +16,6 @@ import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.inventory.ItemStack
 import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.commandapi.hasPermission
-import java.text.NumberFormat
-import java.util.Locale
 import java.util.ResourceBundle
 import java.util.UUID
 import java.util.regex.Pattern
@@ -84,7 +82,6 @@ object Utils {
 
     val bundle: ResourceBundle = ResourceBundle.getBundle("messages")
 
-    private val nf: NumberFormat = NumberFormat.getNumberInstance(Locale.US)
     val UUID_PATTERN: Pattern = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
     val IPV4_PATTERN: Pattern = Pattern.compile("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")
 
@@ -199,11 +196,6 @@ object Utils {
             }
         }
         return if (closest == 360) 0 else closest
-    }
-
-    @JvmStatic fun formatBalance(amount: Double): String {
-        val string = "${Config.currency}${nf.format(amount)}"
-        return if (string.endsWith(".00")) string.substring(0, string.length - 3) else string
     }
 
     @JvmStatic fun Double.roundTo(digits: Int): Double {
