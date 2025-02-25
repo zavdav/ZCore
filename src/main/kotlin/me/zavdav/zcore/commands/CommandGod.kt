@@ -11,7 +11,7 @@ import org.poseidonplugins.commandapi.hasPermission
 class CommandGod : ZCoreCommand(
     "god",
     listOf("godmode"),
-    "Enables god mode.",
+    "Toggles your god mode.",
     "/god [player]",
     "zcore.god",
     true,
