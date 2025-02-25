@@ -6,7 +6,7 @@ import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.colorize
 import ru.tehkode.permissions.PermissionManager
 import ru.tehkode.permissions.bukkit.PermissionsEx
-import java.util.*
+import java.util.UUID
 
 class PermissionsExHook : PermissionHook {
 

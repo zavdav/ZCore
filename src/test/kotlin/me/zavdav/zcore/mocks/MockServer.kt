@@ -13,7 +13,7 @@ import org.bukkit.map.MapView
 import org.bukkit.plugin.PluginManager
 import org.bukkit.plugin.ServicesManager
 import org.bukkit.scheduler.BukkitScheduler
-import java.util.*
+import java.util.UUID
 import java.util.logging.Logger
 
 object MockServer : Server {

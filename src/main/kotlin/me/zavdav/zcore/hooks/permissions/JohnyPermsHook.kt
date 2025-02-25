@@ -5,7 +5,7 @@ import com.johnymuffin.jperms.beta.JohnyPermsAPI
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.colorize
-import java.util.*
+import java.util.UUID
 
 class JohnyPermsHook : PermissionHook {
 

@@ -15,7 +15,7 @@ import org.bukkit.permissions.PermissionAttachmentInfo
 import org.bukkit.plugin.Plugin
 import org.bukkit.util.Vector
 import java.net.InetSocketAddress
-import java.util.*
+import java.util.UUID
 
 class MockPlayer(
     private val uuid: UUID,

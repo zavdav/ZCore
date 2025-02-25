@@ -5,7 +5,7 @@ import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.user.User
 import org.bukkit.command.CommandSender
 import org.poseidonplugins.commandapi.Command
-import java.util.*
+import java.util.UUID
 
 open class CommandException(vararg val messages: String) : RuntimeException()
 

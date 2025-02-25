@@ -1,7 +1,7 @@
 package me.zavdav.zcore.hooks.permissions
 
 import org.bukkit.command.CommandSender
-import java.util.*
+import java.util.UUID
 
 interface PermissionHook {
 

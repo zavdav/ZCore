@@ -5,7 +5,7 @@ import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.util.Logger
 import me.zavdav.zcore.util.Utils
 import java.io.File
-import java.util.*
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 object UserMap {

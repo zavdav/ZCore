@@ -10,7 +10,7 @@ import org.bukkit.generator.BlockPopulator
 import org.bukkit.generator.ChunkGenerator
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
-import java.util.*
+import java.util.UUID
 
 class MockWorld(private val name: String, private val env: Environment) : World {
 

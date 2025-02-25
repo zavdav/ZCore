@@ -8,7 +8,7 @@ import me.zavdav.zcore.mocks.MockPlayer
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.BalanceOutOfBoundsException
 import me.zavdav.zcore.util.NoFundsException
-import java.util.*
+import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

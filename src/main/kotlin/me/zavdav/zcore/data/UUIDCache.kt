@@ -3,7 +3,7 @@ package me.zavdav.zcore.data
 import com.github.cliftonlabs.json_simple.JsonObject
 import me.zavdav.zcore.util.Logger
 import me.zavdav.zcore.util.Utils
-import java.util.*
+import java.util.UUID
 
 object UUIDCache : JsonData("uuidcache.json") {
 
