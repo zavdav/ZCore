@@ -2,15 +2,17 @@ package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.user.User
+import me.zavdav.zcore.util.TIME_PATTERN
 import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.formatDuration
+import me.zavdav.zcore.util.parseDuration
 import me.zavdav.zcore.util.sendTl
 import me.zavdav.zcore.util.tl
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
 import org.poseidonplugins.commandapi.joinArgs
-import java.time.LocalDateTime
 import java.util.regex.Pattern
 
 class CommandMute : ZCoreCommand(
@@ -35,7 +37,7 @@ class CommandMute : ZCoreCommand(
         }
 
         val subArgs = joinArgs(event.args, 1, event.args.size)
-        val matcher = Pattern.compile("^${Utils.TIME_PATTERN.pattern()}").matcher(subArgs)
+        val matcher = Pattern.compile("^${TIME_PATTERN.pattern()}").matcher(subArgs)
         val sb = StringBuilder()
         var end = 0
 
@@ -44,40 +46,17 @@ class CommandMute : ZCoreCommand(
             end = matcher.end()
         }
 
-        val duration = sb.toString()
-        val reason = subArgs.substring(end)
+        val duration = if (sb.toString().isNotEmpty()) parseDuration(sb.toString()) else null
+        val reason = subArgs.substring(end).trim().takeIf { it.isNotEmpty() } ?: tl("muteReason")
+        Punishments.mutePlayer(uuid, (event.sender as? Player)?.uniqueId, duration, reason)
 
-        when (duration.length) {
-            0 -> when (reason.length) {
-                0 -> {
-                    Punishments.mute(uuid)
-                    event.sender.sendTl("mutedPlayer",
-                        "user" to name,
-                        "reason" to tl("muteReason"))
-                }
-                else -> {
-                    Punishments.mute(uuid, reason)
-                    event.sender.sendTl("mutedPlayer", "user" to name, "reason" to reason)
-                }
-            }
-            else -> when (reason.length) {
-                0 -> {
-                    val until = Utils.parseDateDiff(duration)
-                    Punishments.mute(uuid, until)
-                    event.sender.sendTl("tempMutedPlayer",
-                        "user" to name,
-                        "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
-                        "reason" to tl("muteReason"))
-                }
-                else -> {
-                    val until = Utils.parseDateDiff(duration)
-                    Punishments.mute(uuid, until, reason)
-                    event.sender.sendTl("tempMutedPlayer",
-                        "user" to name,
-                        "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
-                        "reason" to reason)
-                }
-            }
+        if (duration == null) {
+            event.sender.sendTl("mutedPlayer", "user" to name, "reason" to reason)
+        } else {
+            event.sender.sendTl("tempMutedPlayer",
+                "user" to name,
+                "duration" to formatDuration(duration * 1000),
+                "reason" to reason)
         }
     }
 }

@@ -21,9 +21,9 @@ class CommandUnban : ZCoreCommand(
     override fun execute(event: CommandEvent) {
         val uuid = Utils.getUUIDFromString(event.args[0])
         val name = if (UserMap.isUserKnown(uuid)) User.from(uuid).name else uuid
-        assert(Punishments.isBanned(uuid), "userNotBanned", "user" to name)
+        assert(Punishments.isPlayerBanned(uuid), "userNotBanned", "user" to name)
 
-        Punishments.unban(uuid)
+        Punishments.unbanPlayer(uuid)
         event.sender.sendTl("unbannedPlayer", "user" to name)
     }
 }

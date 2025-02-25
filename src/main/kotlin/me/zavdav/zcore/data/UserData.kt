@@ -7,8 +7,7 @@ import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.Utils.roundTo
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 abstract class UserData protected constructor(val uuid: UUID) : JsonData("userdata/$uuid.json") {
 
@@ -30,8 +29,8 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData("userda
     var socialSpy: Boolean = false
     var isGod: Boolean = false
     var isVanished: Boolean = false
-    var mute: Mute? = null
-    var ban: Ban? = null
+    var mutes: MutableList<Mute> = mutableListOf()
+    var bans: MutableList<Ban> = mutableListOf()
     var muteExempt: Boolean = false
     var banExempt: Boolean = false
 
@@ -72,21 +71,29 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData("userda
         json["socialSpy"]?.let { socialSpy = it as Boolean }
         json["isGod"]?.let { isGod = it as Boolean }
         json["isVanished"]?.let { isVanished = it as Boolean }
-        json["mute"]?.let {
-            val mute = (it as JsonObject)
-            this.mute = Mute(
-                uuid,
-                mute["until"]?.let { LocalDateTime.parse(it.toString()) },
-                mute["reason"].toString()
-            )
+        json["mutes"]?.let {
+            mutes = (it as JsonArray).map {
+                val mute = it as JsonObject
+                Mute(uuid,
+                    mute["issuer"]?.let { UUID.fromString(it.toString()) },
+                    mute["timeIssued"].toString().toLong(),
+                    mute["duration"]?.toString()?.toLong(),
+                    mute["reason"].toString(),
+                    mute["pardoned"] as Boolean
+                )
+            }.sortedBy { it.timeIssued }.toMutableList()
         }
-        json["ban"]?.let {
-            val ban = (it as JsonObject)
-            this.ban = Ban(
-                uuid,
-                ban["until"]?.let { LocalDateTime.parse(it.toString()) },
-                ban["reason"].toString()
-            )
+        json["bans"]?.let {
+            bans = (it as JsonArray).map {
+                val ban = it as JsonObject
+                Ban(uuid,
+                    ban["issuer"]?.let { UUID.fromString(it.toString()) },
+                    ban["timeIssued"].toString().toLong(),
+                    ban["duration"]?.toString()?.toLong(),
+                    ban["reason"].toString(),
+                    ban["pardoned"] as Boolean
+                )
+            }.sortedBy { it.timeIssued }.toMutableList()
         }
         json["muteExempt"]?.let { muteExempt = it as Boolean }
         json["banExempt"]?.let { banExempt = it as Boolean }
@@ -118,18 +125,26 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData("userda
         json["socialSpy"] = socialSpy
         json["isGod"] = isGod
         json["isVanished"] = isVanished
-        json["mute"] = if (mute != null) {
+        json["mutes"] = JsonArray(mutes.map {
             JsonObject(mapOf(
-                "until" to mute!!.until?.toString(),
-                "reason" to mute!!.reason
+                "uuid" to uuid.toString(),
+                "issuer" to it.issuer?.toString(),
+                "timeIssued" to it.timeIssued,
+                "duration" to it.duration,
+                "reason" to it.reason,
+                "pardoned" to it.pardoned
             ))
-        } else null
-        json["ban"] = if (ban != null) {
+        })
+        json["bans"] = JsonArray(bans.map {
             JsonObject(mapOf(
-                "until" to ban!!.until?.toString(),
-                "reason" to ban!!.reason
+                "uuid" to uuid.toString(),
+                "issuer" to it.issuer?.toString(),
+                "timeIssued" to it.timeIssued,
+                "duration" to it.duration,
+                "reason" to it.reason,
+                "pardoned" to it.pardoned
             ))
-        } else null
+        })
         json["muteExempt"] = muteExempt
         json["banExempt"] = banExempt
     }

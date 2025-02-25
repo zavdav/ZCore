@@ -17,9 +17,9 @@ import org.bukkit.inventory.ItemStack
 import org.poseidonplugins.commandapi.colorize
 import org.poseidonplugins.commandapi.hasPermission
 import java.text.NumberFormat
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
-import java.util.*
+import java.util.Locale
+import java.util.ResourceBundle
+import java.util.UUID
 import java.util.regex.Pattern
 import kotlin.math.*
 
@@ -87,14 +87,6 @@ object Utils {
     private val nf: NumberFormat = NumberFormat.getNumberInstance(Locale.US)
     val UUID_PATTERN: Pattern = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
     val IPV4_PATTERN: Pattern = Pattern.compile("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")
-    val TIME_PATTERN: Pattern = Pattern.compile(
-        "(?:([0-9]+)\\s*y[a-z]*[,\\s]*)?"
-                + "(?:([0-9]+)\\s*mo[a-z]*[,\\s]*)?"
-                + "(?:([0-9]+)\\s*w[a-z]*[,\\s]*)?"
-                + "(?:([0-9]+)\\s*d[a-z]*[,\\s]*)?"
-                + "(?:([0-9]+)\\s*h[a-z]*[,\\s]*)?"
-                + "(?:([0-9]+)\\s*m[a-z]*[,\\s]*)?"
-                + "(?:([0-9]+)\\s*(?:s[a-z]*)?)?", Pattern.CASE_INSENSITIVE)
 
     private val AIR_MATERIALS: Set<Int> = setOf(
         0, 6, 27, 28, 32, 37, 38, 39, 40, 50, 55, 60, 63, 64, 65,
@@ -155,6 +147,14 @@ object Utils {
         }
     }
 
+    @JvmStatic fun notifySocialSpy(player: Player, commandLine: String) {
+        for (target in Bukkit.getOnlinePlayers()) {
+            if (User.from(target).socialSpy) {
+                target.send(Config.socialSpy, player, "command" to commandLine)
+            }
+        }
+    }
+
     @JvmStatic fun getSafeHeight(loc: Location): Int {
         val world = loc.world
         val x = loc.blockX
@@ -201,70 +201,6 @@ object Utils {
         return if (closest == 360) 0 else closest
     }
 
-    @JvmStatic fun formatDateDiff(from: LocalDateTime, to: LocalDateTime): String {
-        var mutFrom = from.truncatedTo(ChronoUnit.SECONDS)
-        val finalTo = to.truncatedTo(ChronoUnit.SECONDS)
-        val sb = StringBuilder()
-
-        val years = ChronoUnit.YEARS.between(mutFrom, finalTo)
-        mutFrom = mutFrom.plusYears(years)
-        val months = ChronoUnit.MONTHS.between(mutFrom, finalTo)
-        mutFrom = mutFrom.plusMonths(months)
-        val weeks = ChronoUnit.WEEKS.between(mutFrom, finalTo)
-        mutFrom = mutFrom.plusWeeks(weeks)
-        val days = ChronoUnit.DAYS.between(mutFrom, finalTo)
-        mutFrom = mutFrom.plusDays(days)
-        val hours = ChronoUnit.HOURS.between(mutFrom, finalTo)
-        mutFrom = mutFrom.plusHours(hours)
-        val minutes = ChronoUnit.MINUTES.between(mutFrom, finalTo)
-        mutFrom = mutFrom.plusMinutes(minutes)
-        val seconds = ChronoUnit.SECONDS.between(mutFrom, finalTo)
-
-        val units = listOf(years, months, weeks, days, hours, minutes, seconds)
-        val names = listOf(
-            "year", "years",
-            "month", "months",
-            "week", "weeks",
-            "day", "days",
-            "hour", "hours",
-            "minute", "minutes",
-            "second", "seconds"
-        )
-        for (i in units.indices) {
-            if (units[i] > 0) {
-                sb.append("${units[i]} ${names[i * 2 + if (units[i] > 1) 1 else 0]} ")
-            }
-        }
-        return if (sb.isEmpty()) "0 seconds" else sb.substring(0, sb.length - 1)
-    }
-
-    @JvmStatic fun formatDuration(millis: Long): String {
-        val start = LocalDateTime.of(1970, 1, 1, 0, 0)
-        return formatDateDiff(start, start.plus(millis, ChronoUnit.MILLIS))
-    }
-
-    @JvmStatic fun parseDateDiff(time: String): LocalDateTime {
-        val matcher = TIME_PATTERN.matcher(time)
-        if (!matcher.matches()) throw RuntimeException()
-
-        val years = matcher.group(1)?.toLongOrNull() ?: 0
-        val months = matcher.group(2)?.toLongOrNull() ?: 0
-        val weeks = matcher.group(3)?.toLongOrNull() ?: 0
-        val days = matcher.group(4)?.toLongOrNull() ?: 0
-        val hours = matcher.group(5)?.toLongOrNull() ?: 0
-        val minutes = matcher.group(6)?.toLongOrNull() ?: 0
-        val seconds = matcher.group(7)?.toLongOrNull() ?: 0
-
-        return LocalDateTime.now()
-            .plusYears(years)
-            .plusMonths(months)
-            .plusWeeks(weeks)
-            .plusDays(days)
-            .plusHours(hours)
-            .plusMinutes(minutes)
-            .plusSeconds(seconds)
-    }
-
     @JvmStatic fun formatBalance(amount: Double): String {
         val string = "${Config.currency}${nf.format(amount)}"
         return if (string.endsWith(".00")) string.substring(0, string.length - 3) else string
@@ -276,12 +212,4 @@ object Utils {
     }
 
     fun ItemStack.copy(): ItemStack = ItemStack(this.typeId, this.amount, this.durability)
-
-    @JvmStatic fun notifySocialSpy(player: Player, commandLine: String) {
-        for (target in Bukkit.getOnlinePlayers()) {
-            if (User.from(target).socialSpy) {
-                target.send(Config.socialSpy, player, "command" to commandLine)
-            }
-        }
-    }
 }

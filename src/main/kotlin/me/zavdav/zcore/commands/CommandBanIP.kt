@@ -1,14 +1,16 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.api.Punishments
+import me.zavdav.zcore.util.TIME_PATTERN
 import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.formatDuration
+import me.zavdav.zcore.util.parseDuration
 import me.zavdav.zcore.util.sendTl
 import me.zavdav.zcore.util.tl
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.joinArgs
-import java.time.LocalDateTime
 import java.util.regex.Pattern
 
 class CommandBanIP : ZCoreCommand(
@@ -31,7 +33,7 @@ class CommandBanIP : ZCoreCommand(
 
         assert(event.sender !is Player || (event.sender as Player).address.address.hostAddress != ip, "cannotBanSelf")
         val subArgs = joinArgs(event.args , 1, event.args.size)
-        val matcher = Pattern.compile("^${Utils.TIME_PATTERN.pattern()}").matcher(subArgs)
+        val matcher = Pattern.compile("^${TIME_PATTERN.pattern()}").matcher(subArgs)
         val sb = StringBuilder()
         var end = 0
 
@@ -40,40 +42,17 @@ class CommandBanIP : ZCoreCommand(
             end = matcher.end()
         }
 
-        val duration = sb.toString()
-        val reason = subArgs.substring(end)
+        val duration = if (sb.toString().isNotEmpty()) parseDuration(sb.toString()) else null
+        val reason = subArgs.substring(end).trim().takeIf { it.isNotEmpty() } ?: tl("banReason")
+        Punishments.banIP(ip, (event.sender as? Player)?.uniqueId, duration, reason)
 
-        when (duration.length) {
-            0 -> when (reason.length) {
-                0 -> {
-                    Punishments.banIP(ip)
-                    event.sender.sendTl("bannedIp",
-                        "ip" to ip,
-                        "reason" to tl("banReason"))
-                }
-                else -> {
-                    Punishments.banIP(ip, reason)
-                    event.sender.sendTl("bannedIp", "ip" to ip, "reason" to reason)
-                }
-            }
-            else -> when (reason.length) {
-                0 -> {
-                    val until = Utils.parseDateDiff(duration)
-                    Punishments.banIP(ip, until)
-                    event.sender.sendTl("tempBannedIp",
-                        "ip" to ip,
-                        "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
-                        "reason" to tl("banReason"))
-                }
-                else -> {
-                    val until = Utils.parseDateDiff(duration)
-                    Punishments.banIP(ip, until, reason)
-                    event.sender.sendTl("tempBannedIp",
-                        "ip" to ip,
-                        "duration" to Utils.formatDateDiff(LocalDateTime.now(), until),
-                        "reason" to reason)
-                }
-            }
+        if (duration == null) {
+            event.sender.sendTl("bannedIp", "ip" to ip, "reason" to reason)
+        } else {
+            event.sender.sendTl("tempBannedIp",
+                "ip" to ip,
+                "duration" to formatDuration(duration * 1000),
+                "reason" to reason)
         }
     }
 }

@@ -2,45 +2,60 @@ package me.zavdav.zcore.data
 
 import com.github.cliftonlabs.json_simple.JsonArray
 import com.github.cliftonlabs.json_simple.JsonObject
+import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.Utils
-import java.time.LocalDateTime
 import java.util.UUID
 
 object BannedIPs : JsonData("bannedips.json") {
 
-    var entries: MutableList<IPBan> = mutableListOf()
+    var bannedIps: MutableMap<String, List<IPBan>> = mutableMapOf()
 
     init { deserialize() }
 
     override fun deserialize() {
-        entries = json.map {
-            val ipBan = it.value as JsonObject
-            IPBan(
-                it.key,
-                (ipBan["uuids"] as JsonArray).map { UUID.fromString(it.toString()) },
-                ipBan["until"]?.let { LocalDateTime.parse(it.toString()) },
-                ipBan["reason"].toString()
-            )
-        }.toMutableList()
+        bannedIps = json.map {
+            val bans = it.value as JsonArray
+            it.key to
+            bans.map {
+                val ban = it as JsonObject
+                IPBan(ban["ip"].toString(),
+                    ban["issuer"]?.let { UUID.fromString(it.toString()) },
+                    ban["timeIssued"].toString().toLong(),
+                    ban["duration"]?.toString()?.toLong(),
+                    ban["reason"].toString(),
+                    ban["pardoned"] as Boolean,
+                    (ban["uuids"] as JsonArray).map { UUID.fromString(it.toString()) }
+                )
+            }.sortedBy { it.timeIssued }
+        }.toMap().toMutableMap()
     }
 
     override fun serialize() {
-        json = JsonObject(entries.associate {
-            it.ip to
-            JsonObject(mapOf(
-                "uuids" to JsonArray(it.uuids.map { it.toString() }),
-                "until" to it.until?.toString(),
-                "reason" to it.reason
-            ))
-        })
+        json = JsonObject(bannedIps.map {
+            it.key to
+            JsonArray(it.value.map {
+                JsonObject(mapOf(
+                    "ip" to it.ip,
+                    "issuer" to it.issuer?.toString(),
+                    "timeIssued" to it.timeIssued,
+                    "duration" to it.duration,
+                    "reason" to it.reason,
+                    "pardoned" to it.pardoned,
+                    "uuids" to it.uuids.map { it.toString() }
+                ))
+            })
+        }.toMap())
     }
 
-    fun getEntry(ip: String): IPBan? = entries.firstOrNull { it.ip == ip }
-
-    fun addEntry(ip: String, until: LocalDateTime?, reason: String) {
+    fun banIP(ip: String, issuer: UUID?, duration: Long?, reason: String) {
         val players = Utils.getPlayersFromIP(ip)
-        entries.add(IPBan(ip, players.map { it.uniqueId }, until, reason))
+        val bans = getIPBans(ip).toMutableList()
+        if (Punishments.isIPBanned(ip)) {
+            bans.removeLast()
+        }
+        bans.add(IPBan(ip, issuer, System.currentTimeMillis(), duration, reason, false, players.map { it.uniqueId }))
+        bannedIps[ip] = bans
 
         for (player in players) {
             User.from(player).checkIsIPBanned()
@@ -48,10 +63,19 @@ object BannedIPs : JsonData("bannedips.json") {
     }
 
     fun addUUID(uuid: UUID, ip: String) {
-        getEntry(ip)?.uuids += uuid
+        getIPBan(ip)?.uuids += uuid
     }
 
-    fun removeEntry(ip: String) {
-        entries.removeIf { it.ip == ip }
+    fun unbanIP(ip: String) {
+        val bans = bannedIps[ip] ?: return
+        bans.lastOrNull()?.pardoned = true
+        bannedIps[ip] = bans
     }
+
+    fun getIPBans(ip: String): List<IPBan> = bannedIps[ip] ?: emptyList()
+
+    fun getIPBan(ip: String): IPBan? = bannedIps[ip]?.lastOrNull()
+
+    fun getIPBan(uuid: UUID): IPBan? =
+        bannedIps.entries.firstOrNull { it.value.any { uuid in it.uuids } }?.value?.lastOrNull()
 }

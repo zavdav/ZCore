@@ -3,6 +3,7 @@ package me.zavdav.zcore.commands
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.formatDuration
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
@@ -30,7 +31,7 @@ class CommandPlayTime : ZCoreCommand(
         val user = User.from(uuid)
         if (user.isOnline) user.updatePlayTime()
 
-        val duration = Utils.formatDuration(user.playTime)
+        val duration = formatDuration(user.playTime)
         if (isSelf) {
             event.sender.sendTl("playTime", "time" to duration)
         } else {

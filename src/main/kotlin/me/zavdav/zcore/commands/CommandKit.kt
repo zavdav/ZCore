@@ -38,7 +38,7 @@ class CommandKit : ZCoreCommand(
             if (kitCooldown != null) {
                 assert(System.currentTimeMillis() > kitCooldown, "kitOnCooldown",
                     "name" to name,
-                    "duration" to Utils.formatDuration(kitCooldown - System.currentTimeMillis()))
+                    "duration" to formatDuration(kitCooldown - System.currentTimeMillis()))
             }
 
             val currentInv = player.inventory.contents.map { it?.copy() }.toTypedArray()

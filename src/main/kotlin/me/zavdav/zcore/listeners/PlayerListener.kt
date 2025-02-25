@@ -84,7 +84,7 @@ class PlayerListener : Listener {
 
     @EventHandler(ignoreCancelled = true, priority = Event.Priority.Low)
     fun onPlayerKick(event: PlayerKickEvent) {
-        val isBanned = Punishments.isBanned(event.player.uniqueId)
+        val isBanned = Punishments.isPlayerBanned(event.player.uniqueId)
                     || Punishments.isIPBanned(event.player.address.address.hostAddress)
         event.leaveMessage = format(if (isBanned) Config.banMsg else Config.kickMsg, event.player)
     }

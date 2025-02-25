@@ -19,8 +19,8 @@ class CommandUnmute : ZCoreCommand(
     override fun execute(event: CommandEvent) {
         val uuid = Utils.getUUIDFromUsername(event.args[0])
         val user = User.from(uuid)
-        assert(Punishments.isMuted(uuid), "userNotMuted", "user" to user.name)
-        Punishments.unmute(uuid)
+        assert(Punishments.isPlayerMuted(uuid), "userNotMuted", "user" to user.name)
+        Punishments.unmutePlayer(uuid)
         event.sender.sendTl("unmutedPlayer", "user" to user.name)
     }
 }

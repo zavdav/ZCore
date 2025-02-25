@@ -5,101 +5,104 @@ import me.zavdav.zcore.data.BannedIPs
 import me.zavdav.zcore.data.IPBan
 import me.zavdav.zcore.data.Mute
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.tl
-import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 object Punishments {
 
-    fun mute(uuid: UUID) =
-        mute(uuid, tl("muteReason"))
-
-    fun mute(uuid: UUID, reason: String) =
-        mute(uuid, null, reason)
-
-    fun mute(uuid: UUID, until: LocalDateTime) =
-        mute(uuid, until, tl("muteReason"))
-
-    fun mute(uuid: UUID, until: LocalDateTime?, reason: String) {
+    @JvmStatic
+    fun mutePlayer(uuid: UUID, issuer: UUID?, duration: Long?, reason: String) {
         val user = User.from(uuid)
-        user.mute = Mute(uuid, until, reason)
+        if (isPlayerMuted(uuid)) {
+            user.mutes.removeLast()
+        }
+        user.mutes.add(Mute(uuid, issuer, System.currentTimeMillis(), duration, reason, false))
         user.checkIsMuted()
     }
 
-    fun ban(uuid: UUID) =
-        ban(uuid, tl("banReason"))
-
-    fun ban(uuid: UUID, reason: String) =
-        ban(uuid, null, reason)
-
-    fun ban(uuid: UUID, until: LocalDateTime) =
-        ban(uuid, until, tl("banReason"))
-
-    fun ban(uuid: UUID, until: LocalDateTime?, reason: String) {
+    @JvmStatic
+    fun banPlayer(uuid: UUID, issuer: UUID?, duration: Long?, reason: String) {
         val user = User.from(uuid)
-        user.ban = Ban(uuid, until, reason)
+        if (isPlayerBanned(uuid)) {
+            user.bans.removeLast()
+        }
+        user.bans.add(Ban(uuid, issuer, System.currentTimeMillis(), duration, reason, false))
         user.checkIsBanned()
     }
 
-    fun banIP(ip: String) =
-        banIP(ip, tl("banReason"))
-
-    fun banIP(ip: String, reason: String) =
-        banIP(ip, null, reason)
-
-    fun banIP(ip: String, until: LocalDateTime) =
-        banIP(ip, until, tl("banReason"))
-
-    fun banIP(ip: String, until: LocalDateTime?, reason: String) {
-        BannedIPs.addEntry(ip, until, reason)
+    @JvmStatic
+    fun banIP(ip: String, issuer: UUID?, duration: Long?, reason: String) {
+        BannedIPs.banIP(ip, issuer, duration, reason)
     }
 
-    fun unmute(uuid: UUID) {
-        User.from(uuid).mute = null
+    @JvmStatic
+    fun unmutePlayer(uuid: UUID) {
+        if (!isPlayerMuted(uuid)) return
+        User.from(uuid).mutes.lastOrNull()?.pardoned = true
     }
 
-    fun unban(uuid: UUID) {
-        User.from(uuid).ban = null
+    @JvmStatic
+    fun unbanPlayer(uuid: UUID) {
+        if (!isPlayerBanned(uuid)) return
+        User.from(uuid).bans.lastOrNull()?.pardoned = true
     }
 
+    @JvmStatic
     fun unbanIP(ip: String) {
-        BannedIPs.removeEntry(ip)
+        if (!isIPBanned(ip)) return
+        BannedIPs.unbanIP(ip)
     }
 
-    fun isMuted(uuid: UUID): Boolean {
+    @JvmStatic
+    fun isPlayerMuted(uuid: UUID): Boolean {
         val mute = getMute(uuid) ?: return false
-        if (mute.until != null && !mute.until.isAfter(LocalDateTime.now())) {
-            unmute(uuid)
-            return false
+        return if (mute.pardoned) false
+        else when {
+            mute.duration == null -> true
+            System.currentTimeMillis() <= mute.timeIssued + mute.duration * 1000 -> true
+            else -> false
         }
-        return true
     }
 
-    fun isBanned(uuid: UUID): Boolean {
+    @JvmStatic
+    fun isPlayerBanned(uuid: UUID): Boolean {
         val ban = getBan(uuid) ?: return false
-        if (ban.until != null && !ban.until.isAfter(LocalDateTime.now())) {
-            unban(uuid)
-            return false
+        return if (ban.pardoned) false
+        else when {
+            ban.duration == null -> true
+            System.currentTimeMillis() <= ban.timeIssued + ban.duration * 1000 -> true
+            else -> false
         }
-        return true
     }
 
+    @JvmStatic
     fun isIPBanned(ip: String): Boolean {
         val ipBan = getIPBan(ip) ?: return false
-
-        if (ipBan.until != null && !ipBan.until.isAfter(LocalDateTime.now())) {
-            unbanIP(ip)
-            return false
+        return if (ipBan.pardoned) false
+        else when {
+            ipBan.duration == null -> true
+            System.currentTimeMillis() <= ipBan.timeIssued + ipBan.duration * 1000 -> true
+            else -> false
         }
-        return true
     }
 
-    fun getMute(uuid: UUID): Mute? = User.from(uuid).mute
+    @JvmStatic
+    fun getMutes(uuid: UUID): List<Mute> = User.from(uuid).mutes
 
-    fun getBan(uuid: UUID): Ban? = User.from(uuid).ban
+    @JvmStatic
+    fun getMute(uuid: UUID): Mute? = User.from(uuid).mutes.lastOrNull()
 
-    fun getIPBan(ip: String): IPBan? = BannedIPs.getEntry(ip)
+    @JvmStatic
+    fun getBans(uuid: UUID): List<Ban> = User.from(uuid).bans
 
-    fun getIPBan(uuid: UUID): IPBan? =
-        BannedIPs.entries.firstOrNull { uuid in it.uuids }
+    @JvmStatic
+    fun getBan(uuid: UUID): Ban? = User.from(uuid).bans.lastOrNull()
+
+    @JvmStatic
+    fun getIPBans(ip: String): List<IPBan> = BannedIPs.getIPBans(ip)
+
+    @JvmStatic
+    fun getIPBan(ip: String): IPBan? = BannedIPs.getIPBan(ip)
+
+    @JvmStatic
+    fun getIPBan(uuid: UUID): IPBan? = BannedIPs.getIPBan(uuid)
 }
