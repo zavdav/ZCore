@@ -22,15 +22,15 @@ import java.util.UUID
 class User private constructor(uuid: UUID) : UserData(uuid) {
 
     companion object {
-        fun from(player: Player, register: Boolean = true): User =
-            from(player.uniqueId, register)
+        fun from(player: Player): User =
+            from(player.uniqueId)
 
-        fun from(uuid: UUID, register: Boolean = true): User {
+        fun from(uuid: UUID): User {
             if (!UserMap.isUserKnown(uuid)) UserMap.knownUsers.add(uuid)
             if (uuid in UserMap.userMap.keys) return UserMap.userMap[uuid]!!
 
             val user = User(uuid)
-            if (register) UserMap.userMap[uuid] = user
+            UserMap.userMap[uuid] = user
             return user
         }
     }

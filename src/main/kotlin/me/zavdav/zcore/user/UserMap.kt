@@ -39,7 +39,7 @@ object UserMap {
 
     fun getAllUsers(): Set<User> =
         if (precacheAll) userMap.values.toSet()
-        else knownUsers.map { User.from(it, false) }.toSet()
+        else knownUsers.map { User.from(it) }.toSet()
 
     fun checkOnlineUsers() {
         userMap.entries.removeIf {
