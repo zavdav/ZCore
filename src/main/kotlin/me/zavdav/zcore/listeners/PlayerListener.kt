@@ -53,7 +53,7 @@ class PlayerListener : Listener {
         if (!hasPermission(event.player, "zcore.nick")) user.nickname = null
 
         user.updateDisplayName()
-        Utils.updateVanishedPlayers()
+        updateVanishedPlayers()
 
         if (Config.motd.isNotEmpty() && hasPermission(event.player, "zcore.motd")) {
             event.player.performCommand("motd")
@@ -155,9 +155,9 @@ class PlayerListener : Listener {
             from.pitch = to.pitch
             from.yaw = to.yaw
             if (from.y > to.y) from.y = to.y
-            try {
-                from.y = Utils.getSafeHeight(from).toDouble()
-            } catch (_: UnsafeDestinationException) {}
+            runCatching {
+                from.y = getSafeHeight(from).toDouble()
+            }
 
             event.to = from
         } else {

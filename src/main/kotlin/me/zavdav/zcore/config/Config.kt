@@ -2,9 +2,9 @@ package me.zavdav.zcore.config
 
 import me.zavdav.zcore.ZCore
 import me.zavdav.zcore.api.Economy
+import me.zavdav.zcore.api.Economy.roundTo2
 import me.zavdav.zcore.commands.ZCoreCommand
 import me.zavdav.zcore.util.Logger
-import me.zavdav.zcore.util.Utils.roundTo
 import org.bukkit.util.config.Configuration
 import java.io.File
 import java.nio.file.Files
@@ -155,13 +155,13 @@ object Config {
         get() = getStringList("disabledCommands", emptyList())
 
     fun getCommandCost(command: ZCoreCommand): Double =
-        getDouble("commandCosts.${command.name}", 0.0..maxBalance, 0.0).roundTo(2)
+        getDouble("commandCosts.${command.name}", 0.0..maxBalance, 0.0).roundTo2()
 
     val currency: String
         get() = getString("currency", "$")
 
     val maxBalance: Double
-        get() = getDouble("maxBalance", 0.0..Economy.MAX_BALANCE, Economy.MAX_BALANCE).roundTo(2)
+        get() = getDouble("maxBalance", 0.0..Economy.MAX_BALANCE, Economy.MAX_BALANCE).roundTo2()
 
     val balancesPerPage: Int
         get() = getInt("balancesPerPage", 1..Int.MAX_VALUE, 10)

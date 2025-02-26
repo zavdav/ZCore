@@ -1,7 +1,7 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.Utils
+import me.zavdav.zcore.util.getPlayerFromUsername
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
@@ -20,7 +20,7 @@ class CommandInvSee : ZCoreCommand(
         val user = User.from(player)
 
         if (event.args.isNotEmpty()) {
-            val target = Utils.getPlayerFromUsername(event.args[0])
+            val target = getPlayerFromUsername(event.args[0])
             if (user.savedInventory == null) user.savedInventory = player.inventory.contents
             player.inventory.contents = User.from(target).savedInventory ?: target.inventory.contents
             user.isInvSee = true

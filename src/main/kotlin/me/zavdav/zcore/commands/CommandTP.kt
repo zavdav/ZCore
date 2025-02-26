@@ -1,7 +1,8 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.util.CommandException
-import me.zavdav.zcore.util.Utils
+import me.zavdav.zcore.util.getPlayerFromUsername
+import me.zavdav.zcore.util.getSafeHeight
 import me.zavdav.zcore.util.sendTl
 import me.zavdav.zcore.util.tlError
 import org.bukkit.Location
@@ -32,11 +33,11 @@ class CommandTP : ZCoreCommand(
         val target: Player
 
         if (args.size == 2) {
-            player = Utils.getPlayerFromUsername(args[0])
-            target = Utils.getPlayerFromUsername(args[1])
+            player = getPlayerFromUsername(args[0])
+            target = getPlayerFromUsername(args[1])
         } else {
             player = sender
-            target = Utils.getPlayerFromUsername(args[0])
+            target = getPlayerFromUsername(args[0])
         }
 
         player.teleport(target)
@@ -56,7 +57,7 @@ class CommandTP : ZCoreCommand(
         var target = player
 
         if (strings.size == 4) {
-            target = Utils.getPlayerFromUsername(strings[0])
+            target = getPlayerFromUsername(strings[0])
             strings = strings.subList(1, strings.size)
         }
 
@@ -98,7 +99,7 @@ class CommandTP : ZCoreCommand(
             }
         }
 
-        if (computeY) coords[1] = Utils.getSafeHeight(Location(loc.world, coords[0], coords[1], coords[2])).toDouble()
+        if (computeY) coords[1] = getSafeHeight(Location(loc.world, coords[0], coords[1], coords[2])).toDouble()
         return coords.toList()
     }
 }

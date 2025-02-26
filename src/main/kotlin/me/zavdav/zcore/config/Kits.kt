@@ -1,7 +1,7 @@
 package me.zavdav.zcore.config
 
+import me.zavdav.zcore.api.Economy.roundTo2
 import me.zavdav.zcore.data.Kit
-import me.zavdav.zcore.util.Utils.roundTo
 import org.bukkit.inventory.ItemStack
 
 object Kits {
@@ -15,7 +15,7 @@ object Kits {
         for (kit in kits) {
             val name = kit.key
             val map = kit.value as Map<String, Any>
-            val cost = ((map["cost"] ?: 0) as Number).toDouble().coerceIn(0.0..Config.maxBalance).roundTo(2)
+            val cost = ((map["cost"] ?: 0) as Number).toDouble().coerceIn(0.0..Config.maxBalance).roundTo2()
             val cooldown = ((map["cooldown"] ?: 0) as Number).toInt().coerceAtLeast(0)
             val items = map["items"] as List<String>
             val itemStacks = mutableListOf<ItemStack>()

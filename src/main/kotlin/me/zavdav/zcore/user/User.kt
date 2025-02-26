@@ -5,12 +5,12 @@ import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.data.BannedIPs
 import me.zavdav.zcore.data.UserData
 import me.zavdav.zcore.hooks.permissions.PermissionHandler
-import me.zavdav.zcore.util.Utils.kickBanned
-import me.zavdav.zcore.util.Utils.kickBannedIp
 import me.zavdav.zcore.util.broadcastTl
 import me.zavdav.zcore.util.format
 import me.zavdav.zcore.util.formatDuration
 import me.zavdav.zcore.util.kick
+import me.zavdav.zcore.util.kickBanned
+import me.zavdav.zcore.util.kickBannedIP
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -210,8 +210,8 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
             val ipBan = Punishments.getIPBan(ip) ?: return false
             if (uuid !in ipBan.uuids) BannedIPs.addUUID(uuid, ip)
             when (ipBan.duration) {
-                null -> event.kickBannedIp("ipBanScreen", "reason" to ipBan.reason)
-                else -> event.kickBannedIp("tempIpBanScreen",
+                null -> event.kickBannedIP("ipBanScreen", "reason" to ipBan.reason)
+                else -> event.kickBannedIP("tempIpBanScreen",
                     "duration" to formatDuration(
                         ipBan.timeIssued + ipBan.duration * 1000 - System.currentTimeMillis()
                     ),

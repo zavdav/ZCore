@@ -1,6 +1,5 @@
 package me.zavdav.zcore.commands
 
-import me.zavdav.zcore.util.Utils.isSelf
 import me.zavdav.zcore.util.kick
 import me.zavdav.zcore.util.sendTl
 import me.zavdav.zcore.util.tl
@@ -24,7 +23,7 @@ class CommandKickAll : ZCoreCommand(
 
         for (player in Bukkit.getOnlinePlayers()) {
             if (hasPermission(player, "zcore.kick.exempt")) continue
-            if (event.sender !is Player || !player.isSelf(event.sender as Player)) {
+            if (event.sender !is Player || event.sender != player) {
                 player.kick("kickScreen", "reason" to reason)
             }
         }

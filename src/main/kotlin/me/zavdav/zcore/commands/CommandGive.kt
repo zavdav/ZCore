@@ -1,9 +1,8 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.config.Items
-import me.zavdav.zcore.util.Utils
-import me.zavdav.zcore.util.Utils.isSelf
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.getPlayerFromUsername
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
@@ -19,7 +18,7 @@ class CommandGive : ZCoreCommand(
 ) {
 
     override fun execute(event: CommandEvent) {
-        val target = Utils.getPlayerFromUsername(event.args[0])
+        val target = getPlayerFromUsername(event.args[0])
 
         val itemStack = Items.get(event.args[1]) ?: Items.itemFromString(event.args[1])
         assert(itemStack != null, "unknownItem", "item" to event.args[1])
@@ -27,7 +26,7 @@ class CommandGive : ZCoreCommand(
             itemStack!!.amount = event.args[2].toInt().coerceAtLeast(1)
         }
 
-        val isSelf = event.sender is Player && (event.sender as Player).isSelf(target)
+        val isSelf = event.sender is Player && event.sender == target
         if (isSelf) {
             event.sender.sendTl("gaveItem", "amount" to itemStack!!.amount, "item" to itemStack.type)
         } else {

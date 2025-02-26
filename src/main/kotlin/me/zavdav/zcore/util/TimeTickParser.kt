@@ -29,21 +29,10 @@ object TimeTickParser {
     fun parse(input: String): Long {
         val string = input.lowercase().replace("[^A-Za-z0-9:]".toRegex(), "")
 
-        try {
-            return parseTicks(string)
-        } catch (_: Exception) {}
-
-        try {
-            return parse24(string)
-        } catch (_: Exception) {}
-
-        try {
-            return parse12(string)
-        } catch (_: Exception) {}
-
-        try {
-            return parseAlias(string)
-        } catch (_: Exception) {}
+        runCatching { return parseTicks(string) }
+        runCatching { return parse24(string) }
+        runCatching { return parse12(string) }
+        runCatching { return parseAlias(string) }
 
         throw NumberFormatException()
     }

@@ -1,7 +1,8 @@
 package me.zavdav.zcore.data
 
 import com.github.cliftonlabs.json_simple.JsonObject
-import me.zavdav.zcore.util.Utils
+import me.zavdav.zcore.util.getSafeHeight
+import me.zavdav.zcore.util.roundYaw
 import org.bukkit.Bukkit
 import org.bukkit.Location
 
@@ -45,7 +46,7 @@ object Warps : JsonData("warps.json") {
         location.y = location.blockY.toDouble()
         location.z = location.blockZ + 0.5
         location.pitch = 0f
-        location.yaw = Utils.roundYaw(location.yaw).toFloat()
+        location.yaw = roundYaw(location.yaw).toFloat()
 
         warps[name] = location
     }
@@ -58,7 +59,7 @@ object Warps : JsonData("warps.json") {
 
     fun getWarpLocation(name: String): Location? {
         val location = getWarp(name) ?: return null
-        location.y = Utils.getSafeHeight(location).toDouble()
+        location.y = getSafeHeight(location).toDouble()
         return location
     }
 

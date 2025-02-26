@@ -44,7 +44,7 @@ class CommandTime : ZCoreCommand(
         world.time = ticks
         event.sender.sendTl("setTime",
             "time24" to TimeTickParser.format24(ticks),
-            "time12" to TimeTickParser.format24(ticks),
+            "time12" to TimeTickParser.format12(ticks),
             "ticks" to TimeTickParser.formatTicks(ticks),
             "world" to world.name)
     }

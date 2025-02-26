@@ -1,10 +1,11 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.api.Punishments
+import me.zavdav.zcore.util.IPV4_PATTERN
 import me.zavdav.zcore.util.TIME_PATTERN
-import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.formatDuration
+import me.zavdav.zcore.util.getPlayerFromString
 import me.zavdav.zcore.util.parseDuration
 import me.zavdav.zcore.util.sendTl
 import me.zavdav.zcore.util.tl
@@ -24,10 +25,10 @@ class CommandBanIP : ZCoreCommand(
 
     override fun execute(event: CommandEvent) {
         val ip =
-            if (Utils.IPV4_PATTERN.matcher(event.args[0]).matches()) {
+            if (IPV4_PATTERN.matcher(event.args[0]).matches()) {
                 event.args[0]
             } else {
-                val player = Utils.getPlayerFromString(event.args[0])
+                val player = getPlayerFromString(event.args[0])
                 player.address.address.hostAddress
             }
 

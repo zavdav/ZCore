@@ -1,9 +1,9 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.formatDuration
+import me.zavdav.zcore.util.getUUIDFromUsername
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
@@ -23,7 +23,7 @@ class CommandPlayTime : ZCoreCommand(
         val player = event.sender as Player
         var uuid = player.uniqueId
         if (event.args.isNotEmpty()) {
-            uuid = Utils.getUUIDFromUsername(event.args[0])
+            uuid = getUUIDFromUsername(event.args[0])
         }
 
         val isSelf = player.uniqueId == uuid

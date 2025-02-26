@@ -3,9 +3,9 @@ package me.zavdav.zcore.commands
 import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.TIME_PATTERN
-import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.formatDuration
+import me.zavdav.zcore.util.getUUIDFromUsername
 import me.zavdav.zcore.util.parseDuration
 import me.zavdav.zcore.util.sendTl
 import me.zavdav.zcore.util.tl
@@ -24,7 +24,7 @@ class CommandMute : ZCoreCommand(
 ) {
 
     override fun execute(event: CommandEvent) {
-        val uuid = Utils.getUUIDFromUsername(event.args[0])
+        val uuid = getUUIDFromUsername(event.args[0])
         val name: String
 
         assert(event.sender !is Player || (event.sender as Player).uniqueId != uuid, "cannotMuteSelf")

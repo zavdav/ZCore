@@ -4,7 +4,7 @@ import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.data.Spawnpoints
 import me.zavdav.zcore.util.Delay
 import me.zavdav.zcore.util.NoFundsException
-import me.zavdav.zcore.util.Utils
+import me.zavdav.zcore.util.getSafeHeight
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
@@ -24,7 +24,7 @@ class CommandSpawn : ZCoreCommand(
         loc.x = loc.blockX + 0.5
         loc.z = loc.blockZ + 0.5
         loc = Spawnpoints.getSpawn(player.world) ?: loc
-        loc.y = Utils.getSafeHeight(loc).toDouble()
+        loc.y = getSafeHeight(loc).toDouble()
 
         val delay = Config.teleportDelay
         if (delay > 0) {

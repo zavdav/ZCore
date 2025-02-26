@@ -5,11 +5,12 @@ import me.zavdav.zcore.data.Ban
 import me.zavdav.zcore.data.IPBan
 import me.zavdav.zcore.data.Mute
 import me.zavdav.zcore.data.Punishment
-import me.zavdav.zcore.data.UUIDCache
-import me.zavdav.zcore.util.Utils
+import me.zavdav.zcore.util.IPV4_PATTERN
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.formatDuration
 import me.zavdav.zcore.util.formatEpoch
+import me.zavdav.zcore.util.getUUIDFromString
+import me.zavdav.zcore.util.getUsernameFromUUID
 import me.zavdav.zcore.util.send
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.command.CommandSender
@@ -29,12 +30,12 @@ class CommandPunishments : ZCoreCommand(
     override fun execute(event: CommandEvent) {
         val name: String
         val punishments: List<Punishment>
-        if (Utils.IPV4_PATTERN.matcher(event.args[0]).matches()) {
+        if (IPV4_PATTERN.matcher(event.args[0]).matches()) {
             name = event.args[0]
             punishments = Punishments.getIPBans(name)
         } else {
-            val uuid = Utils.getUUIDFromString(event.args[0])
-            name = UUIDCache.getUsernameFromUUID(uuid) ?: uuid.toString()
+            val uuid = getUUIDFromString(event.args[0])
+            name = getUsernameFromUUID(uuid) ?: uuid.toString()
             punishments = (Punishments.getMutes(uuid) + Punishments.getBans(uuid)).sortedBy { it.timeIssued }
         }
 
@@ -63,7 +64,7 @@ class CommandPunishments : ZCoreCommand(
 
             sender.sendTl("punishmentType", "type" to type)
             sender.sendTl("punishmentIssuer",
-                "name" to (it.issuer?.let { UUIDCache.getUsernameFromUUID(it) } ?: "Console"))
+                "name" to (it.issuer?.let { getUsernameFromUUID(it) } ?: "Console"))
             sender.sendTl("punishmentIssuedTime", "datetime" to formatEpoch(it.timeIssued))
             sender.sendTl("punishmentDuration",
                 "duration" to (it.duration?.let { formatDuration(it * 1000) } ?: "Permanent"))

@@ -2,8 +2,8 @@ package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.api.Economy
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.getUUIDFromString
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
@@ -23,7 +23,7 @@ class CommandBalance : ZCoreCommand(
         val player = event.sender as Player
         var uuid = player.uniqueId
         if (event.args.isNotEmpty()) {
-            uuid = Utils.getUUIDFromString(event.args[0])
+            uuid = getUUIDFromString(event.args[0])
         }
 
         val isSelf = player.uniqueId == uuid

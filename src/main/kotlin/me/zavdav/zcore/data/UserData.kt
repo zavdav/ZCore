@@ -2,9 +2,9 @@ package me.zavdav.zcore.data
 
 import com.github.cliftonlabs.json_simple.JsonArray
 import com.github.cliftonlabs.json_simple.JsonObject
+import me.zavdav.zcore.api.Economy.roundTo2
 import me.zavdav.zcore.config.Config
-import me.zavdav.zcore.util.Utils
-import me.zavdav.zcore.util.Utils.roundTo
+import me.zavdav.zcore.util.getSafeHeight
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import java.util.UUID
@@ -18,8 +18,8 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData("userda
     var playTime: Long = 0
     @Volatile
     var balance: Double = 0.0
-        get() = field.coerceIn(0.0..Config.maxBalance).roundTo(2)
-        set(value) { field = value.coerceIn(0.0..Config.maxBalance).roundTo(2) }
+        get() = field.coerceIn(0.0..Config.maxBalance).roundTo2()
+        set(value) { field = value.coerceIn(0.0..Config.maxBalance).roundTo2() }
     var nickname: String? = null
     var homes: MutableMap<String, Location> = mutableMapOf()
     var ignores: MutableList<UUID> = mutableListOf()
@@ -176,7 +176,7 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData("userda
 
     fun getHomeLocation(name: String): Location? {
         val location = getHome(name) ?: return null
-        location.y = Utils.getSafeHeight(location).toDouble()
+        location.y = getSafeHeight(location).toDouble()
         return location
     }
 

@@ -2,8 +2,8 @@ package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.notifySocialSpy
 import me.zavdav.zcore.util.send
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
@@ -40,6 +40,6 @@ class CommandR : ZCoreCommand(
             replyTo.send(Config.receiveMsg, player, "message" to message)
         }
 
-        Utils.notifySocialSpy(player, event.fullCommand)
+        notifySocialSpy(player, event.fullCommand)
     }
 }

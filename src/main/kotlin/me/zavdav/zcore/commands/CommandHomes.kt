@@ -2,8 +2,8 @@ package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.getUUIDFromUsername
 import me.zavdav.zcore.util.sendTl
 import me.zavdav.zcore.util.tl
 import org.bukkit.command.CommandSender
@@ -42,7 +42,7 @@ class CommandHomes : ZCoreCommand(
 
         if (":" in query) {
             val strings = query.split(":")
-            val uuid = Utils.getUUIDFromUsername(strings[0])
+            val uuid = getUUIDFromUsername(strings[0])
             user = User.from(uuid)
             query = strings.getOrNull(1) ?: ""
         }

@@ -6,10 +6,11 @@ import me.zavdav.zcore.user.UserMap
 import me.zavdav.zcore.util.BalanceOutOfBoundsException
 import me.zavdav.zcore.util.NoFundsException
 import me.zavdav.zcore.util.UnknownUserException
-import me.zavdav.zcore.util.Utils.roundTo
 import java.text.NumberFormat
 import java.util.Locale
 import java.util.UUID
+import kotlin.math.pow
+import kotlin.math.roundToLong
 
 /**
  * This class provides methods to access ZCore's economy.
@@ -54,7 +55,7 @@ object Economy {
     fun setBalance(uuid: UUID, amount: Double): Double {
         if (!userExists(uuid)) throw UnknownUserException(uuid)
         if (isOutOfBounds(amount)) throw BalanceOutOfBoundsException(uuid)
-        User.from(uuid).balance = amount.roundTo(2)
+        User.from(uuid).balance = amount.roundTo2()
         return getBalance(uuid)
     }
 
@@ -68,7 +69,7 @@ object Economy {
      */
     @JvmStatic
     fun addBalance(uuid: UUID, amount: Double) {
-        setBalance(uuid, getBalance(uuid) + amount.roundTo(2))
+        setBalance(uuid, getBalance(uuid) + amount.roundTo2())
     }
 
     /**
@@ -83,7 +84,7 @@ object Economy {
     @JvmStatic
     fun subtractBalance(uuid: UUID, amount: Double) {
         if (!hasEnough(uuid, amount)) throw NoFundsException()
-        setBalance(uuid, getBalance(uuid) - amount.roundTo(2))
+        setBalance(uuid, getBalance(uuid) - amount.roundTo2())
     }
 
     /**
@@ -98,7 +99,7 @@ object Economy {
      */
     @JvmStatic
     fun transferBalance(sender: UUID, receiver: UUID, amount: Double) {
-        if (isOutOfBounds(getBalance(receiver) + amount.roundTo(2))) {
+        if (isOutOfBounds(getBalance(receiver) + amount.roundTo2())) {
             throw BalanceOutOfBoundsException(receiver)
         }
         subtractBalance(sender, amount)
@@ -114,7 +115,7 @@ object Economy {
      */
     @JvmStatic
     fun hasEnough(uuid: UUID, amount: Double): Boolean =
-        getBalance(uuid) >= amount.roundTo(2)
+        getBalance(uuid) >= amount.roundTo2()
 
     /**
      * Checks if an amount is higher than the maximum balance.
@@ -123,7 +124,7 @@ object Economy {
      * @return if the amount is out of bounds
      */
     @JvmStatic
-    fun isOutOfBounds(amount: Double): Boolean = amount.roundTo(2) > Config.maxBalance
+    fun isOutOfBounds(amount: Double): Boolean = amount.roundTo2() > Config.maxBalance
 
     /**
      * Formats an amount to the currency, rounded to 2 decimal places.
@@ -135,5 +136,15 @@ object Economy {
     fun formatBalance(amount: Double): String {
         val string = "${Config.currency}${formatter.format(amount)}"
         return if (string.endsWith(".00")) string.substring(0, string.length - 3) else string
+    }
+
+    /**
+     * Rounds this value to 2 decimal places.
+     *
+     * @return the rounded value
+     */
+    @JvmStatic
+    fun Double.roundTo2(): Double {
+        return (this * 10.0.pow(2)).roundToLong() / 10.0.pow(2)
     }
 }

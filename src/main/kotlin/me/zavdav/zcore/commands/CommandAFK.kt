@@ -3,9 +3,8 @@ package me.zavdav.zcore.commands
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.Delay
-import me.zavdav.zcore.util.Utils
-import me.zavdav.zcore.util.Utils.isSelf
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.getPlayerFromUsername
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
@@ -23,11 +22,10 @@ class CommandAFK : ZCoreCommand(
     override fun execute(event: CommandEvent) {
         var target = event.sender as Player
         if (event.args.isNotEmpty()) {
-            target = Utils.getPlayerFromUsername(event.args[0])
+            target = getPlayerFromUsername(event.args[0])
         }
 
-        val isSelf = (event.sender as Player).isSelf(target)
-        assert(isSelf || hasPermission(event.sender, "zcore.afk.others"), "noPermission")
+        assert(event.sender == target || hasPermission(event.sender, "zcore.afk.others"), "noPermission")
         val user = User.from(target)
 
         if (user.isAfk) {

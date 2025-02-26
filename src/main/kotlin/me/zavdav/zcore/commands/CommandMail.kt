@@ -3,8 +3,9 @@ package me.zavdav.zcore.commands
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.InvalidUsageException
-import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.getUUIDFromUsername
+import me.zavdav.zcore.util.notifySocialSpy
 import me.zavdav.zcore.util.send
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.entity.Player
@@ -41,7 +42,7 @@ class CommandMail : ZCoreCommand(
                 if (user.checkIsMuted()) return
                 if (event.args.size < 3) throw InvalidUsageException(this)
 
-                val uuid = Utils.getUUIDFromUsername(event.args[1])
+                val uuid = getUUIDFromUsername(event.args[1])
                 val targetUser = User.from(uuid)
                 player.sendTl("sentMail", "name" to targetUser.name)
 
@@ -51,7 +52,7 @@ class CommandMail : ZCoreCommand(
                     if (targetUser.isOnline) targetUser.player.sendTl("newMail")
                 }
 
-                Utils.notifySocialSpy(player, event.fullCommand)
+                notifySocialSpy(player, event.fullCommand)
             }
             "clear" -> {
                 user.clearMail()

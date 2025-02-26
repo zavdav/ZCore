@@ -3,7 +3,7 @@ package me.zavdav.zcore.user
 import me.zavdav.zcore.ZCore
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.util.Logger
-import me.zavdav.zcore.util.Utils
+import me.zavdav.zcore.util.UUID_PATTERN
 import java.io.File
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
@@ -21,7 +21,7 @@ object UserMap {
         for (file in dataFolder.list()!!) {
             if (!file.endsWith(".json")) continue
             val uuid = file.replace(".json", "")
-            if (!Utils.UUID_PATTERN.matcher(uuid).matches()) {
+            if (!UUID_PATTERN.matcher(uuid).matches()) {
                 Logger.warning("Found corrupt UUID: $uuid")
                 continue
             }

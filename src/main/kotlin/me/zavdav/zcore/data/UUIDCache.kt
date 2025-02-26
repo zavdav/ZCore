@@ -2,7 +2,7 @@ package me.zavdav.zcore.data
 
 import com.github.cliftonlabs.json_simple.JsonObject
 import me.zavdav.zcore.util.Logger
-import me.zavdav.zcore.util.Utils
+import me.zavdav.zcore.util.UUID_PATTERN
 import java.util.UUID
 
 object UUIDCache : JsonData("uuidcache.json") {
@@ -14,7 +14,7 @@ object UUIDCache : JsonData("uuidcache.json") {
 
     override fun deserialize() {
         for (entry in json.entries) {
-            if (!Utils.UUID_PATTERN.matcher(entry.key).matches()) {
+            if (!UUID_PATTERN.matcher(entry.key).matches()) {
                 Logger.warning("Found corrupt UUID: ${entry.key}")
                 continue
             }

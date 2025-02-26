@@ -2,8 +2,8 @@ package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.getUUIDFromUsername
 import me.zavdav.zcore.util.sendTl
 import org.poseidonplugins.commandapi.CommandEvent
 
@@ -17,7 +17,7 @@ class CommandUnmute : ZCoreCommand(
 ) {
 
     override fun execute(event: CommandEvent) {
-        val uuid = Utils.getUUIDFromUsername(event.args[0])
+        val uuid = getUUIDFromUsername(event.args[0])
         val user = User.from(uuid)
         assert(Punishments.isPlayerMuted(uuid), "userNotMuted", "user" to user.name)
         Punishments.unmutePlayer(uuid)

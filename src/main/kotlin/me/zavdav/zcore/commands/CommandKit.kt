@@ -5,8 +5,8 @@ import me.zavdav.zcore.config.Kits
 import me.zavdav.zcore.data.Kit
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.*
-import me.zavdav.zcore.util.Utils.copy
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import org.poseidonplugins.commandapi.CommandEvent
 import org.poseidonplugins.commandapi.hasPermission
 
@@ -66,4 +66,6 @@ class CommandKit : ZCoreCommand(
             player.sendTl("kitCharge", "amount" to Economy.formatBalance(kit.cost), "name" to kit.name)
         }
     }
+
+    private fun ItemStack.copy(): ItemStack = ItemStack(this.typeId, this.amount, this.durability)
 }

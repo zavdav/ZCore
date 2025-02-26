@@ -1,8 +1,7 @@
 package me.zavdav.zcore.commands
 
-import me.zavdav.zcore.util.Utils
-import me.zavdav.zcore.util.Utils.isSelf
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.getPlayerFromUsername
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
@@ -21,10 +20,10 @@ class CommandClearInv : ZCoreCommand(
         val player = event.sender as Player
         var target = player
         if (event.args.isNotEmpty()) {
-            target = Utils.getPlayerFromUsername(event.args[0])
+            target = getPlayerFromUsername(event.args[0])
         }
 
-        val isSelf = player.isSelf(target)
+        val isSelf = player == target
         assert(isSelf || hasPermission(event.sender, "zcore.clearinv.others"), "noPermission")
         if (isSelf) charge(player)
         target.inventory.clear()

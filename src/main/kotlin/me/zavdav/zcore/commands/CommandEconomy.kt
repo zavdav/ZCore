@@ -1,11 +1,11 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.api.Economy
+import me.zavdav.zcore.api.Economy.roundTo2
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.InvalidUsageException
-import me.zavdav.zcore.util.Utils
-import me.zavdav.zcore.util.Utils.roundTo
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.getUUIDFromString
 import me.zavdav.zcore.util.sendTl
 import org.poseidonplugins.commandapi.CommandEvent
 
@@ -21,9 +21,9 @@ class CommandEconomy : ZCoreCommand(
 ) {
 
     override fun execute(event: CommandEvent) {
-        val uuid = Utils.getUUIDFromString(event.args[1])
+        val uuid = getUUIDFromString(event.args[1])
         val name = User.from(uuid).name
-        var amount = event.args[2].toDoubleOrNull()?.roundTo(2)
+        var amount = event.args[2].toDoubleOrNull()?.roundTo2()
         assert(amount != null && amount >= 0, "invalidAmount", "string" to amount.toString())
 
         when (event.args[0].lowercase()) {

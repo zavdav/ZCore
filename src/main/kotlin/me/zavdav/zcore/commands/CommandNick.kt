@@ -1,9 +1,8 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.Utils
-import me.zavdav.zcore.util.Utils.isSelf
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.getPlayerFromUsername
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
@@ -27,11 +26,11 @@ class CommandNick : ZCoreCommand(
         var nickname = event.args[0]
 
         if (event.args.size == 2) {
-            target = Utils.getPlayerFromUsername(event.args[0])
+            target = getPlayerFromUsername(event.args[0])
             nickname = event.args[1]
         }
 
-        val isSelf = player.isSelf(target)
+        val isSelf = player == target
         assert(isSelf || hasPermission(event.sender, "zcore.nick.others"), "noPermission")
         val reset = nickname.equals("reset", true) || nickname.equals(target.name, true)
         if (hasPermission(target, "zcore.nick.color")) nickname = colorize(nickname)

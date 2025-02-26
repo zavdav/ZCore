@@ -3,8 +3,8 @@ package me.zavdav.zcore.commands
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.user.UserMap
 import me.zavdav.zcore.util.PlayerNotFoundException
-import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.formatDuration
+import me.zavdav.zcore.util.getUUIDFromUsername
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
@@ -19,7 +19,7 @@ class CommandSeen : ZCoreCommand(
 ) {
 
     override fun execute(event: CommandEvent) {
-        val uuid = Utils.getUUIDFromUsername(event.args[0])
+        val uuid = getUUIDFromUsername(event.args[0])
         if (!UserMap.isUserKnown(uuid)) {
             throw PlayerNotFoundException(event.args[0])
         }

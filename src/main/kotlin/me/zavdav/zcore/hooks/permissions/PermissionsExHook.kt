@@ -1,6 +1,6 @@
 package me.zavdav.zcore.hooks.permissions
 
-import me.zavdav.zcore.data.UUIDCache
+import me.zavdav.zcore.util.getUsernameFromUUID
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.colorize
@@ -16,8 +16,8 @@ class PermissionsExHook : PermissionHook {
         if (sender !is Player) true else manager.has(sender, permission)
 
     override fun getPrefix(uuid: UUID): String =
-        colorize(manager.getUser(UUIDCache.getUsernameFromUUID(uuid))?.prefix ?: "")
+        colorize(manager.getUser(getUsernameFromUUID(uuid))?.prefix ?: "")
 
     override fun getSuffix(uuid: UUID): String =
-        colorize(manager.getUser(UUIDCache.getUsernameFromUUID(uuid))?.suffix ?: "")
+        colorize(manager.getUser(getUsernameFromUUID(uuid))?.suffix ?: "")
 }

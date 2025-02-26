@@ -1,8 +1,8 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.getUUIDFromUsername
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
@@ -29,7 +29,7 @@ class CommandDelHome : ZCoreCommand(
             val strings = event.args[0].split(":", limit = 2)
             assert(strings[1].isNotEmpty(), "noHomeSpecified")
 
-            val uuid = Utils.getUUIDFromUsername(strings[0])
+            val uuid = getUUIDFromUsername(strings[0])
             user = User.from(uuid)
             homeName = strings[1]
         }

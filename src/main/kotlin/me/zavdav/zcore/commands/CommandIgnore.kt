@@ -1,8 +1,8 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.getUUIDFromUsername
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
@@ -19,7 +19,7 @@ class CommandIgnore : ZCoreCommand(
 
     override fun execute(event: CommandEvent) {
         val user = User.from(event.sender as Player)
-        val uuid = Utils.getUUIDFromUsername(event.args[0])
+        val uuid = getUUIDFromUsername(event.args[0])
         assert(user.uuid != uuid, "cannotIgnoreSelf")
 
         if (uuid in user.ignores) {

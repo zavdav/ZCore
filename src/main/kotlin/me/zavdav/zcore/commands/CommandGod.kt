@@ -1,8 +1,8 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.getPlayerFromUsername
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
@@ -23,7 +23,7 @@ class CommandGod : ZCoreCommand(
         var user = User.from(player)
 
         if (event.args.isNotEmpty()) {
-            val target = Utils.getPlayerFromUsername(event.args[0])
+            val target = getPlayerFromUsername(event.args[0])
             user = User.from(target)
         }
 

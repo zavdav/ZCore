@@ -4,9 +4,9 @@ import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.user.UserMap
 import me.zavdav.zcore.util.TIME_PATTERN
-import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.formatDuration
+import me.zavdav.zcore.util.getUUIDFromString
 import me.zavdav.zcore.util.parseDuration
 import me.zavdav.zcore.util.sendTl
 import me.zavdav.zcore.util.tl
@@ -25,7 +25,7 @@ class CommandBan: ZCoreCommand(
 ) {
 
     override fun execute(event: CommandEvent) {
-        val uuid = Utils.getUUIDFromString(event.args[0])
+        val uuid = getUUIDFromString(event.args[0])
         var name = uuid.toString()
 
         if (UserMap.isUserKnown(uuid)) {

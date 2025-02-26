@@ -4,7 +4,7 @@ import com.github.cliftonlabs.json_simple.JsonArray
 import com.github.cliftonlabs.json_simple.JsonObject
 import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.Utils
+import me.zavdav.zcore.util.getPlayersFromIP
 import java.util.UUID
 
 object BannedIPs : JsonData("bannedips.json") {
@@ -49,7 +49,7 @@ object BannedIPs : JsonData("bannedips.json") {
     }
 
     fun banIP(ip: String, issuer: UUID?, duration: Long?, reason: String) {
-        val players = Utils.getPlayersFromIP(ip)
+        val players = getPlayersFromIP(ip)
         val bans = getIPBans(ip).toMutableList()
         if (Punishments.isIPBanned(ip)) {
             bans.removeLast()
