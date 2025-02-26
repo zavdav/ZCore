@@ -6,16 +6,16 @@ import me.zavdav.zcore.ZCore
 import org.bukkit.Bukkit
 
 fun syncDelayedTask(runnable: Runnable): Int =
-    Bukkit.getScheduler().scheduleSyncDelayedTask(ZCore.plugin, runnable)
+    Bukkit.getScheduler().scheduleSyncDelayedTask(ZCore.INSTANCE, runnable)
 
 fun syncDelayedTask(delay: Long, runnable: Runnable): Int =
-    Bukkit.getScheduler().scheduleSyncDelayedTask(ZCore.plugin, runnable, delay)
+    Bukkit.getScheduler().scheduleSyncDelayedTask(ZCore.INSTANCE, runnable, delay)
 
 fun syncRepeatingTask(delay: Long, interval: Long, runnable: Runnable): Int =
-    Bukkit.getScheduler().scheduleSyncRepeatingTask(ZCore.plugin, runnable, delay, interval)
+    Bukkit.getScheduler().scheduleSyncRepeatingTask(ZCore.INSTANCE, runnable, delay, interval)
 
 fun asyncDelayedTask(runnable: Runnable): Int =
-    Bukkit.getScheduler().scheduleAsyncDelayedTask(ZCore.plugin) {
+    Bukkit.getScheduler().scheduleAsyncDelayedTask(ZCore.INSTANCE) {
         try {
             runnable.run()
         } catch (e: AsyncCommandException) {
@@ -26,7 +26,7 @@ fun asyncDelayedTask(runnable: Runnable): Int =
     }
 
 fun asyncDelayedTask(delay: Long, runnable: Runnable): Int =
-    Bukkit.getScheduler().scheduleAsyncDelayedTask(ZCore.plugin, {
+    Bukkit.getScheduler().scheduleAsyncDelayedTask(ZCore.INSTANCE, {
         try {
             runnable.run()
         } catch (e: AsyncCommandException) {
@@ -37,7 +37,7 @@ fun asyncDelayedTask(delay: Long, runnable: Runnable): Int =
     }, delay)
 
 fun asyncRepeatingTask(delay: Long, interval: Long, runnable: Runnable): Int =
-    Bukkit.getScheduler().scheduleAsyncRepeatingTask(ZCore.plugin, {
+    Bukkit.getScheduler().scheduleAsyncRepeatingTask(ZCore.INSTANCE, {
         try {
             runnable.run()
         } catch (e: AsyncCommandException) {

@@ -1,10 +1,6 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.ZCore
-import me.zavdav.zcore.config.Config
-import me.zavdav.zcore.config.Items
-import me.zavdav.zcore.config.Kits
-import me.zavdav.zcore.util.Backup
 import me.zavdav.zcore.util.sendTl
 import org.poseidonplugins.commandapi.CommandEvent
 
@@ -17,11 +13,8 @@ class CommandReload : ZCoreCommand(
 ) {
 
     override fun execute(event: CommandEvent) {
-        Config.load()
-        Items.load()
-        Kits.load()
-        Backup.load()
-        val desc = ZCore.plugin.description
+        ZCore.INSTANCE.reload()
+        val desc = ZCore.INSTANCE.description
         event.sender.sendTl("reloadedPlugin", "plugin" to desc.name, "version" to desc.version)
     }
 }

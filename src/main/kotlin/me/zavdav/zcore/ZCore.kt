@@ -16,18 +16,21 @@ import me.zavdav.zcore.util.Logger
 import me.zavdav.zcore.util.syncRepeatingTask
 import org.bukkit.Bukkit
 import org.bukkit.Server
-import org.bukkit.plugin.Plugin
+import org.bukkit.event.Event
 import org.bukkit.plugin.PluginDescriptionFile
+import org.bukkit.plugin.RegisteredListener
 import org.bukkit.plugin.java.JavaPlugin
 import org.poseidonplugins.commandapi.CommandManager
+import org.poseidonplugins.commandapi.getField
 import java.io.File
 import java.io.FileReader
 import java.net.URLClassLoader
+import java.util.SortedSet
 
 class ZCore : JavaPlugin() {
 
     companion object {
-        lateinit var plugin: Plugin; private set
+        lateinit var INSTANCE: ZCore; private set
         lateinit var dataFolder: File; private set
         lateinit var cmdManager: CommandManager; private set
     }
@@ -35,7 +38,7 @@ class ZCore : JavaPlugin() {
     private var lastAutoSave: Long = System.currentTimeMillis()
 
     override fun onEnable() {
-        plugin = this
+        INSTANCE = this
         Companion.dataFolder = dataFolder
         if (!dataFolder.exists()) dataFolder.mkdirs()
 
@@ -133,9 +136,17 @@ class ZCore : JavaPlugin() {
         Logger.info("${description.name} ${description.version} has been enabled.")
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onDisable() {
         saveData(false, true)
+        val listeners = getField(server.pluginManager, "listeners") as MutableMap<Event.Type, SortedSet<RegisteredListener>>
+        listeners.entries.forEach { it.value.removeIf { it.plugin is ZCore } }
         Logger.info("${description.name} ${description.version} has been disabled.")
+    }
+
+    fun reload() {
+        isEnabled = false
+        isEnabled = true
     }
 
     fun saveData(async: Boolean, force: Boolean) {
@@ -156,7 +167,7 @@ class ZCore : JavaPlugin() {
         Bukkit.setServer(server)
         initialize(null, server, description, dataFolder, null, classLoader)
 
-        plugin = this
+        INSTANCE = this
         Companion.dataFolder = dataFolder
         if (!dataFolder.exists()) dataFolder.mkdirs()
 
