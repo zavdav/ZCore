@@ -58,7 +58,9 @@ class PlayerListener : Listener {
         if (Config.motd.isNotEmpty() && hasPermission(event.player, "zcore.motd")) {
             event.player.performCommand("motd")
         }
-        if (user.mails.isNotEmpty()) event.player.sendTl("newMail")
+        if (user.mails.isNotEmpty() && hasPermission(event.player, "zcore.mail")) {
+            event.player.sendTl("newMail")
+        }
 
         event.joinMessage = format(Config.joinMsg, event.player)
     }

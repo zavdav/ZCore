@@ -1,9 +1,11 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.InvalidUsageException
 import me.zavdav.zcore.util.Utils
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.send
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.entity.Player
 import org.poseidonplugins.commandapi.CommandEvent
@@ -13,7 +15,7 @@ import org.poseidonplugins.commandapi.joinArgs
 class CommandMail : ZCoreCommand(
     "mail",
     description = "Manages your mails.",
-    usage = "/mail read, /mail send <player> <message>, /mail clear",
+    usage = "/mail <read|send <player> <message>|clear>",
     permission = "zcore.mail",
     isPlayerOnly = true,
     minArgs = 1
@@ -28,7 +30,11 @@ class CommandMail : ZCoreCommand(
                 assert(user.mails.isNotEmpty(), "noMail")
                 player.sendTl("readMail")
                 for (mail in user.mails) {
-                    player.sendMessage(mail)
+                    val fromUser = User.from(mail.first)
+                    player.send(Config.mail,
+                        "name" to fromUser.name,
+                        "displayname" to fromUser.getDisplayName(false),
+                        "message" to mail.second)
                 }
             }
             "send" -> {
@@ -41,7 +47,7 @@ class CommandMail : ZCoreCommand(
 
                 if (player.uniqueId !in targetUser.ignores ||
                     hasPermission(player, "zcore.ignore.exempt")) {
-                    targetUser.addMail(player.name, joinArgs(event.args, 2))
+                    targetUser.addMail(player.uniqueId, joinArgs(event.args, 2))
                     if (targetUser.isOnline) targetUser.player.sendTl("newMail")
                 }
 

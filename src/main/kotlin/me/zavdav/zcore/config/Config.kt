@@ -115,6 +115,9 @@ object Config {
     val receiveMsg: String
         get() = getString("receiveMsg", "§7[{NAME}§7 -> me] §f{MESSAGE}")
 
+    val mail: String
+        get() = getString("mail", "{NAME}&f: {MESSAGE}")
+
     val socialSpy: String
         get() = getString("socialSpy", "§6[SocialSpy] §f{DISPLAYNAME}§f: {COMMAND}")
 

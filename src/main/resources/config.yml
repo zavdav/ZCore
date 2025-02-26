@@ -10,7 +10,7 @@
 
 # The config version
 # This should never be changed manually.
-configVersion: 20250220
+configVersion: 20250226
 
 # In what interval should data be automatically saved
 autoSaveTime: 300
@@ -60,6 +60,7 @@ chat: '{DISPLAYNAME}&f: {MESSAGE}'
 broadcast: '&d[Broadcast] {MESSAGE}'
 sendMsg: '&7[me -> {NAME}&7] &f{MESSAGE}'
 receiveMsg: '&7[{NAME}&7 -> me] &f{MESSAGE}'
+mail: '{NAME}&f: {MESSAGE}'
 socialSpy: '&6[SocialSpy] &f{DISPLAYNAME}&f: {COMMAND}'
 
 # Join/Leave formats

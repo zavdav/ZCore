@@ -23,7 +23,7 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData("userda
     var nickname: String? = null
     var homes: MutableMap<String, Location> = mutableMapOf()
     var ignores: MutableList<UUID> = mutableListOf()
-    var mails: MutableList<String> = mutableListOf()
+    var mails: MutableList<Pair<UUID, String>> = mutableListOf()
     var kitCooldowns: MutableMap<String, Long> = mutableMapOf()
     var seesChat: Boolean = true
     var socialSpy: Boolean = false
@@ -62,7 +62,10 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData("userda
             ignores = (it as JsonArray).map { UUID.fromString(it.toString()) }.toMutableList()
         }
         json["mails"]?.let {
-            mails = (it as JsonArray).map { it.toString() }.toMutableList()
+            mails = (it as JsonArray).map {
+                val mail = it as JsonObject
+                UUID.fromString(mail["uuid"].toString()) to mail["message"].toString()
+            }.toMutableList()
         }
         json["kitCooldowns"]?.let {
             kitCooldowns = (it as JsonObject).map { it.key to it.value.toString().toLong() }.toMap().toMutableMap()
@@ -119,7 +122,12 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData("userda
             ))
         }.toMap())
         json["ignores"] = JsonArray(ignores.map { it.toString() })
-        json["mails"] = JsonArray(mails)
+        json["mails"] = JsonArray(mails.map {
+            JsonObject(mapOf(
+                "uuid" to it.first.toString(),
+                "message" to it.second
+            ))
+        })
         json["kitCooldowns"] = JsonObject(kitCooldowns)
         json["seesChat"] = seesChat
         json["socialSpy"] = socialSpy
@@ -183,8 +191,8 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData("userda
     fun setIgnored(uuid: UUID, ignore: Boolean) =
         if (ignore) ignores.add(uuid) else ignores.remove(uuid)
 
-    fun addMail(name: String, message: String) =
-        mails.add("$name: $message")
+    fun addMail(uuid: UUID, message: String) =
+        mails.add(uuid to message)
 
     fun clearMail() = mails.clear()
 
