@@ -4,6 +4,7 @@ plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '2.1.10'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'maven-publish'
 }
 
 group = 'me.zavdav.zcore'
@@ -49,4 +50,13 @@ shadowJar {
     }
     archiveBaseName.set('ZCore')
     archiveClassifier.set('')
+}
+
+publishing {
+    publications {
+        kotlin(MavenPublication) {
+            artifact jar
+            artifact kotlinSourcesJar
+        }
+    }
 }
