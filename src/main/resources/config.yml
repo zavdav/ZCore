@@ -10,7 +10,7 @@
 
 # The config version
 # This should never be changed manually.
-configVersion: 20250226
+configVersion: 20250227
 
 # In what interval should data be automatically saved
 autoSaveTime: 300
@@ -25,8 +25,8 @@ backupFolder: './backup'
 # The Message of the day
 # Leave this empty to disable
 motd:
-  - '&eWelcome, {NAME}&e!'
-  - '&bType /help for a list of commands.'
+  - '&5Welcome, {NAME}&5!'
+  - '&7Type &d/help &7for a list of commands.'
   - '&7Online players: &f{PLAYERLIST}'
 
 # The server rules which are displayed when typing /rules
@@ -61,7 +61,7 @@ broadcast: '&d[Broadcast] {MESSAGE}'
 sendMsg: '&7[me -> {NAME}&7] &f{MESSAGE}'
 receiveMsg: '&7[{NAME}&7 -> me] &f{MESSAGE}'
 mail: '{NAME}&f: {MESSAGE}'
-socialSpy: '&6[SocialSpy] &f{DISPLAYNAME}&f: {COMMAND}'
+socialSpy: '&5[SocialSpy] &f{DISPLAYNAME}&f: {COMMAND}'
 
 # Join/Leave formats
 joinMsg: '&e{NAME} has joined the game'
