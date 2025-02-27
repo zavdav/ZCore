@@ -27,7 +27,7 @@
 ---
 
 ## Downloads
-Downloads will soon be available in the [Releases](https://github.com/zavdav/ZCore/releases) tab.
+The latest releases can be found in the [Releases](https://github.com/zavdav/ZCore/releases) tab.
 
 ---
 
