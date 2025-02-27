@@ -1,6 +1,6 @@
 name: ZCore
 main: me.zavdav.zcore.ZCore
 version: ${version}
-description: Provides core functionality and many commands
 author: zavdav
-website: https://github.com/zavdav/ZCore
+description: 'The #1 Core Plugin for Minecraft Beta'
+website: 'https://github.com/zavdav/ZCore'
