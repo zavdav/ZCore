@@ -1,39 +1,38 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.getPlayerFromUsername
+import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.sendTl
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.hasPermission
 
-class CommandGod : ZCoreCommand(
+class CommandGod : AbstractCommand(
     "god",
-    listOf("godmode"),
     "Toggles your god mode.",
     "/god [player]",
     "zcore.god",
-    true,
-    maxArgs = 1
+    maxArgs = 1,
+    aliases = listOf("godmode")
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val player = event.sender as Player
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val player = sender as Player
         var user = User.from(player)
 
-        if (event.args.isNotEmpty()) {
-            val target = getPlayerFromUsername(event.args[0])
+        if (args.isNotEmpty()) {
+            val target = getPlayerFromUsername(args[0])
             user = User.from(target)
         }
 
         val isSelf = player.uniqueId == user.uuid
-        assert(isSelf || hasPermission(event.sender, "zcore.god.others"), "noPermission")
+        assert(isSelf || sender.isAuthorized("zcore.god.others"), "noPermission")
         user.isGod = !user.isGod
 
         if (!isSelf) {
-            event.sender.sendTl(if (user.isGod)
-                "enabledGodOther" else "disabledGodOther", user.player)
+            sender.sendTl(if (user.isGod) "enabledGodOther" else "disabledGodOther", user.player)
         }
         user.player.sendTl(if (user.isGod) "enabledGod" else "disabledGod")
     }

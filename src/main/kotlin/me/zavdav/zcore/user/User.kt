@@ -8,6 +8,7 @@ import me.zavdav.zcore.hooks.permissions.PermissionHandler
 import me.zavdav.zcore.util.broadcastTl
 import me.zavdav.zcore.util.format
 import me.zavdav.zcore.util.formatDuration
+import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.kick
 import me.zavdav.zcore.util.kickBanned
 import me.zavdav.zcore.util.kickBannedIP
@@ -16,7 +17,6 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.inventory.ItemStack
-import org.poseidonplugins.commandapi.hasPermission
 import java.util.UUID
 
 class User private constructor(uuid: UUID) : UserData(uuid) {
@@ -124,7 +124,7 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
             setInactive()
         }
         if (isAfk && System.currentTimeMillis() - lastSeen >= Config.afkKickTime * 1000 &&
-            !hasPermission(player, "zcore.afk.kick.exempt"))
+            !player.isAuthorized("zcore.afk.kick.exempt"))
         {
             player.kick("afkKickReason")
         }

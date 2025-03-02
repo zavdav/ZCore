@@ -1,30 +1,30 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.util.CommandException
 import me.zavdav.zcore.util.getPlayerFromUsername
 import me.zavdav.zcore.util.getSafeHeight
 import me.zavdav.zcore.util.sendTl
 import me.zavdav.zcore.util.tlError
 import org.bukkit.Location
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
 
-class CommandTP : ZCoreCommand(
+class CommandTP : AbstractCommand(
     "tp",
-    listOf("teleport"),
     "Teleports you to a player or to coordinates.",
     "/tp [target] <player|x, y, z>",
     "zcore.tp",
-    true,
-    1,
-    4
+    minArgs = 1,
+    maxArgs = 4,
+    aliases = listOf("teleport")
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val player = event.sender as Player
-        when (event.args.size) {
-            1, 2 -> teleportPlayerToPlayer(player, event.args)
-            3, 4 -> teleportPlayerToCoordinates(player, event.args)
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val player = sender as Player
+        when (args.size) {
+            1, 2 -> teleportPlayerToPlayer(player, args)
+            3, 4 -> teleportPlayerToCoordinates(player, args)
         }
     }
 

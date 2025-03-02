@@ -1,32 +1,32 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.InvalidUsageException
+import me.zavdav.zcore.util.InvalidSyntaxException
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.getUUIDFromUsername
+import me.zavdav.zcore.util.isAuthorized
+import me.zavdav.zcore.util.joinArgs
 import me.zavdav.zcore.util.notifySocialSpy
 import me.zavdav.zcore.util.send
 import me.zavdav.zcore.util.sendTl
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.hasPermission
-import org.poseidonplugins.commandapi.joinArgs
 
-class CommandMail : ZCoreCommand(
+class CommandMail : AbstractCommand(
     "mail",
-    description = "Manages your mails.",
-    usage = "/mail <read|send <player> <message>|clear>",
-    permission = "zcore.mail",
-    isPlayerOnly = true,
+    "Manages your mails.",
+    "/mail <read|send <player> <message>|clear>",
+    "zcore.mail",
     minArgs = 1
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val player = event.sender as Player
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val player = sender as Player
         val user = User.from(player)
 
-        when (event.args[0].lowercase()) {
+        when (args[0].lowercase()) {
             "read" -> {
                 assert(user.mails.isNotEmpty(), "noMail")
                 player.sendTl("readMail")
@@ -40,25 +40,25 @@ class CommandMail : ZCoreCommand(
             }
             "send" -> {
                 if (user.checkIsMuted()) return
-                if (event.args.size < 3) throw InvalidUsageException(this)
+                if (args.size < 3) throw InvalidSyntaxException(this)
 
-                val uuid = getUUIDFromUsername(event.args[1])
+                val uuid = getUUIDFromUsername(args[1])
                 val targetUser = User.from(uuid)
                 player.sendTl("sentMail", "name" to targetUser.name)
 
                 if (player.uniqueId !in targetUser.ignores ||
-                    hasPermission(player, "zcore.ignore.exempt")) {
-                    targetUser.addMail(player.uniqueId, joinArgs(event.args, 2))
+                    player.isAuthorized("zcore.ignore.exempt")) {
+                    targetUser.addMail(player.uniqueId, joinArgs(args, 2))
                     if (targetUser.isOnline) targetUser.player.sendTl("newMail")
                 }
 
-                notifySocialSpy(player, event.fullCommand)
+                notifySocialSpy(player, "/$name ${args.joinToString(" ")}")
             }
             "clear" -> {
                 user.clearMail()
                 player.sendTl("clearedMail")
             }
-            else -> throw InvalidUsageException(this)
+            else -> throw InvalidSyntaxException(this)
         }
     }
 }

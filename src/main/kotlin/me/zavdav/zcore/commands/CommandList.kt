@@ -1,24 +1,25 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.Bukkit
-import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
+import org.bukkit.command.CommandSender
 
-class CommandList : ZCoreCommand(
+class CommandList : AbstractCommand(
     "list",
-    listOf("online", "who", "playerlist"),
     "Lists all online players.",
     "/list",
     "zcore.list",
-    maxArgs = 0
+    false,
+    maxArgs = 0,
+    aliases = listOf("online", "who", "playerlist")
 ) {
 
-    override fun execute(event: CommandEvent) {
-        event.sender.sendTl("listPlayers",
+    override fun execute(sender: CommandSender, args: List<String>) {
+        sender.sendTl("listPlayers",
             "amount" to Bukkit.getOnlinePlayers().size,
             "max" to Bukkit.getMaxPlayers())
-        event.sender.sendMessage(Bukkit.getOnlinePlayers()
-            .map { p: Player -> p.displayName }.sorted().joinToString(", "))
+        sender.sendMessage(Bukkit.getOnlinePlayers()
+            .map { it.displayName }.sorted().joinToString(", "))
     }
 }

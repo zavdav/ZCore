@@ -2,7 +2,7 @@ package me.zavdav.zcore.hooks.permissions
 
 import me.zavdav.zcore.user.User
 import org.bukkit.Bukkit
-import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 
 object PermissionHandler {
 
@@ -16,8 +16,8 @@ object PermissionHandler {
         }
     }
 
-    fun hasPermission(sender: CommandSender, permission: String): Boolean =
-        hook.hasPermission(sender, permission)
+    fun hasPermission(player: Player, permission: String): Boolean =
+        hook.hasPermission(player, permission)
 
     fun getPrefix(user: User): String =
         hook.getPrefix(user.uuid)

@@ -2,45 +2,45 @@ package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.api.Economy
 import me.zavdav.zcore.api.Economy.roundTo2
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.InvalidUsageException
+import me.zavdav.zcore.util.InvalidSyntaxException
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.getUUIDFromString
 import me.zavdav.zcore.util.sendTl
-import org.poseidonplugins.commandapi.CommandEvent
+import org.bukkit.command.CommandSender
 
-class CommandEconomy : ZCoreCommand(
+class CommandEconomy : AbstractCommand(
     "economy",
-    listOf("eco"),
     "Modifies a player's balance.",
     "/economy <set|give|take> <player> <amount>",
     "zcore.economy",
-    true,
-    3,
-    3
+    minArgs = 3,
+    maxArgs = 3,
+    aliases = listOf("eco")
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val uuid = getUUIDFromString(event.args[1])
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val uuid = getUUIDFromString(args[1])
         val name = User.from(uuid).name
-        var amount = event.args[2].toDoubleOrNull()?.roundTo2()
+        var amount = args[2].toDoubleOrNull()?.roundTo2()
         assert(amount != null && amount >= 0, "invalidAmount", "string" to amount.toString())
 
-        when (event.args[0].lowercase()) {
+        when (args[0].lowercase()) {
             "set" -> {
                 Economy.setBalance(uuid, amount!!)
-                event.sender.sendTl("setBalance", "user" to name, "amount" to Economy.formatBalance(amount))
+                sender.sendTl("setBalance", "user" to name, "amount" to Economy.formatBalance(amount))
             }
             "give" -> {
                 Economy.addBalance(uuid, amount!!)
-                event.sender.sendTl("gaveMoney", "user" to name, "amount" to Economy.formatBalance(amount))
+                sender.sendTl("gaveMoney", "user" to name, "amount" to Economy.formatBalance(amount))
             }
             "take" -> {
                 if (!Economy.hasEnough(uuid, amount!!)) amount = Economy.getBalance(uuid)
                 Economy.subtractBalance(uuid, amount)
-                event.sender.sendTl("tookMoney", "user" to name, "amount" to Economy.formatBalance(amount))
+                sender.sendTl("tookMoney", "user" to name, "amount" to Economy.formatBalance(amount))
             }
-            else -> throw InvalidUsageException(this)
+            else -> throw InvalidSyntaxException(this)
         }
     }
 }

@@ -1,28 +1,30 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.api.Punishments
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.util.IPV4_PATTERN
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.getUUIDFromString
 import me.zavdav.zcore.util.sendTl
-import org.poseidonplugins.commandapi.CommandEvent
+import org.bukkit.command.CommandSender
 
-class CommandUnbanIP : ZCoreCommand(
+class CommandUnbanIP : AbstractCommand(
     "unbanip",
-    listOf("unipban", "pardonip"),
     "Unbans an IP address from the server.",
     "/unbanip <player|ip>",
     "zcore.unbanip",
-    minArgs = 1,
-    maxArgs = 1
+    false,
+    1,
+    1,
+    listOf("unipban", "pardonip")
 ) {
 
-    override fun execute(event: CommandEvent) {
+    override fun execute(sender: CommandSender, args: List<String>) {
         val ip =
-            if (IPV4_PATTERN.matcher(event.args[0]).matches()) {
-                event.args[0]
+            if (IPV4_PATTERN.matcher(args[0]).matches()) {
+                args[0]
             } else {
-                val uuid = getUUIDFromString(event.args[0])
+                val uuid = getUUIDFromString(args[0])
                 val ipBan = Punishments.getIPBan(uuid)
                 assert(ipBan != null, "ipNotBanned", "user" to uuid)
                 ipBan!!.ip
@@ -30,6 +32,6 @@ class CommandUnbanIP : ZCoreCommand(
 
         assert(Punishments.isIPBanned(ip), "ipNotBanned", "user" to ip)
         Punishments.unbanIP(ip)
-        event.sender.sendTl("unbannedIp", "ip" to ip)
+        sender.sendTl("unbannedIp", "ip" to ip)
     }
 }

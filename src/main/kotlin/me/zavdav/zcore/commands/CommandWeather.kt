@@ -1,41 +1,41 @@
 package me.zavdav.zcore.commands
 
-import me.zavdav.zcore.util.InvalidUsageException
+import me.zavdav.zcore.commands.core.AbstractCommand
+import me.zavdav.zcore.util.InvalidSyntaxException
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.Bukkit
-import org.poseidonplugins.commandapi.CommandEvent
+import org.bukkit.command.CommandSender
 
-class CommandWeather : ZCoreCommand(
+class CommandWeather : AbstractCommand(
     "weather",
-    description = "Changes the world's weather.",
-    usage = "/weather <clear|rain|thunder>",
-    permission = "zcore.weather",
-    isPlayerOnly = true,
+    "Changes the world's weather.",
+    "/weather <clear|rain|thunder>",
+    "zcore.weather",
     minArgs = 1,
     maxArgs = 1
 ) {
 
-    override fun execute(event: CommandEvent) {
+    override fun execute(sender: CommandSender, args: List<String>) {
         val world = Bukkit.getWorlds()[0]
-        when (event.args[0].lowercase()) {
+        when (args[0].lowercase()) {
             "clear", "sun" -> {
                 if (world.hasStorm()) {
                     world.isThundering = false
                     world.weatherDuration = 1
                 }
-                event.sender.sendTl("clearWeather")
+                sender.sendTl("clearWeather")
             }
             "rain" -> {
                 if (!world.hasStorm()) world.weatherDuration = 1
                 world.isThundering = false
-                event.sender.sendTl("rainWeather")
+                sender.sendTl("rainWeather")
             }
             "thunder", "storm" -> {
                 if (!world.hasStorm()) world.weatherDuration = 1
                 world.isThundering = true
-                event.sender.sendTl("thunderWeather")
+                sender.sendTl("thunderWeather")
             }
-            else -> throw InvalidUsageException(this)
+            else -> throw InvalidSyntaxException(this)
         }
     }
 }

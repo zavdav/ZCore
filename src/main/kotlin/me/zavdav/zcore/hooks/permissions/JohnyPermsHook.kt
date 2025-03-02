@@ -2,18 +2,16 @@ package me.zavdav.zcore.hooks.permissions
 
 import com.johnymuffin.jperms.beta.JohnyPerms
 import com.johnymuffin.jperms.beta.JohnyPermsAPI
-import org.bukkit.command.CommandSender
+import me.zavdav.zcore.util.colorize
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.colorize
 import java.util.UUID
 
 class JohnyPermsHook : PermissionHook {
 
     private val api: JohnyPermsAPI = JohnyPerms.getJPermsAPI()
 
-    override fun hasPermission(sender: CommandSender, permission: String): Boolean =
-        if (sender !is Player) true
-        else sender.isOp || api.getUser(sender.uniqueId).hasPermission(permission)
+    override fun hasPermission(player: Player, permission: String): Boolean =
+        player.isOp || api.getUser(player.uniqueId).hasPermission(permission)
 
     override fun getPrefix(uuid: UUID): String =
         colorize(api.getUser(uuid).prefix ?: api.getUser(uuid).group.prefix ?: "")

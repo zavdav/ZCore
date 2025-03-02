@@ -1,35 +1,34 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.api.Economy
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Kits
 import me.zavdav.zcore.data.Kit
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.*
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.hasPermission
 
-class CommandKit : ZCoreCommand(
+class CommandKit : AbstractCommand(
     "kit",
-    description = "Gives you the specified kit.",
-    usage = "/kit [name]",
-    permission = "zcore.kit",
-    isPlayerOnly = true,
+    "Gives you the specified kit.",
+    "/kit [name]",
+    "zcore.kit",
     maxArgs = 1
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val player = event.sender as Player
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val player = sender as Player
         val user = User.from(player)
-        val kits = Kits.getKits().filter { hasPermission(player, "zcore.kit.${it.key}") }
+        val kits = Kits.getKits().filter { player.isAuthorized("zcore.kit.${it.key}") }
 
-        if (event.args.isEmpty()) {
+        if (args.isEmpty()) {
             assert(kits.isNotEmpty(), "noKits")
-            event.sender.sendTl("kitList")
-            event.sender.sendMessage(kits.keys.sorted().joinToString(", "))
+            sender.sendTl("kitList")
+            sender.sendMessage(kits.keys.sorted().joinToString(", "))
         } else {
-            val name = event.args[0].lowercase()
+            val name = args[0].lowercase()
             assert(name in kits.keys, "kitNotFound", "kit" to name)
             val kit = kits[name]!!
 
@@ -61,7 +60,7 @@ class CommandKit : ZCoreCommand(
     }
 
     private fun charge(player: Player, kit: Kit) {
-        if (kit.cost > 0.0 && !hasPermission(player, "$permission.charge.bypass")) {
+        if (kit.cost > 0.0 && !player.isAuthorized("$permission.charge.bypass")) {
             Economy.subtractBalance(player.uniqueId, kit.cost)
             player.sendTl("kitCharge", "amount" to Economy.formatBalance(kit.cost), "name" to kit.name)
         }

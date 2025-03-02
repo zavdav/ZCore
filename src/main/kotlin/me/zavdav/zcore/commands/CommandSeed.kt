@@ -1,18 +1,20 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.Bukkit
-import org.poseidonplugins.commandapi.CommandEvent
+import org.bukkit.command.CommandSender
 
-class CommandSeed : ZCoreCommand(
+class CommandSeed : AbstractCommand(
     "seed",
-    description = "Shows the world's seed.",
-    usage = "/seed",
-    permission = "zcore.seed",
+    "Shows the world's seed.",
+    "/seed",
+    "zcore.seed",
+    false,
     maxArgs = 0
 ) {
 
-    override fun execute(event: CommandEvent) {
-        event.sender.sendTl("worldSeed", "seed" to Bukkit.getWorlds()[0].seed)
+    override fun execute(sender: CommandSender, args: List<String>) {
+        sender.sendTl("worldSeed", "seed" to Bukkit.getWorlds()[0].seed)
     }
 }

@@ -1,31 +1,31 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.Delay
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.getPlayerFromUsername
+import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.sendTl
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.hasPermission
 
-class CommandAFK : ZCoreCommand(
+class CommandAFK : AbstractCommand(
     "afk",
-    description = "Marks you as away-from-keyboard.",
-    usage = "/afk [player]",
-    permission = "zcore.afk",
-    isPlayerOnly = true,
+    "Marks you as away-from-keyboard.",
+    "/afk [player]",
+    "zcore.afk",
     maxArgs = 1
 ) {
 
-    override fun execute(event: CommandEvent) {
-        var target = event.sender as Player
-        if (event.args.isNotEmpty()) {
-            target = getPlayerFromUsername(event.args[0])
+    override fun execute(sender: CommandSender, args: List<String>) {
+        var target = sender as Player
+        if (args.isNotEmpty()) {
+            target = getPlayerFromUsername(args[0])
         }
 
-        assert(event.sender == target || hasPermission(event.sender, "zcore.afk.others"), "noPermission")
+        assert(sender == target || sender.isAuthorized("zcore.afk.others"), "noPermission")
         val user = User.from(target)
 
         if (user.isAfk) {

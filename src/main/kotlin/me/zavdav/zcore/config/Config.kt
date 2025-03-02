@@ -3,7 +3,7 @@ package me.zavdav.zcore.config
 import me.zavdav.zcore.ZCore
 import me.zavdav.zcore.api.Economy
 import me.zavdav.zcore.api.Economy.roundTo2
-import me.zavdav.zcore.commands.ZCoreCommand
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.util.Logger
 import org.bukkit.util.config.Configuration
 import java.io.File
@@ -154,7 +154,7 @@ object Config {
     val disabledCommands: List<String>
         get() = getStringList("disabledCommands", emptyList())
 
-    fun getCommandCost(command: ZCoreCommand): Double =
+    fun getCommandCost(command: AbstractCommand): Double =
         getDouble("commandCosts.${command.name}", 0.0..maxBalance, 0.0).roundTo2()
 
     val currency: String

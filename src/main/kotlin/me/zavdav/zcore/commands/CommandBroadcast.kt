@@ -1,20 +1,23 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.util.broadcast
-import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.joinArgs
+import me.zavdav.zcore.util.colorize
+import me.zavdav.zcore.util.joinArgs
+import org.bukkit.command.CommandSender
 
-class CommandBroadcast : ZCoreCommand(
+class CommandBroadcast : AbstractCommand(
     "broadcast",
-    listOf("bc"),
     "Broadcasts a message to all players.",
     "/broadcast <message>",
     "zcore.broadcast",
-    minArgs = 1
+    false,
+    1,
+    aliases = listOf("bc")
 ) {
 
-    override fun execute(event: CommandEvent) {
-        broadcast(Config.broadcast, "message" to joinArgs(event.args, 0))
+    override fun execute(sender: CommandSender, args: List<String>) {
+        broadcast(Config.broadcast, "message" to colorize(joinArgs(args, 0)))
     }
 }

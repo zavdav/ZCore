@@ -1,65 +1,63 @@
 package me.zavdav.zcore.commands
 
-import me.zavdav.zcore.ZCore
+import me.zavdav.zcore.commands.core.AbstractCommand
+import me.zavdav.zcore.commands.core.CommandManager
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.isAuthorized
+import me.zavdav.zcore.util.joinArgs
 import me.zavdav.zcore.util.sendTl
-import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
-import org.bukkit.command.PluginCommand
-import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.getPluginCommands
-import org.poseidonplugins.commandapi.hasPermission
-import org.poseidonplugins.commandapi.joinArgs
 import kotlin.math.ceil
 
-class CommandHelp : ZCoreCommand(
+class CommandHelp : AbstractCommand(
     "help",
-    description = "Shows a list of available commands.",
-    usage = "/help [page|query]",
-    permission = "zcore.help"
+    "Shows a list of available commands.",
+    "/help [page|query]",
+    "zcore.help",
+    false
 ) {
 
-    override fun execute(event: CommandEvent) {
-        var commands = getPluginCommands().values.filter { it.plugin is ZCore }.toMutableList()
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val commands = CommandManager.zcoreCommands
+            .filter { sender.isAuthorized("zcore.${it.name.replace(" ".toRegex(), ".")}") }
+            .toMutableList()
+
         if (Config.listOtherCommands) {
-            commands.addAll(getPluginCommands().values.filter { it.plugin !is ZCore })
+            commands.addAll(CommandManager.otherCommands
+                .filter {
+                    if (it.permission.isEmpty()) sender.isOp
+                    else sender.isAuthorized(it.permission)
+                })
         }
 
-        commands.removeIf {
-            if (it.permission.isNullOrEmpty() && !event.sender.isOp) {
-                it.plugin !is ZCore || !hasPermission(event.sender, "zcore.${it.name}")
-            }
-            else !hasPermission(event.sender, it.permission)
-        }
-
-        val page = parseArgs(event.args, commands)
-        printHelp(event.sender, page, commands)
+        val page = parseArgs(args, commands)
+        printHelp(sender, page, commands)
     }
 
-    private fun parseArgs(args: List<String>, commands: MutableList<PluginCommand>): Int {
+    private fun parseArgs(args: List<String>, commands: MutableList<AbstractCommand>): Int {
         var page = 1
-        if (args.isNotEmpty()) {
-            when (args[0].toIntOrNull()) {
-                null -> {
-                    var query = joinArgs(args, 0)
-                    if (args.last().toIntOrNull() != null) {
-                        page = args.last().toInt().coerceAtLeast(1)
-                        query = joinArgs(args, 0, args.size-1)
-                    }
+        if (args.isEmpty()) return page
 
-                    commands.removeIf {
-                        !it.name.contains(query, true) && !it.description.contains(query, true)
-                    }
-                    assert(commands.isNotEmpty(), "noMatchingResults")
-                }
-                else -> page = args[0].toInt().coerceAtLeast(1)
+        if (args[0].toIntOrNull() == null) {
+            var query = joinArgs(args, 0)
+            if (args.last().toIntOrNull() != null) {
+                page = args.last().toInt().coerceAtLeast(1)
+                query = joinArgs(args, 0, args.lastIndex)
             }
+
+            commands.removeIf {
+                !it.name.contains(query, true) && !it.description.contains(query, true)
+            }
+            assert(commands.isNotEmpty(), "noMatchingResults")
+        } else {
+            page = args[0].toInt().coerceAtLeast(1)
         }
+
         return page
     }
 
-    private fun printHelp(sender: CommandSender, page: Int, commands: List<Command>) {
+    private fun printHelp(sender: CommandSender, page: Int, commands: List<AbstractCommand>) {
         val commandsPerPage = Config.commandsPerPage
         val pages = ceil(commands.size.toDouble() / commandsPerPage).toInt()
         assert(page <= pages, "pageTooHigh", "page" to page)

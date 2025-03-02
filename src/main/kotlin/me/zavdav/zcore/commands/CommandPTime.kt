@@ -1,31 +1,31 @@
 package me.zavdav.zcore.commands
 
-import me.zavdav.zcore.util.InvalidUsageException
+import me.zavdav.zcore.commands.core.AbstractCommand
+import me.zavdav.zcore.util.InvalidSyntaxException
 import me.zavdav.zcore.util.TimeTickParser
 import me.zavdav.zcore.util.sendTl
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
 
-class CommandPTime : ZCoreCommand(
+class CommandPTime : AbstractCommand(
     "ptime",
-    description = "Changes your player time.",
-    usage = "/ptime [day|night|8:00|@2pm|@6000ticks|reset]",
-    permission = "zcore.ptime",
-    isPlayerOnly = true,
+    "Changes your player time.",
+    "/ptime [day|night|8:00|@2pm|@6000ticks|reset]",
+    "zcore.ptime",
     maxArgs = 1
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val player = event.sender as Player
-        if (event.args.isEmpty()) {
-            event.sender.sendTl("currentPlayerTime",
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val player = sender as Player
+        if (args.isEmpty()) {
+            sender.sendTl("currentPlayerTime",
                 "time24" to TimeTickParser.format24(player.playerTime),
                 "time12" to TimeTickParser.format12(player.playerTime),
                 "ticks" to TimeTickParser.formatTicks(player.playerTime))
             return
         }
 
-        var string = event.args[0]
+        var string = args[0]
         val relative = if (string.startsWith("@")) {
             string = string.substring(1)
             false
@@ -37,10 +37,10 @@ class CommandPTime : ZCoreCommand(
         } catch (_: NumberFormatException) {
             if (string.equals("reset", true)) {
                 player.resetPlayerTime()
-                event.sender.sendTl("resetPlayerTime")
+                sender.sendTl("resetPlayerTime")
                 return
             }
-            throw InvalidUsageException(this)
+            throw InvalidSyntaxException(this)
         }
 
         if (relative) {
@@ -49,7 +49,7 @@ class CommandPTime : ZCoreCommand(
             player.setPlayerTime(ticks, false)
         }
 
-        event.sender.sendTl("setPlayerTime",
+        sender.sendTl("setPlayerTime",
             "time24" to TimeTickParser.format24(ticks),
             "time12" to TimeTickParser.format12(ticks),
             "ticks" to TimeTickParser.formatTicks(ticks))

@@ -1,41 +1,41 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.formatDuration
 import me.zavdav.zcore.util.getUUIDFromUsername
+import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.sendTl
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.hasPermission
 
-class CommandPlayTime : ZCoreCommand(
+class CommandPlayTime : AbstractCommand(
     "playtime",
-    listOf("pt"),
     "Shows your total playtime.",
     "/playtime [player]",
     "zcore.playtime",
-    true,
-    maxArgs = 1
+    maxArgs = 1,
+    aliases = listOf("pt")
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val player = event.sender as Player
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val player = sender as Player
         var uuid = player.uniqueId
-        if (event.args.isNotEmpty()) {
-            uuid = getUUIDFromUsername(event.args[0])
+        if (args.isNotEmpty()) {
+            uuid = getUUIDFromUsername(args[0])
         }
 
         val isSelf = player.uniqueId == uuid
-        assert(isSelf || hasPermission(event.sender, "zcore.playtime.others"), "noPermission")
+        assert(isSelf || sender.isAuthorized("zcore.playtime.others"), "noPermission")
         val user = User.from(uuid)
         if (user.isOnline) user.updatePlayTime()
 
         val duration = formatDuration(user.playTime)
         if (isSelf) {
-            event.sender.sendTl("playTime", "time" to duration)
+            sender.sendTl("playTime", "time" to duration)
         } else {
-            event.sender.sendTl("playTimeOther", "name" to user.name, "time" to duration)
+            sender.sendTl("playTimeOther", "name" to user.name, "time" to duration)
         }
     }
 }

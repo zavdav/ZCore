@@ -2,34 +2,34 @@ package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.api.Economy
 import me.zavdav.zcore.api.Economy.roundTo2
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.getUUIDFromString
 import me.zavdav.zcore.util.sendTl
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
 
-class CommandPay : ZCoreCommand(
+class CommandPay : AbstractCommand(
     "pay",
-    description = "Sends money to another player.",
-    usage = "/pay <player/uuid> <amount>",
-    permission = "zcore.pay",
-    isPlayerOnly = true,
+    "Sends money to another player.",
+    "/pay <player/uuid> <amount>",
+    "zcore.pay",
     minArgs = 2,
     maxArgs = 2
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val sender = User.from(event.sender as Player)
-        val receiver = User.from(getUUIDFromString(event.args[0]))
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val sending = User.from(sender as Player)
+        val receiving = User.from(getUUIDFromString(args[0]))
 
-        val amount = event.args[1].toDoubleOrNull()?.roundTo2()
+        val amount = args[1].toDoubleOrNull()?.roundTo2()
         assert(amount != null && amount > 0, "invalidAmount", "string" to amount.toString())
-        Economy.transferBalance(sender.uuid, receiver.uuid, amount!!)
+        Economy.transferBalance(sending.uuid, receiving.uuid, amount!!)
 
-        event.sender.sendTl("paidMoney",
-            "user" to receiver.name, "amount" to Economy.formatBalance(amount))
-        if (receiver.isOnline) receiver.player.sendTl("receivedMoney",
-            "player" to sender.name, "amount" to Economy.formatBalance(amount))
+        sender.sendTl("paidMoney",
+            "user" to receiving.name, "amount" to Economy.formatBalance(amount))
+        if (receiving.isOnline) receiving.player.sendTl("receivedMoney",
+            "player" to sending.name, "amount" to Economy.formatBalance(amount))
     }
 }

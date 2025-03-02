@@ -1,23 +1,23 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.ZCore
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.util.getMessage
 import me.zavdav.zcore.util.send
 import me.zavdav.zcore.util.sendTl
-import org.poseidonplugins.commandapi.CommandEvent
+import org.bukkit.command.CommandSender
 
-class CommandZCore : ZCoreCommand(
+class CommandZCore : AbstractCommand(
     "zcore",
-    description = "Displays information about ZCore.",
-    usage = "/zcore",
-    permission = "zcore.zcore"
+    "Displays information about ZCore.",
+    "/zcore",
+    "zcore.zcore",
+    false
 ) {
 
-    override fun execute(event: CommandEvent) {
+    override fun execute(sender: CommandSender, args: List<String>) {
         val asciiArt = getMessage("zcoreAsciiArt")
-        for (line in asciiArt.split("\n")) {
-            event.sender.send(line)
-        }
-        event.sender.sendTl("zcoreVersion", "version" to ZCore.INSTANCE.description.version)
+        asciiArt.split("\n").forEach { sender.send(it) }
+        sender.sendTl("zcoreVersion", "version" to ZCore.INSTANCE.description.version)
     }
 }

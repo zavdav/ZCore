@@ -1,39 +1,38 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.getPlayerFromUsername
+import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.sendTl
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.hasPermission
 
-class CommandToggleChat : ZCoreCommand(
+class CommandToggleChat : AbstractCommand(
     "togglechat",
-    listOf("tc"),
     "Toggles whether or not you see public chat.",
     "/togglechat [player]",
     "zcore.togglechat",
-    true,
-    maxArgs = 1
+    maxArgs = 1,
+    aliases = listOf("tc")
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val player = event.sender as Player
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val player = sender as Player
         var user = User.from(player)
 
-        if (event.args.isNotEmpty()) {
-            val target = getPlayerFromUsername(event.args[0])
+        if (args.isNotEmpty()) {
+            val target = getPlayerFromUsername(args[0])
             user = User.from(target)
         }
 
         val isSelf = player.uniqueId == user.uuid
-        assert(isSelf || hasPermission(event.sender, "zcore.togglechat.others"), "noPermission")
+        assert(isSelf || sender.isAuthorized("zcore.togglechat.others"), "noPermission")
         user.seesChat = !user.seesChat
 
         if (!isSelf) {
-            event.sender.sendTl(if (user.seesChat)
-                "enabledChatOther" else "disabledChatOther", user.player)
+            sender.sendTl(if (user.seesChat) "enabledChatOther" else "disabledChatOther", user.player)
         }
         user.player.sendTl(if (user.seesChat) "enabledChat" else "disabledChat")
     }

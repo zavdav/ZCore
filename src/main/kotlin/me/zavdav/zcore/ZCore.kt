@@ -1,6 +1,7 @@
 package me.zavdav.zcore
 
 import me.zavdav.zcore.commands.*
+import me.zavdav.zcore.commands.core.CommandManager
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.config.Items
 import me.zavdav.zcore.config.Kits
@@ -13,6 +14,7 @@ import me.zavdav.zcore.listeners.PlayerListener
 import me.zavdav.zcore.user.UserMap
 import me.zavdav.zcore.util.Backup
 import me.zavdav.zcore.util.Logger
+import me.zavdav.zcore.util.getField
 import me.zavdav.zcore.util.syncRepeatingTask
 import org.bukkit.Bukkit
 import org.bukkit.Server
@@ -20,8 +22,6 @@ import org.bukkit.event.Event
 import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.RegisteredListener
 import org.bukkit.plugin.java.JavaPlugin
-import org.poseidonplugins.commandapi.CommandManager
-import org.poseidonplugins.commandapi.getField
 import java.io.File
 import java.io.FileReader
 import java.net.URLClassLoader
@@ -32,7 +32,6 @@ class ZCore : JavaPlugin() {
     companion object {
         lateinit var INSTANCE: ZCore; private set
         lateinit var dataFolder: File; private set
-        lateinit var cmdManager: CommandManager; private set
     }
 
     private var lastAutoSave: Long = System.currentTimeMillis()
@@ -42,16 +41,20 @@ class ZCore : JavaPlugin() {
         Companion.dataFolder = dataFolder
         if (!dataFolder.exists()) dataFolder.mkdirs()
 
+        Logger.info("Loading configuration")
         Config.load()
         Items.load()
         Kits.load()
         Backup.load()
+
+        Logger.info("Loading data into memory")
         UserMap
         UUIDCache
         BannedIPs
         Spawnpoints
         Warps
 
+        Logger.info("Registering commands")
         val commands = listOf(
             CommandAFK(),
             CommandBackup(),
@@ -116,32 +119,35 @@ class ZCore : JavaPlugin() {
             CommandZCore()
         ).filter { it.name !in Config.disabledCommands }
 
-        cmdManager = CommandManager(this)
-        cmdManager.registerCommands(*commands.toTypedArray())
+        CommandManager.registerCommands(*commands.toTypedArray())
 
+        Logger.info("Registering listeners")
         server.pluginManager.registerEvents(EntityListener(), this)
         server.pluginManager.registerEvents(PlayerListener(), this)
 
+        Logger.info("Starting tasks")
         syncRepeatingTask(0, 20) {
             runCatching {
                 UserMap.checkOnlineUsers()
                 if (System.currentTimeMillis() - lastAutoSave >= Config.autoSaveTime * 1000) {
                     lastAutoSave = System.currentTimeMillis()
-                    Logger.info("Automatically saving data")
                     saveData(true, false)
                 }
             }.onFailure { it.printStackTrace() }
         }
 
-        Logger.info("${description.name} ${description.version} has been enabled.")
+        Logger.info("Version ${description.version} has been enabled.")
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun onDisable() {
         saveData(false, true)
-        val listeners = getField(server.pluginManager, "listeners") as MutableMap<Event.Type, SortedSet<RegisteredListener>>
-        listeners.entries.forEach { it.value.removeIf { it.plugin is ZCore } }
-        Logger.info("${description.name} ${description.version} has been disabled.")
+        Logger.info("Unregistering commands")
+        CommandManager.unregisterAll()
+        Logger.info("Unregistering listeners")
+        val listeners = getField<MutableMap<Event.Type, SortedSet<RegisteredListener>>>(server.pluginManager, "listeners")
+        listeners!!.entries.forEach { it.value.removeIf { it.plugin is ZCore } }
+        Logger.info("Version ${description.version} has been disabled.")
     }
 
     fun reload() {
@@ -150,6 +156,7 @@ class ZCore : JavaPlugin() {
     }
 
     fun saveData(async: Boolean, force: Boolean) {
+        Logger.info("Saving data to disk")
         UserMap.saveData(async, force)
         UUIDCache.saveData(async, force)
         BannedIPs.saveData(async, force)

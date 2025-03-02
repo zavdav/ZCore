@@ -1,40 +1,39 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.getPlayerFromUsername
+import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.sendTl
 import me.zavdav.zcore.util.updateVanishedPlayers
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.hasPermission
 
-class CommandVanish : ZCoreCommand(
+class CommandVanish : AbstractCommand(
     "vanish",
-    description = "Vanishes you from other players.",
-    usage = "/vanish [player]",
-    permission = "zcore.vanish",
-    isPlayerOnly = true,
+    "Vanishes you from other players.",
+    "/vanish [player]",
+    "zcore.vanish",
     maxArgs = 1
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val player = event.sender as Player
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val player = sender as Player
         var user = User.from(player)
 
-        if (event.args.isNotEmpty()) {
-            val target = getPlayerFromUsername(event.args[0])
+        if (args.isNotEmpty()) {
+            val target = getPlayerFromUsername(args[0])
             user = User.from(target)
         }
 
         val isSelf = player.uniqueId == user.uuid
-        assert(isSelf || hasPermission(event.sender, "zcore.vanish.others"), "noPermission")
+        assert(isSelf || sender.isAuthorized("zcore.vanish.others"), "noPermission")
         user.isVanished = !user.isVanished
         updateVanishedPlayers()
 
         if (!isSelf) {
-            event.sender.sendTl(if (user.isVanished)
-                "enabledVanishOther" else "disabledVanishOther", user.player)
+            sender.sendTl(if (user.isVanished) "enabledVanishOther" else "disabledVanishOther", user.player)
         }
         user.player.sendTl(if (user.isVanished) "enabledVanish" else "disabledVanish")
     }

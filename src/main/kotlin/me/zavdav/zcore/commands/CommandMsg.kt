@@ -1,45 +1,45 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.user.User
+import me.zavdav.zcore.util.colorize
 import me.zavdav.zcore.util.getPlayerFromUsername
+import me.zavdav.zcore.util.isAuthorized
+import me.zavdav.zcore.util.joinArgs
 import me.zavdav.zcore.util.notifySocialSpy
 import me.zavdav.zcore.util.send
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.colorize
-import org.poseidonplugins.commandapi.hasPermission
-import org.poseidonplugins.commandapi.joinArgs
 
-class CommandMsg : ZCoreCommand(
+class CommandMsg : AbstractCommand(
     "msg",
-    listOf("m", "tell", "t", "whisper", "w"),
     "Sends a private message to a player.",
     "/msg <player> <message>",
     "zcore.msg",
-    true,
-    2
+    minArgs = 2,
+    aliases = listOf("m", "tell", "t", "whisper", "w")
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val player = event.sender as Player
-        val target = getPlayerFromUsername(event.args[0])
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val player = sender as Player
+        val target = getPlayerFromUsername(args[0])
         val user = User.from(player)
 
         if (user.checkIsMuted()) return
-        var message = joinArgs(event.args, 1)
-        if (hasPermission(player, "zcore.msg.color")) message = colorize(message)
+        var message = joinArgs(args, 1)
+        if (player.isAuthorized("zcore.msg.color")) message = colorize(message)
 
         user.replyTo = target
         player.send(Config.sendMsg, target, "message" to message)
         val targetUser = User.from(target)
 
         if (player.uniqueId !in targetUser.ignores ||
-            hasPermission(player, "zcore.ignore.exempt")) {
+            player.isAuthorized("zcore.ignore.exempt")) {
             targetUser.replyTo = player
             target.send(Config.receiveMsg, player, "message" to message)
         }
 
-        notifySocialSpy(player, event.fullCommand)
+        notifySocialSpy(player, "/$name ${args.joinToString(" ")}")
     }
 }

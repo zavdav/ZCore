@@ -1,25 +1,25 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.data.Spawnpoints
 import me.zavdav.zcore.util.Delay
 import me.zavdav.zcore.util.NoFundsException
 import me.zavdav.zcore.util.getSafeHeight
 import me.zavdav.zcore.util.sendTl
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
 
-class CommandSpawn : ZCoreCommand(
+class CommandSpawn : AbstractCommand(
     "spawn",
-    description = "Teleports you to the server spawn.",
-    usage = "/spawn",
-    permission = "zcore.spawn",
-    isPlayerOnly = true,
+    "Teleports you to the server spawn.",
+    "/spawn",
+    "zcore.spawn",
     maxArgs = 0
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val player = event.sender as Player
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val player = sender as Player
         var loc = player.world.spawnLocation
         loc.x = loc.blockX + 0.5
         loc.z = loc.blockZ + 0.5
@@ -28,8 +28,8 @@ class CommandSpawn : ZCoreCommand(
 
         val delay = Config.teleportDelay
         if (delay > 0) {
-            event.sender.sendTl("commencingTeleport", "location" to loc.world.name, "delay" to delay)
-            event.sender.sendTl("doNotMove")
+            sender.sendTl("commencingTeleport", "location" to loc.world.name, "delay" to delay)
+            sender.sendTl("doNotMove")
         }
         Delay(player, delay) {
             try {

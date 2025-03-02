@@ -1,11 +1,11 @@
 package me.zavdav.zcore.hooks.permissions
 
-import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 import java.util.UUID
 
 interface PermissionHook {
 
-    fun hasPermission(sender: CommandSender, permission: String): Boolean
+    fun hasPermission(player: Player, permission: String): Boolean
 
     fun getPrefix(uuid: UUID): String
 

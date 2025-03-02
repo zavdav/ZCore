@@ -1,28 +1,28 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.api.Economy
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.Delay
 import me.zavdav.zcore.util.NoFundsException
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.sendTl
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.hasPermission
 
-class CommandTpAccept : ZCoreCommand(
+class CommandTpAccept : AbstractCommand(
     "tpaccept",
-    listOf("tpyes"),
     "Accepts your current teleport request.",
     "/tpaccept",
     "zcore.tpaccept",
-    true,
-    maxArgs = 0
+    maxArgs = 0,
+    aliases = listOf("tpyes")
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val player = event.sender as Player
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val player = sender as Player
         val user = User.from(player)
         val request = user.tpRequest
         assert(request != null, "noTpRequest")
@@ -68,7 +68,8 @@ class CommandTpAccept : ZCoreCommand(
     }
 
     override fun charge(player: Player) {
-        if (cost > 0.0 && !hasPermission(player, "$permission.charge.bypass")) {
+        val cost = Config.getCommandCost(this)
+        if (cost > 0.0 && !player.isAuthorized("$permission.charge.bypass")) {
             Economy.subtractBalance(player.uniqueId, cost)
             player.sendTl("tpRequestCharge", "amount" to Economy.formatBalance(cost))
         }

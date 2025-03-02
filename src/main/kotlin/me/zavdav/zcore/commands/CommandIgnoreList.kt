@@ -1,26 +1,25 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.sendTl
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
 
-class CommandIgnoreList : ZCoreCommand(
+class CommandIgnoreList : AbstractCommand(
     "ignorelist",
-    listOf("ignores"),
     "Shows a list of your ignored players.",
     "/ignorelist",
     "zcore.ignorelist",
-    true,
-    maxArgs = 0
+    maxArgs = 0,
+    aliases = listOf("ignores")
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val ignores = User.from(event.sender as Player).ignores
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val ignores = User.from(sender as Player).ignores
         assert(ignores.isNotEmpty(), "noIgnoredPlayers")
 
-        event.sender.sendTl("ignoreList",
-            "list" to ignores.joinToString(", ") { User.from(it).name })
+        sender.sendTl("ignoreList", "list" to ignores.joinToString(", ") { User.from(it).name })
     }
 }

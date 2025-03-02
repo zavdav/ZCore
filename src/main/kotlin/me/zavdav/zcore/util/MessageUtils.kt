@@ -5,7 +5,6 @@ package me.zavdav.zcore.util
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.colorize
 import java.util.ResourceBundle
 
 private val bundle: ResourceBundle = ResourceBundle.getBundle("messages")
@@ -55,3 +54,17 @@ fun format(string: String, vararg pairs: Pair<String, Any>): String {
     }
     return message
 }
+
+fun colorize(message: String) = message.replace("&([0-9a-f])".toRegex(), "§$1")
+
+fun joinArgs(list: List<Any>, fromIndex: Int, toIndex: Int, delimiter: String) =
+    list.subList(fromIndex, toIndex).joinToString(delimiter)
+
+fun joinArgs(list: List<Any>, fromIndex: Int, toIndex: Int) =
+    joinArgs(list, fromIndex, toIndex, " ")
+
+fun joinArgs(list: List<Any>, fromIndex: Int, delimiter: String) =
+    joinArgs(list, fromIndex, list.size, delimiter)
+
+fun joinArgs(list: List<Any>, fromIndex: Int) =
+    joinArgs(list, fromIndex, list.size)

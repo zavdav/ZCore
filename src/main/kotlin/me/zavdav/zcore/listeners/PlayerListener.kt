@@ -18,8 +18,6 @@ import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.block.SignChangeEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.player.*
-import org.poseidonplugins.commandapi.colorize
-import org.poseidonplugins.commandapi.hasPermission
 
 class PlayerListener : Listener {
 
@@ -46,19 +44,19 @@ class PlayerListener : Listener {
         }
         user.updateOnJoin(event.player.name)
 
-        if (!hasPermission(event.player, "zcore.god")) user.isGod = false
-        if (!hasPermission(event.player, "zcore.vanish")) user.isVanished = false
-        if (!hasPermission(event.player, "zcore.socialspy")) user.socialSpy = false
-        if (!hasPermission(event.player, "zcore.togglechat")) user.seesChat = true
-        if (!hasPermission(event.player, "zcore.nick")) user.nickname = null
+        if (!event.player.isAuthorized("zcore.god")) user.isGod = false
+        if (!event.player.isAuthorized("zcore.vanish")) user.isVanished = false
+        if (!event.player.isAuthorized("zcore.socialspy")) user.socialSpy = false
+        if (!event.player.isAuthorized("zcore.togglechat")) user.seesChat = true
+        if (!event.player.isAuthorized("zcore.nick")) user.nickname = null
 
         user.updateDisplayName()
         updateVanishedPlayers()
 
-        if (Config.motd.isNotEmpty() && hasPermission(event.player, "zcore.motd")) {
+        if (Config.motd.isNotEmpty() && event.player.isAuthorized("zcore.motd")) {
             event.player.performCommand("motd")
         }
-        if (user.mails.isNotEmpty() && hasPermission(event.player, "zcore.mail")) {
+        if (user.mails.isNotEmpty() && event.player.isAuthorized("zcore.mail")) {
             event.player.sendTl("newMail")
         }
 
@@ -78,8 +76,8 @@ class PlayerListener : Listener {
 
         user.updatePlayTime()
         user.cachedPlayTime = user.playTime
-        user.banExempt = hasPermission(event.player, "zcore.ban.exempt")
-        user.muteExempt = hasPermission(event.player, "zcore.mute.exempt")
+        user.banExempt = event.player.isAuthorized("zcore.ban.exempt")
+        user.muteExempt = event.player.isAuthorized("zcore.mute.exempt")
 
         event.quitMessage = format(Config.leaveMsg, event.player)
     }
@@ -98,7 +96,7 @@ class PlayerListener : Listener {
             event.isCancelled = true
             return
         }
-        if (hasPermission(event.player, "zcore.chat.color")) {
+        if (event.player.isAuthorized("zcore.chat.color")) {
             event.message = colorize(event.message)
         }
         event.format = format(Config.chat, "displayname" to "%1\$s", "message" to "%2\$s")
@@ -112,7 +110,7 @@ class PlayerListener : Listener {
         event.recipients.removeIf {
             val targetUser = User.from(it)
             !targetUser.seesChat || event.player.uniqueId in targetUser.ignores &&
-            !hasPermission(event.player, "zcore.ignore.exempt")
+            !event.player.isAuthorized("zcore.ignore.exempt")
         }
 
         user.updateActivity()
@@ -151,7 +149,7 @@ class PlayerListener : Listener {
             return
         }
 
-        if (Config.protectAfkPlayers && hasPermission(event.player, "zcore.afk")) {
+        if (Config.protectAfkPlayers && event.player.isAuthorized("zcore.afk")) {
             from.pitch = to.pitch
             from.yaw = to.yaw
             if (from.y > to.y) from.y = to.y
@@ -194,7 +192,7 @@ class PlayerListener : Listener {
 
     @EventHandler(ignoreCancelled = true)
     fun onPlayerChangeSign(event: SignChangeEvent) {
-        if (hasPermission(event.player, "zcore.signs.color")) {
+        if (event.player.isAuthorized("zcore.signs.color")) {
             for (i in event.lines.indices) {
                 event.setLine(i, colorize(event.getLine(i)))
             }

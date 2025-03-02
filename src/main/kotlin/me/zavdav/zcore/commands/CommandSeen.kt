@@ -1,41 +1,38 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.user.UserMap
-import me.zavdav.zcore.util.PlayerNotFoundException
 import me.zavdav.zcore.util.formatDuration
 import me.zavdav.zcore.util.getUUIDFromUsername
 import me.zavdav.zcore.util.sendTl
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
 
-class CommandSeen : ZCoreCommand(
+class CommandSeen : AbstractCommand(
     "seen",
-    description = "Shows when a player was last online.",
-    usage = "/seen <player>",
-    permission = "zcore.seen",
-    minArgs = 1,
-    maxArgs = 1
+    "Shows when a player was last online.",
+    "/seen <player>",
+    "zcore.seen",
+    false,
+    1,
+    1
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val uuid = getUUIDFromUsername(event.args[0])
-        if (!UserMap.isUserKnown(uuid)) {
-            throw PlayerNotFoundException(event.args[0])
-        }
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val uuid = getUUIDFromUsername(args[0])
 
         val user = User.from(uuid)
         if (user.isOnline) {
-            val isSelf = event.sender is Player && (event.sender as Player).uniqueId == user.uuid
+            val isSelf = sender is Player && sender.uniqueId == user.uuid
             val duration = formatDuration(System.currentTimeMillis() - user.lastJoin)
 
             if (isSelf) {
-                event.sender.sendTl("seenOnline", "duration" to duration)
+                sender.sendTl("seenOnline", "duration" to duration)
             } else {
-                event.sender.sendTl("seenOnlineOther", user.player, "duration" to duration)
+                sender.sendTl("seenOnlineOther", user.player, "duration" to duration)
             }
         } else {
-            event.sender.sendTl("seenOffline",
+            sender.sendTl("seenOffline",
                 "user" to user.name,
                 "duration" to formatDuration(System.currentTimeMillis() - user.lastSeen))
         }

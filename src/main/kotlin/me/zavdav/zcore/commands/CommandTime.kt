@@ -1,26 +1,26 @@
 package me.zavdav.zcore.commands
 
-import me.zavdav.zcore.util.InvalidUsageException
+import me.zavdav.zcore.commands.core.AbstractCommand
+import me.zavdav.zcore.util.InvalidSyntaxException
 import me.zavdav.zcore.util.TimeTickParser
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.Bukkit
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
 
-class CommandTime : ZCoreCommand(
+class CommandTime : AbstractCommand(
     "time",
-    description = "Changes the world time.",
-    usage = "/time [day|night|8:00|2pm|6000ticks] [world]",
-    permission = "zcore.time",
-    isPlayerOnly = true,
+    "Changes the world time.",
+    "/time [day|night|8:00|2pm|6000ticks] [world]",
+    "zcore.time",
     maxArgs = 2
 ) {
 
-    override fun execute(event: CommandEvent) {
-        if (event.args.isEmpty()) {
+    override fun execute(sender: CommandSender, args: List<String>) {
+        if (args.isEmpty()) {
             for (world in Bukkit.getWorlds()) {
-                event.sender.sendTl("currentTime",
+                sender.sendTl("currentTime",
                     "world" to world.name,
                     "time24" to TimeTickParser.format24(world.time),
                     "time12" to TimeTickParser.format12(world.time),
@@ -29,20 +29,20 @@ class CommandTime : ZCoreCommand(
             return
         }
 
-        var world = (event.sender as Player).world
-        if (event.args.size == 2) {
-            world = Bukkit.getWorld(event.args[1])
-            assert(world != null, "worldNotFound", "world" to event.args[1])
+        var world = (sender as Player).world
+        if (args.size == 2) {
+            world = Bukkit.getWorld(args[1])
+            assert(world != null, "worldNotFound", "world" to args[1])
         }
 
         val ticks = try {
-            TimeTickParser.parse(event.args[0])
+            TimeTickParser.parse(args[0])
         } catch (_: NumberFormatException) {
-            throw InvalidUsageException(this)
+            throw InvalidSyntaxException(this)
         }
 
         world.time = ticks
-        event.sender.sendTl("setTime",
+        sender.sendTl("setTime",
             "time24" to TimeTickParser.format24(ticks),
             "time12" to TimeTickParser.format12(ticks),
             "ticks" to TimeTickParser.formatTicks(ticks),

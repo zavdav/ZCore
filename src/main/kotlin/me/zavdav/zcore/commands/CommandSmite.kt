@@ -1,25 +1,25 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.util.getPlayerFromUsername
 import me.zavdav.zcore.util.sendTl
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
 
-class CommandSmite : ZCoreCommand(
+class CommandSmite : AbstractCommand(
     "smite",
-    listOf("lightning"),
     "Strikes lightning at your cursor position or at a player.",
     "/smite [player]",
     "zcore.smite",
-    true,
-    maxArgs = 1
+    maxArgs = 1,
+    aliases = listOf("lightning")
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val player = event.sender as Player
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val player = sender as Player
 
-        if (event.args.isNotEmpty()) {
-            val target = getPlayerFromUsername(event.args[0])
+        if (args.isNotEmpty()) {
+            val target = getPlayerFromUsername(args[0])
             val location = target.location
             location.world.strikeLightning(location)
             player.sendTl("struckPlayer", target)

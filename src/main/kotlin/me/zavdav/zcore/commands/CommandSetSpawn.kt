@@ -1,29 +1,29 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.data.Spawnpoints
 import me.zavdav.zcore.util.sendTl
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
 
-class CommandSetSpawn : ZCoreCommand(
+class CommandSetSpawn : AbstractCommand(
     "setspawn",
-    description = "Sets the world spawn to your current location.",
-    usage = "/setspawn [none]",
-    permission = "zcore.setspawn",
-    isPlayerOnly = true,
+    "Sets the world spawn to your current location.",
+    "/setspawn [reset]",
+    "zcore.setspawn",
     maxArgs = 1
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val player = event.sender as Player
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val player = sender as Player
         val loc = player.location
-        if (event.args.size == 1 && event.args[0].equals("none", true)) {
+        if (args.size == 1 && args[0].equals("reset", true)) {
             Spawnpoints.removeSpawn(loc.world.name)
             player.sendTl("resetSpawn", "world" to loc.world.name)
 
         } else {
             Spawnpoints.setSpawn(loc.world.name, loc)
-            event.sender.sendTl("setSpawn",
+            sender.sendTl("setSpawn",
                 "world" to loc.world.name,
                 "coordinates" to "${loc.blockX}, ${loc.blockY}, ${loc.blockZ}")
         }

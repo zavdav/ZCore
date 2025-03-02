@@ -1,34 +1,34 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.getPlayerFromUsername
+import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.sendTl
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.hasPermission
 
-class CommandClearInv : ZCoreCommand(
+class CommandClearInv : AbstractCommand(
     "clearinv",
-    description = "Clears your inventory.",
-    usage = "/clearinv [player]",
-    permission = "zcore.clearinv",
-    isPlayerOnly = true,
+    "Clears your inventory.",
+    "/clearinv [player]",
+    "zcore.clearinv",
     maxArgs = 1
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val player = event.sender as Player
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val player = sender as Player
         var target = player
-        if (event.args.isNotEmpty()) {
-            target = getPlayerFromUsername(event.args[0])
+        if (args.isNotEmpty()) {
+            target = getPlayerFromUsername(args[0])
         }
 
         val isSelf = player == target
-        assert(isSelf || hasPermission(event.sender, "zcore.clearinv.others"), "noPermission")
+        assert(isSelf || sender.isAuthorized("zcore.clearinv.others"), "noPermission")
         if (isSelf) charge(player)
         target.inventory.clear()
 
-        if (!isSelf) event.sender.sendTl("clearedInventoryOther", target)
+        if (!isSelf) sender.sendTl("clearedInventoryOther", target)
         target.sendTl("clearedInventory")
     }
 }

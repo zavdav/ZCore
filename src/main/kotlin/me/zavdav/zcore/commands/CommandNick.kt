@@ -1,39 +1,39 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.colorize
 import me.zavdav.zcore.util.getPlayerFromUsername
+import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.sendTl
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.colorize
-import org.poseidonplugins.commandapi.hasPermission
 
-class CommandNick : ZCoreCommand(
+class CommandNick : AbstractCommand(
     "nick",
-    listOf("nickname"),
     "Changes your nickname.",
     "/nick [player] <nickname>",
     "zcore.nick",
-    true,
-    1,
-    2
+    minArgs = 1,
+    maxArgs = 2,
+    aliases = listOf("nickname")
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val player = event.sender as Player
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val player = sender as Player
         var target = player
-        var nickname = event.args[0]
+        var nickname = args[0]
 
-        if (event.args.size == 2) {
-            target = getPlayerFromUsername(event.args[0])
-            nickname = event.args[1]
+        if (args.size == 2) {
+            target = getPlayerFromUsername(args[0])
+            nickname = args[1]
         }
 
         val isSelf = player == target
-        assert(isSelf || hasPermission(event.sender, "zcore.nick.others"), "noPermission")
+        assert(isSelf || sender.isAuthorized("zcore.nick.others"), "noPermission")
         val reset = nickname.equals("reset", true) || nickname.equals(target.name, true)
-        if (hasPermission(target, "zcore.nick.color")) nickname = colorize(nickname)
+        if (target.isAuthorized("zcore.nick.color")) nickname = colorize(nickname)
 
         val user = User.from(target)
         if (reset) {
@@ -47,9 +47,9 @@ class CommandNick : ZCoreCommand(
         val rawNick = user.getNick()
         if (!isSelf) {
             if (reset) {
-                event.sender.sendTl("resetNickOther", target)
+                sender.sendTl("resetNickOther", target)
             } else {
-                event.sender.sendTl("setNickOther", target, "nickname" to rawNick)
+                sender.sendTl("setNickOther", target, "nickname" to rawNick)
             }
         }
 

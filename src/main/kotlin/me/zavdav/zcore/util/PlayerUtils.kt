@@ -6,11 +6,13 @@ import com.projectposeidon.api.PoseidonUUID
 import com.projectposeidon.api.UUIDType
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.data.UUIDCache
+import me.zavdav.zcore.hooks.permissions.PermissionHandler
 import me.zavdav.zcore.user.User
 import org.bukkit.Bukkit
+import org.bukkit.command.CommandSender
+import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerLoginEvent
-import org.poseidonplugins.commandapi.hasPermission
 import java.util.UUID
 import java.util.regex.Pattern
 
@@ -51,6 +53,14 @@ fun getUUIDFromString(string: String): UUID =
 fun getUsernameFromUUID(uuid: UUID): String? =
     UUIDCache.getUsernameFromUUID(uuid)
 
+fun CommandSender.isAuthorized(permission: String): Boolean {
+    return when (this) {
+        is Player -> PermissionHandler.hasPermission(this, permission)
+        is ConsoleCommandSender -> true
+        else -> false
+    }
+}
+
 fun String.trimTo100(): String =
     if (length <= 100) this else substring(0, 100)
 
@@ -68,7 +78,7 @@ fun updateVanishedPlayers() {
         val user = User.from(target)
         when (user.isVanished) {
             true -> Bukkit.getOnlinePlayers()
-                .filter { !hasPermission(it, "zcore.vanish.bypass") }
+                .filter { !it.isAuthorized("zcore.vanish.bypass") }
                 .forEach { it.hidePlayer(target) }
             false -> Bukkit.getOnlinePlayers()
                 .forEach { it.showPlayer(target) }

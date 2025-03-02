@@ -1,21 +1,21 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.sendTl
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
 
-class CommandSocialSpy: ZCoreCommand(
+class CommandSocialSpy: AbstractCommand(
     "socialspy",
-    description = "Toggles your SocialSpy status.",
-    usage = "/socialspy",
-    permission = "zcore.socialspy",
-    isPlayerOnly = true,
+    "Toggles your SocialSpy status.",
+    "/socialspy",
+    "zcore.socialspy",
     maxArgs = 0
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val user = User.from(event.sender as Player)
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val user = User.from(sender as Player)
 
         user.socialSpy = !user.socialSpy
         user.player.sendTl(if (user.socialSpy) "enabledSocialSpy" else "disabledSocialSpy")

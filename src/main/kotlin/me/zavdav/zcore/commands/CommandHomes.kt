@@ -1,41 +1,40 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.getUUIDFromUsername
+import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.sendTl
 import me.zavdav.zcore.util.tl
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.poseidonplugins.commandapi.CommandEvent
-import org.poseidonplugins.commandapi.hasPermission
 import kotlin.math.ceil
 
-class CommandHomes : ZCoreCommand(
+class CommandHomes : AbstractCommand(
     "homes",
-    listOf("hs"),
     "Shows a list of your homes.",
     "/homes [page|query]",
     "zcore.homes",
-    true,
-    maxArgs = 2
+    maxArgs = 2,
+    aliases = listOf("hl")
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val player = event.sender as Player
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val player = sender as Player
         var user = User.from(player)
         var query = ""
         var page = 1
 
-        if (event.args.isNotEmpty()) {
-            if (event.args.size > 1) {
-                query = event.args[0]
-                page = event.args[1].toIntOrNull() ?: 1
+        if (args.isNotEmpty()) {
+            if (args.size > 1) {
+                query = args[0]
+                page = args[1].toIntOrNull() ?: 1
             } else {
-                try { page = event.args[0].toInt() }
+                try { page = args[0].toInt() }
                 catch (_: NumberFormatException) {
-                    query = event.args[0]
+                    query = args[0]
                 }
             }
         }
@@ -47,13 +46,13 @@ class CommandHomes : ZCoreCommand(
             query = strings.getOrNull(1) ?: ""
         }
 
-        assert(player.uniqueId == user.uuid || hasPermission(event.sender, "zcore.homes.others"), "noPermission")
+        assert(player.uniqueId == user.uuid || sender.isAuthorized("zcore.homes.others"), "noPermission")
         var homes = user.getHomes().sorted()
         if (page < 1) page = 1
         if (query != "") homes = homes.filter { home -> home.startsWith(query, true) }
         assert(homes.isNotEmpty(), "noMatchingResults")
 
-        printHomes(event.sender, page, homes)
+        printHomes(sender, page, homes)
     }
 
     private fun printHomes(sender: CommandSender, page: Int, homes: List<String>) {

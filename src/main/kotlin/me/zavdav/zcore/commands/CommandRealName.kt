@@ -1,23 +1,23 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.Bukkit
-import org.poseidonplugins.commandapi.CommandEvent
+import org.bukkit.command.CommandSender
 
-class CommandRealName : ZCoreCommand(
+class CommandRealName : AbstractCommand(
     "realname",
-    description = "Shows the real name of a nicked player.",
-    usage = "/realname <nickname>",
-    permission = "zcore.realname",
-    isPlayerOnly = true,
+    "Shows the real name of a nicked player.",
+    "/realname <nickname>",
+    "zcore.realname",
     minArgs = 1,
     maxArgs = 1
 ) {
 
-    override fun execute(event: CommandEvent) {
-        val string = event.args[0].trim()
+    override fun execute(sender: CommandSender, args: List<String>) {
+        val string = args[0].trim()
         var matches = 0
         for (player in Bukkit.getOnlinePlayers()) {
             val user = User.from(player)
@@ -25,7 +25,7 @@ class CommandRealName : ZCoreCommand(
                 .replace("§([0-9a-f])".toRegex(), "")
 
             if (string.equals(nickname, true)) {
-                event.sender.sendTl("realName", user.player)
+                sender.sendTl("realName", user.player)
                 matches++
             }
         }
