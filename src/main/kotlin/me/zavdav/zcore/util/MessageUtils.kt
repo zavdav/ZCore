@@ -2,6 +2,7 @@
 
 package me.zavdav.zcore.util
 
+import me.zavdav.zcore.config.Config
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -41,14 +42,13 @@ fun tl(key: String, vararg pairs: Pair<String, Any>): String =
 fun tl(key: String, player: Player, vararg pairs: Pair<String, Any>): String =
     tl(key, *pairs, "name" to player.name, "displayname" to player.displayName)
 
-fun tlError(key: String, vararg pairs: Pair<String, Any>): String =
-    tl("errorMessage", "message" to tl(key, *pairs))
-
 fun format(string: String, player: Player, vararg pairs: Pair<String, Any>): String =
     format(string, "name" to player.name, "displayname" to player.displayName, *pairs)
 
 fun format(string: String, vararg pairs: Pair<String, Any>): String {
     var message = colorize(string)
+    message = message.replace("{$}", colorize(Config.prefix))
+    message = message.replace("{!}", colorize(Config.errorPrefix))
     for (pair in pairs) {
         message = message.replace("{${pair.first.uppercase()}}", pair.second.toString())
     }

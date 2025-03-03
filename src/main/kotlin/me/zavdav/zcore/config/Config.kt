@@ -76,6 +76,12 @@ object Config {
     val configVersion: Int
         get() = getInt("configVersion", def = 0)
 
+    val prefix: String
+        get() = getString("prefix", "&5» ")
+
+    val errorPrefix: String
+        get() = getString("errorPrefix", "&4[!] ")
+
     val autoSaveTime: Long
         get() = getLong("autoSaveTime", 1..Long.MAX_VALUE, 300)
 

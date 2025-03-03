@@ -10,7 +10,13 @@
 
 # The config version
 # This should never be changed manually.
-configVersion: 20250227
+configVersion: 20250303
+
+# The prefix that will be applied to most messages
+prefix: "&5» "
+
+# The prefix will will be applied to error messages
+errorPrefix: "&4[!] "
 
 # In what interval should data be automatically saved
 autoSaveTime: 300

@@ -5,7 +5,7 @@ import me.zavdav.zcore.util.CommandException
 import me.zavdav.zcore.util.getPlayerFromUsername
 import me.zavdav.zcore.util.getSafeHeight
 import me.zavdav.zcore.util.sendTl
-import me.zavdav.zcore.util.tlError
+import me.zavdav.zcore.util.tl
 import org.bukkit.Location
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -92,7 +92,7 @@ class CommandTP : AbstractCommand(
                     coords.add(loc.y)
                     computeY = true
                 } else {
-                    throw CommandException(tlError(
+                    throw CommandException(tl(
                         "invalidCoords", "string" to args.joinToString(" ")
                     ))
                 }

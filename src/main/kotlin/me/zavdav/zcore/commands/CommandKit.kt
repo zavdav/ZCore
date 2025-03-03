@@ -51,7 +51,7 @@ class CommandKit : AbstractCommand(
                 }
             } else {
                 player.inventory.contents = currentInv
-                throw CommandException(tlError("noInventorySpace"))
+                throw CommandException(tl("noInventorySpace"))
             }
 
             if (kit.cooldown > 0) user.addKitCooldown(kit, kit.cooldown)
