@@ -48,16 +48,6 @@ teleportDelay: 3
 giveAmount: 64
 
 # ┌───────────────────────────┐
-# │           Help            │
-# └───────────────────────────┘
-
-# If /help should show commands from other plugins as well
-listOtherCommands: true
-
-# How many commands should be shown on a page in /help
-commandsPerPage: 10
-
-# ┌───────────────────────────┐
 # │           Chat            │
 # └───────────────────────────┘
 
@@ -102,10 +92,21 @@ firstJoinMessage: '&dWelcome to the server, {DISPLAYNAME}&d!'
 disabledCommands:
 #  - nick
 
+# Any commands in this list will take priority
+# over other commands with the same name
+overrideCommands:
+#  - god
+
 # The cost to perform a certain command
 # Applicable to: /clearinv, /heal, /home, /nick, /sethome, /spawn, /warp and teleports via /tpaccept
 commandCosts:
 #  nick: 10.0
+
+# If /help should show commands from other plugins as well
+listOtherCommands: true
+
+# How many commands should be shown on a page in /help
+commandsPerPage: 10
 
 # ┌───────────────────────────┐
 # │          Economy          │

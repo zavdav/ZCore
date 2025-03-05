@@ -15,6 +15,7 @@ import me.zavdav.zcore.user.UserMap
 import me.zavdav.zcore.util.Backup
 import me.zavdav.zcore.util.Logger
 import me.zavdav.zcore.util.getField
+import me.zavdav.zcore.util.syncDelayedTask
 import me.zavdav.zcore.util.syncRepeatingTask
 import org.bukkit.Bukkit
 import org.bukkit.Server
@@ -55,7 +56,7 @@ class ZCore : JavaPlugin() {
         Warps
 
         Logger.info("Registering commands")
-        val commands = listOf(
+        val commands = mutableListOf(
             CommandAFK(),
             CommandBackup(),
             CommandBalance(),
@@ -117,9 +118,24 @@ class ZCore : JavaPlugin() {
             CommandWarp(),
             CommandWeather(),
             CommandZCore()
-        ).filter { it.name !in Config.disabledCommands }
+        )
+
+        commands.removeAll { it.name in Config.disabledCommands }
+        val overrides = commands.filter { it.name in Config.overrideCommands }
+        commands.removeAll(overrides)
 
         CommandManager.registerCommands(*commands.toTypedArray())
+        syncDelayedTask {
+            for (command in overrides) {
+                val matches = CommandManager.knownCommands.filter { it.value.name.equals(command.name, true) }
+                matches.forEach {
+                    CommandManager.knownCommands.remove(it.key)
+                    it.value.unregister(CommandManager.commandMap)
+                }
+                CommandManager.registerCommands(command)
+                matches.forEach { CommandManager.commandMap.register(it.key, it.value) }
+            }
+        }
 
         Logger.info("Registering listeners")
         server.pluginManager.registerEvents(EntityListener(), this)

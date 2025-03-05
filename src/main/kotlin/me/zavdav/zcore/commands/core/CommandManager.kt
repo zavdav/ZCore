@@ -10,22 +10,21 @@ import org.bukkit.plugin.Plugin
 
 object CommandManager {
 
-    private val commandMap: CommandMap = getField(Bukkit.getPluginManager(), "commandMap")!!
     private val commands: MutableList<AbstractCommand> = mutableListOf()
     private val subcommandQueue: MutableMap<Int, MutableList<AbstractCommand>> = mutableMapOf()
+
+    val commandMap: CommandMap = getField(Bukkit.getPluginManager(), "commandMap")!!
+    val knownCommands: MutableMap<String, Command> = getField(commandMap, "knownCommands")!!
 
     val zcoreCommands: List<AbstractCommand>
         get() = commands.toList()
 
     val otherCommands: List<AbstractCommand>
-        get() {
-            val knownCommands = getField<Map<String, Command>>(commandMap, "knownCommands")!!
-            return knownCommands
-                .filter { (k, v) -> v is PluginCommand && v.plugin !is ZCore && k == v.name}
-                .values
-                .sortedWith(compareBy({ (it as PluginCommand).plugin.description.name }, { it.name }))
-                .map { AbstractCommand.fromBukkitCommand(it) }
-        }
+        get() = knownCommands
+            .filter { (k, v) -> v is PluginCommand && v.plugin !is ZCore && k == v.name}
+            .values
+            .sortedWith(compareBy({ (it as PluginCommand).plugin.description.name }, { it.name }))
+            .map { AbstractCommand.fromBukkitCommand(it) }
 
     fun registerCommands(vararg commands: AbstractCommand) {
         for (command in commands) {
@@ -40,7 +39,6 @@ object CommandManager {
 
     fun unregisterAll() {
         commands.clear()
-        val knownCommands = getField<MutableMap<String, Command>>(commandMap, "knownCommands")!!
         knownCommands.entries.removeIf { (_, it) -> it is PluginCommand && it.plugin is ZCore }
     }
 

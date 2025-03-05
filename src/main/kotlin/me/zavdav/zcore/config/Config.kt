@@ -103,12 +103,6 @@ object Config {
     val giveAmount: Int
         get() = getInt("giveAmount", 1..Int.MAX_VALUE, 64)
 
-    val listOtherCommands: Boolean
-        get() = getBoolean("listOtherCommands", true)
-
-    val commandsPerPage: Int
-        get() = getInt("commandsPerPage", 1..Int.MAX_VALUE, 10)
-
     val chat: String
         get() = getString("chat", "{DISPLAYNAME}&f: {MESSAGE}")
 
@@ -160,8 +154,17 @@ object Config {
     val disabledCommands: List<String>
         get() = getStringList("disabledCommands", emptyList())
 
+    val overrideCommands: List<String>
+        get() = getStringList("overrideCommands", emptyList())
+
     fun getCommandCost(command: AbstractCommand): Double =
         getDouble("commandCosts.${command.name}", 0.0..maxBalance, 0.0).roundTo2()
+
+    val listOtherCommands: Boolean
+        get() = getBoolean("listOtherCommands", true)
+
+    val commandsPerPage: Int
+        get() = getInt("commandsPerPage", 1..Int.MAX_VALUE, 10)
 
     val currency: String
         get() = getString("currency", "$")
