@@ -28,16 +28,18 @@ class CommandR : AbstractCommand(
 
         if (user.checkIsMuted()) return
         assert(replyTo != null && replyTo.isOnline, "noReply")
-
         var message = joinArgs(args, 0)
-        if (player.isAuthorized("zcore.msg.color")) message = colorize(message)
-        player.send(Config.sendMsg, replyTo!!, "message" to message)
 
+        if (player.isAuthorized("zcore.msg.color")) message = colorize(message)
+        player.send(Config.sendMsg,
+            "name" to replyTo!!.name, "displayname" to replyTo.displayName, "message" to message)
         val targetUser = User.from(replyTo)
+
         if (player.uniqueId !in targetUser.ignores ||
             player.isAuthorized("zcore.ignore.exempt")) {
             targetUser.replyTo = player
-            replyTo.send(Config.receiveMsg, player, "message" to message)
+            replyTo.send(Config.receiveMsg,
+                "name" to player.name, "displayname" to player.displayName, "message" to message)
         }
 
         notifySocialSpy(player, "/$name ${args.joinToString(" ")}")

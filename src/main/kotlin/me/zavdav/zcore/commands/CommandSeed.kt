@@ -15,6 +15,6 @@ class CommandSeed : AbstractCommand(
 ) {
 
     override fun execute(sender: CommandSender, args: List<String>) {
-        sender.sendTl("worldSeed", "seed" to Bukkit.getWorlds()[0].seed)
+        sender.sendTl("worldSeed", Bukkit.getWorlds()[0].seed)
     }
 }

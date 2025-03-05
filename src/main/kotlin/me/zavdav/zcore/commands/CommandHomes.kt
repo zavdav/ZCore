@@ -7,7 +7,6 @@ import me.zavdav.zcore.util.assert
 import me.zavdav.zcore.util.getUUIDFromUsername
 import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.sendTl
-import me.zavdav.zcore.util.tl
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import kotlin.math.ceil
@@ -49,7 +48,7 @@ class CommandHomes : AbstractCommand(
         assert(player.uniqueId == user.uuid || sender.isAuthorized("zcore.homes.others"), "noPermission")
         var homes = user.getHomes().sorted()
         if (page < 1) page = 1
-        if (query != "") homes = homes.filter { home -> home.startsWith(query, true) }
+        if (query != "") homes = homes.filter { it.startsWith(query, true) }
         assert(homes.isNotEmpty(), "noMatchingResults")
 
         printHomes(sender, page, homes)
@@ -58,13 +57,13 @@ class CommandHomes : AbstractCommand(
     private fun printHomes(sender: CommandSender, page: Int, homes: List<String>) {
         val homesPerPage = Config.homesPerPage
         val pages = ceil(homes.size.toDouble() / homesPerPage).toInt()
-        assert(page <= pages, "pageTooHigh", "page" to page)
-        sender.sendTl("homesPage", "page" to page, "pages" to pages)
+        assert(page <= pages, "pageTooHigh", page)
+        sender.sendTl("homesPage", page, pages)
 
         val sb = StringBuilder()
         for (i in (page * homesPerPage - homesPerPage)..<page * homesPerPage) {
             if (i >= homes.size) break
-            sb.append(tl("homesEntry", "home" to homes[i]) + " ")
+            sb.append("${homes[i]}, ")
         }
         sender.sendMessage(sb.substring(0, sb.length - 2))
     }

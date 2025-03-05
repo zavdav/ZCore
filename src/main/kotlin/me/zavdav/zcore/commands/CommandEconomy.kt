@@ -24,21 +24,21 @@ class CommandEconomy : AbstractCommand(
         val uuid = getUUIDFromString(args[1])
         val name = User.from(uuid).name
         var amount = args[2].toDoubleOrNull()?.roundTo2()
-        assert(amount != null && amount >= 0, "invalidAmount", "string" to amount.toString())
+        assert(amount != null && amount >= 0, "invalidAmount", amount.toString())
 
         when (args[0].lowercase()) {
             "set" -> {
                 Economy.setBalance(uuid, amount!!)
-                sender.sendTl("setBalance", "user" to name, "amount" to Economy.formatBalance(amount))
+                sender.sendTl("setBalance", name, Economy.formatBalance(amount))
             }
             "give" -> {
                 Economy.addBalance(uuid, amount!!)
-                sender.sendTl("gaveMoney", "user" to name, "amount" to Economy.formatBalance(amount))
+                sender.sendTl("gaveMoney", Economy.formatBalance(amount), name)
             }
             "take" -> {
                 if (!Economy.hasEnough(uuid, amount!!)) amount = Economy.getBalance(uuid)
                 Economy.subtractBalance(uuid, amount)
-                sender.sendTl("tookMoney", "user" to name, "amount" to Economy.formatBalance(amount))
+                sender.sendTl("tookMoney", Economy.formatBalance(amount), name)
             }
             else -> throw InvalidSyntaxException(this)
         }

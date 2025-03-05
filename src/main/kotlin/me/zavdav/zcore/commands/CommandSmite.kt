@@ -22,7 +22,7 @@ class CommandSmite : AbstractCommand(
             val target = getPlayerFromUsername(args[0])
             val location = target.location
             location.world.strikeLightning(location)
-            player.sendTl("struckPlayer", target)
+            player.sendTl("struckPlayer", target.name)
         } else {
             val location = player.getTargetBlock(null, 100).location
             location.world.strikeLightning(location)

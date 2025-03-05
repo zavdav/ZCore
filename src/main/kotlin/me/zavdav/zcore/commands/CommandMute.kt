@@ -33,9 +33,9 @@ class CommandMute : AbstractCommand(
         val user = User.from(uuid)
         name = user.name
         if (user.isOnline) {
-            assert(!user.player.isAuthorized("zcore.mute.exempt"), "cannotMuteUser", "name" to name)
+            assert(!user.player.isAuthorized("zcore.mute.exempt"), "cannotMuteUser", name)
         } else {
-            assert(!user.muteExempt, "cannotMuteUser", "name" to name)
+            assert(!user.muteExempt, "cannotMuteUser", name)
         }
 
         val subArgs = joinArgs(args, 1, args.size)
@@ -53,12 +53,9 @@ class CommandMute : AbstractCommand(
         Punishments.mutePlayer(uuid, (sender as? Player)?.uniqueId, duration, reason)
 
         if (duration == null) {
-            sender.sendTl("mutedPlayer", "user" to name, "reason" to reason)
+            sender.sendTl("mutedPlayer", name, reason)
         } else {
-            sender.sendTl("tempMutedPlayer",
-                "user" to name,
-                "duration" to formatDuration(duration * 1000),
-                "reason" to reason)
+            sender.sendTl("tempMutedPlayer", name, formatDuration(duration * 1000), reason)
         }
     }
 }

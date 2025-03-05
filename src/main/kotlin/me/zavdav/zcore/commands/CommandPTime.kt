@@ -19,9 +19,9 @@ class CommandPTime : AbstractCommand(
         val player = sender as Player
         if (args.isEmpty()) {
             sender.sendTl("currentPlayerTime",
-                "time24" to TimeTickParser.format24(player.playerTime),
-                "time12" to TimeTickParser.format12(player.playerTime),
-                "ticks" to TimeTickParser.formatTicks(player.playerTime))
+                TimeTickParser.format24(player.playerTime),
+                TimeTickParser.format12(player.playerTime),
+                TimeTickParser.formatTicks(player.playerTime))
             return
         }
 
@@ -50,8 +50,8 @@ class CommandPTime : AbstractCommand(
         }
 
         sender.sendTl("setPlayerTime",
-            "time24" to TimeTickParser.format24(ticks),
-            "time12" to TimeTickParser.format12(ticks),
-            "ticks" to TimeTickParser.formatTicks(ticks))
+            TimeTickParser.format24(ticks),
+            TimeTickParser.format12(ticks),
+            TimeTickParser.formatTicks(ticks))
     }
 }

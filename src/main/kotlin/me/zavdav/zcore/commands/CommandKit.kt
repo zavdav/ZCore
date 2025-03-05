@@ -29,15 +29,14 @@ class CommandKit : AbstractCommand(
             sender.sendMessage(kits.keys.sorted().joinToString(", "))
         } else {
             val name = args[0].lowercase()
-            assert(name in kits.keys, "kitNotFound", "kit" to name)
+            assert(name in kits.keys, "kitNotFound", name)
             val kit = kits[name]!!
 
             user.checkKitCooldowns()
             val kitCooldown = user.kitCooldowns[kit.name]
             if (kitCooldown != null) {
                 assert(System.currentTimeMillis() > kitCooldown, "kitOnCooldown",
-                    "name" to name,
-                    "duration" to formatDuration(kitCooldown - System.currentTimeMillis()))
+                    name, formatDuration(kitCooldown - System.currentTimeMillis()))
             }
 
             val currentInv = player.inventory.contents.map { it?.copy() }.toTypedArray()
@@ -55,14 +54,14 @@ class CommandKit : AbstractCommand(
             }
 
             if (kit.cooldown > 0) user.addKitCooldown(kit, kit.cooldown)
-            player.sendTl("equippedKit", "name" to name)
+            player.sendTl("equippedKit", name)
         }
     }
 
     private fun charge(player: Player, kit: Kit) {
         if (kit.cost > 0.0 && !player.isAuthorized("$permission.charge.bypass")) {
             Economy.subtractBalance(player.uniqueId, kit.cost)
-            player.sendTl("kitCharge", "amount" to Economy.formatBalance(kit.cost), "name" to kit.name)
+            player.sendTl("kitCharge", Economy.formatBalance(kit.cost), kit.name)
         }
     }
 

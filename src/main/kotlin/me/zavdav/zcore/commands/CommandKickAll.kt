@@ -25,9 +25,9 @@ class CommandKickAll : AbstractCommand(
         for (player in Bukkit.getOnlinePlayers()) {
             if (player.isAuthorized("zcore.kick.exempt")) continue
             if (sender !is Player || sender != player) {
-                player.kick("kickScreen", "reason" to reason)
+                player.kick("kickScreen", reason)
             }
         }
-        sender.sendTl("kickedAll", "reason" to reason)
+        sender.sendTl("kickedAll", reason)
     }
 }

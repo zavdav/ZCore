@@ -28,14 +28,14 @@ class CommandSpawn : AbstractCommand(
 
         val delay = Config.teleportDelay
         if (delay > 0) {
-            sender.sendTl("commencingTeleport", "location" to loc.world.name, "delay" to delay)
+            sender.sendTl("commencingTeleport", loc.world.name, delay)
             sender.sendTl("doNotMove")
         }
         Delay(player, delay) {
             try {
                 charge(player)
                 player.teleport(loc)
-                player.sendTl("teleportedToSpawn", "world" to loc.world.name)
+                player.sendTl("teleportedToSpawn", loc.world.name)
             } catch (e: NoFundsException) {
                 for (message in e.messages) {
                     player.sendMessage(message)

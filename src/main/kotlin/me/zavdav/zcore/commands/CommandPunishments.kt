@@ -40,18 +40,18 @@ class CommandPunishments : AbstractCommand(
             punishments = (Punishments.getMutes(uuid) + Punishments.getBans(uuid)).sortedBy { it.timeIssued }
         }
 
-        assert(punishments.isNotEmpty(), "noPunishments", "name" to name)
+        assert(punishments.isNotEmpty(), "noPunishments", name)
         var page = 1
         if (args.size == 2) {
             page = (args[1].toIntOrNull() ?: 1).coerceAtLeast(1)
         }
-        printPunishments(sender, page, name, punishments)
+        printPunishments(sender, page, punishments)
     }
 
-    private fun printPunishments(sender: CommandSender, page: Int, name: String, punishments: List<Punishment>) {
+    private fun printPunishments(sender: CommandSender, page: Int, punishments: List<Punishment>) {
         val pages = ceil(punishments.size.toDouble() / 2).toInt()
-        assert(page <= pages, "pageTooHigh", "page" to page)
-        sender.sendTl("punishmentsPage", "name" to name, "page" to page, "pages" to pages)
+        assert(page <= pages, "pageTooHigh", page)
+        sender.sendTl("punishmentsPage", page, pages)
 
         for (i in (page * 2 - 2)..<page * 2) {
             if (i >= punishments.size) break
@@ -63,14 +63,12 @@ class CommandPunishments : AbstractCommand(
                 else -> "Unknown"
             }
 
-            sender.sendTl("punishmentType", "type" to type)
-            sender.sendTl("punishmentIssuer",
-                "name" to (it.issuer?.let { getUsernameFromUUID(it) } ?: "Console"))
-            sender.sendTl("punishmentIssuedTime", "datetime" to formatEpoch(it.timeIssued))
-            sender.sendTl("punishmentDuration",
-                "duration" to (it.duration?.let { formatDuration(it * 1000) } ?: "Permanent"))
-            sender.sendTl("punishmentReason", "reason" to it.reason)
-            sender.sendTl("punishmentPardoned", "status" to it.pardoned)
+            sender.sendTl("punishmentType", type)
+            sender.sendTl("punishmentIssuer", (it.issuer?.let { getUsernameFromUUID(it) } ?: "Console"))
+            sender.sendTl("punishmentIssuedTime", formatEpoch(it.timeIssued))
+            sender.sendTl("punishmentDuration", (it.duration?.let { formatDuration(it * 1000) } ?: "Permanent"))
+            sender.sendTl("punishmentReason", it.reason)
+            sender.sendTl("punishmentPardoned", it.pardoned)
             sender.send("--------------------")
         }
     }

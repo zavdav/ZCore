@@ -31,22 +31,18 @@ class CommandBalanceTop : AbstractCommand(
 
             val balancesPerPage = Config.balancesPerPage
             val pages = ceil(players.size.toDouble() / balancesPerPage).toInt()
-            assert(page <= pages, AsyncCommandException(sender, tl("pageTooHigh", "page" to page)))
-            sender.sendTl("balancetopPage", "page" to page, "pages" to pages)
+            assert(page <= pages, AsyncCommandException(sender, tl("pageTooHigh", page)))
+            sender.sendTl("balancetopPage", page, pages)
 
             for (i in (page * balancesPerPage - balancesPerPage)..<page * balancesPerPage) {
                 if (i >= players.size) break
-                sender.sendTl("balancetopEntry",
-                    "rank" to i + 1,
-                    "name" to players[i].getDisplayName(false),
-                    "balance" to Economy.formatBalance(players[i].balance))
+                sender.sendTl("balancetopEntry", i + 1,
+                    players[i].getDisplayName(false),
+                    Economy.formatBalance(players[i].balance))
             }
 
-            sender.sendTl("balancetopTotal",
-                "amount" to Economy.formatBalance(players.sumOf { p -> p.balance }))
-            sender.sendTl("balancetopRank",
-                "amount" to Economy.formatBalance(user.balance),
-                "rank" to players.indexOf(user) + 1)
+            sender.sendTl("balancetopTotal", Economy.formatBalance(players.sumOf { it.balance }))
+            sender.sendTl("balancetopRank", Economy.formatBalance(user.balance), players.indexOf(user) + 1)
         }
     }
 }

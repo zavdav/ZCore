@@ -13,17 +13,14 @@ class AsyncCommandException(val sender: CommandSender, vararg messages: String) 
 
 class InvalidSyntaxException(command: AbstractCommand) : CommandException(command.description, "Syntax: ${command.syntax}")
 
-class PlayerNotFoundException(val name: String) : CommandException(tl("playerNotFound", "name" to name))
+class PlayerNotFoundException(val name: String) : CommandException(tl("playerNotFound", name))
 
-class UnknownUserException(val uuid: UUID) : CommandException(tl("unknownUser", "user" to uuid))
+class UnknownUserException(val uuid: UUID) : CommandException(tl("unknownUser", uuid))
 
 class NoFundsException : CommandException(tl("noFunds"))
 
 class BalanceOutOfBoundsException(val uuid: UUID) : CommandException(
-    tl("balanceOutOfBounds",
-        "user" to User.from(uuid).name,
-        "amount" to Economy.formatBalance(Config.maxBalance)
-    )
+    tl("balanceOutOfBounds", User.from(uuid).name, Economy.formatBalance(Config.maxBalance))
 )
 
 class UnsafeDestinationException : CommandException(tl("unsafeDestination"))

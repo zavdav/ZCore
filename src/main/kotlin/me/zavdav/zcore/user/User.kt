@@ -94,14 +94,14 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
     fun setInactive() {
         if (!isOnline) return
         isAfk = true
-        broadcastTl("nowAfk", player)
+        broadcastTl("nowAfk", player.displayName)
     }
 
     fun updateActivity() {
         if (!isOnline) return
         if (isAfk) {
             isAfk = false
-            broadcastTl("noLongerAfk", player)
+            broadcastTl("noLongerAfk", player.displayName)
         }
         updateDisplayName()
         lastSeen = System.currentTimeMillis()
@@ -136,12 +136,10 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
         if (Punishments.isPlayerMuted(uuid)) {
             val mute = Punishments.getMute(uuid) ?: return false
             when (mute.duration) {
-                null -> player.sendTl("muteScreen", "reason" to mute.reason)
+                null -> player.sendTl("muteScreen", mute.reason)
                 else -> player.sendTl("tempMuteScreen",
-                    "duration" to formatDuration(
-                        mute.timeIssued + mute.duration * 1000 - System.currentTimeMillis()
-                    ),
-                    "reason" to mute.reason
+                    formatDuration(mute.timeIssued + mute.duration * 1000 - System.currentTimeMillis()),
+                    mute.reason
                 )
             }
             return true
@@ -155,12 +153,10 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
         if (Punishments.isPlayerBanned(uuid)) {
             val ban = Punishments.getBan(uuid) ?: return false
             when (ban.duration) {
-                null -> player.kick("banScreen", "reason" to ban.reason)
+                null -> player.kick("banScreen", ban.reason)
                 else -> player.kick("tempBanScreen",
-                    "duration" to formatDuration(
-                        ban.timeIssued + ban.duration * 1000 - System.currentTimeMillis()
-                    ),
-                    "reason" to ban.reason)
+                    formatDuration(ban.timeIssued + ban.duration * 1000 - System.currentTimeMillis()),
+                    ban.reason)
             }
             return true
         }
@@ -171,12 +167,10 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
         if (Punishments.isPlayerBanned(event.player.uniqueId)) {
             val ban = Punishments.getBan(event.player.uniqueId) ?: return false
             when (ban.duration) {
-                null -> event.kickBanned("banScreen", "reason" to ban.reason)
+                null -> event.kickBanned("banScreen", ban.reason)
                 else -> event.kickBanned("tempBanScreen",
-                    "duration" to formatDuration(
-                        ban.timeIssued + ban.duration * 1000 - System.currentTimeMillis()
-                    ),
-                    "reason" to ban.reason)
+                    formatDuration(ban.timeIssued + ban.duration * 1000 - System.currentTimeMillis()),
+                    ban.reason)
             }
             return true
         }
@@ -192,12 +186,10 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
             if (uuid !in ipBan.uuids) BannedIPs.addUUID(uuid, ip)
 
             when (ipBan.duration) {
-                null -> player.kick("ipBanScreen", "reason" to ipBan.reason)
+                null -> player.kick("ipBanScreen", ipBan.reason)
                 else -> player.kick("tempIpBanScreen",
-                    "duration" to formatDuration(
-                        ipBan.timeIssued + ipBan.duration * 1000 - System.currentTimeMillis()
-                    ),
-                    "reason" to ipBan.reason)
+                    formatDuration(ipBan.timeIssued + ipBan.duration * 1000 - System.currentTimeMillis()),
+                    ipBan.reason)
             }
             return true
         }
@@ -210,12 +202,10 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
             val ipBan = Punishments.getIPBan(ip) ?: return false
             if (uuid !in ipBan.uuids) BannedIPs.addUUID(uuid, ip)
             when (ipBan.duration) {
-                null -> event.kickBannedIP("ipBanScreen", "reason" to ipBan.reason)
+                null -> event.kickBannedIP("ipBanScreen", ipBan.reason)
                 else -> event.kickBannedIP("tempIpBanScreen",
-                    "duration" to formatDuration(
-                        ipBan.timeIssued + ipBan.duration * 1000 - System.currentTimeMillis()
-                    ),
-                    "reason" to ipBan.reason)
+                    formatDuration(ipBan.timeIssued + ipBan.duration * 1000 - System.currentTimeMillis()),
+                    ipBan.reason)
             }
             return true
         }

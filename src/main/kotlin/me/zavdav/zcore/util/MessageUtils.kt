@@ -5,7 +5,6 @@ package me.zavdav.zcore.util
 import me.zavdav.zcore.config.Config
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
 import java.util.ResourceBundle
 
 private val bundle: ResourceBundle = ResourceBundle.getBundle("messages")
@@ -13,42 +12,30 @@ private val bundle: ResourceBundle = ResourceBundle.getBundle("messages")
 fun CommandSender.send(message: String, vararg pairs: Pair<String, Any>) =
     sendMessage(format(message, *pairs))
 
-fun CommandSender.send(message: String, player: Player, vararg pairs: Pair<String, Any>) =
-    sendMessage(format(message, player, *pairs))
-
-fun CommandSender.sendTl(key: String, vararg pairs: Pair<String, Any>) =
-    sendMessage(tl(key, *pairs))
-
-fun CommandSender.sendTl(key: String, player: Player, vararg pairs: Pair<String, Any>) =
-    sendMessage(tl(key, player, *pairs))
+fun CommandSender.sendTl(key: String, vararg args: Any) =
+    sendMessage(tl(key, *args))
 
 fun broadcast(message: String, vararg pairs: Pair<String, Any>) =
     Bukkit.broadcastMessage(format(message, *pairs))
 
-fun broadcast(message: String, player: Player, vararg pairs: Pair<String, Any>) =
-    Bukkit.broadcastMessage(format(message, player, *pairs))
-
-fun broadcastTl(key: String, vararg pairs: Pair<String, Any>) =
-    Bukkit.broadcastMessage(tl(key, *pairs))
-
-fun broadcastTl(key: String, player: Player, vararg pairs: Pair<String, Any>) =
-    Bukkit.broadcastMessage(tl(key, player, *pairs))
+fun broadcastTl(key: String, vararg args: Any) =
+    Bukkit.broadcastMessage(tl(key, *args))
 
 fun getMessage(key: String): String = bundle.getString(key)
 
-fun tl(key: String, vararg pairs: Pair<String, Any>): String =
-    format(getMessage(key), *pairs)
+fun tl(key: String, vararg args: Any): String {
+    var message = colorize(getMessage(key))
+    message = message.replace("{$}", colorize(Config.prefix))
+    message = message.replace("{!}", colorize(Config.errorPrefix))
 
-fun tl(key: String, player: Player, vararg pairs: Pair<String, Any>): String =
-    tl(key, *pairs, "name" to player.name, "displayname" to player.displayName)
-
-fun format(string: String, player: Player, vararg pairs: Pair<String, Any>): String =
-    format(string, "name" to player.name, "displayname" to player.displayName, *pairs)
+    for (i in args.indices) {
+        message = message.replace("{$i}", args[i].toString())
+    }
+    return message
+}
 
 fun format(string: String, vararg pairs: Pair<String, Any>): String {
     var message = colorize(string)
-    message = message.replace("{$}", colorize(Config.prefix))
-    message = message.replace("{!}", colorize(Config.errorPrefix))
     for (pair in pairs) {
         message = message.replace("{${pair.first.uppercase()}}", pair.second.toString())
     }

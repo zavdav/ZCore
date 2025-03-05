@@ -31,12 +31,12 @@ class CommandTpAccept : AbstractCommand(
         val requestType = request.second
         val delay = Config.teleportDelay
         user.tpRequest = null
-        player.sendTl("acceptedTpRequest", target)
-        target.sendTl("otherAcceptedRequest", player)
+        player.sendTl("acceptedTpRequest", target.name)
+        target.sendTl("otherAcceptedRequest", player.name)
 
         if (requestType == User.TeleportType.TPA) {
             if (delay > 0) {
-                target.sendTl("commencingTeleport", "location" to player.name, "delay" to delay)
+                target.sendTl("commencingTeleport", player.name, delay)
                 target.sendTl("doNotMove")
             }
             Delay(target, delay) {
@@ -51,7 +51,7 @@ class CommandTpAccept : AbstractCommand(
             }
         } else {
             if (delay > 0) {
-                player.sendTl("commencingTeleport", "location" to target.name, "delay" to delay)
+                player.sendTl("commencingTeleport", target.name, delay)
                 player.sendTl("doNotMove")
             }
             Delay(player, delay) {
@@ -71,7 +71,7 @@ class CommandTpAccept : AbstractCommand(
         val cost = Config.getCommandCost(this)
         if (cost > 0.0 && !player.isAuthorized("$permission.charge.bypass")) {
             Economy.subtractBalance(player.uniqueId, cost)
-            player.sendTl("tpRequestCharge", "amount" to Economy.formatBalance(cost))
+            player.sendTl("tpRequestCharge", Economy.formatBalance(cost))
         }
     }
 }

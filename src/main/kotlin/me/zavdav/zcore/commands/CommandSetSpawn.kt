@@ -19,13 +19,11 @@ class CommandSetSpawn : AbstractCommand(
         val loc = player.location
         if (args.size == 1 && args[0].equals("reset", true)) {
             Spawnpoints.removeSpawn(loc.world.name)
-            player.sendTl("resetSpawn", "world" to loc.world.name)
+            player.sendTl("resetSpawn", loc.world.name)
 
         } else {
             Spawnpoints.setSpawn(loc.world.name, loc)
-            sender.sendTl("setSpawn",
-                "world" to loc.world.name,
-                "coordinates" to "${loc.blockX}, ${loc.blockY}, ${loc.blockZ}")
+            sender.sendTl("setSpawn", loc.world.name, "${loc.blockX}, ${loc.blockY}, ${loc.blockZ}")
         }
     }
 }

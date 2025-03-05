@@ -60,12 +60,12 @@ class CommandHelp : AbstractCommand(
     private fun printHelp(sender: CommandSender, page: Int, commands: List<AbstractCommand>) {
         val commandsPerPage = Config.commandsPerPage
         val pages = ceil(commands.size.toDouble() / commandsPerPage).toInt()
-        assert(page <= pages, "pageTooHigh", "page" to page)
-        sender.sendTl("helpPage", "page" to page, "pages" to pages)
+        assert(page <= pages, "pageTooHigh", page)
+        sender.sendTl("helpPage", page, pages)
 
         for (i in (page * commandsPerPage - commandsPerPage)..<page * commandsPerPage) {
             if (i >= commands.size) break
-            sender.sendTl("helpEntry", "command" to commands[i].name, "desc" to commands[i].description)
+            sender.sendTl("helpEntry", commands[i].name, commands[i].description)
         }
     }
 }

@@ -33,9 +33,9 @@ class CommandPlayTime : AbstractCommand(
 
         val duration = formatDuration(user.playTime)
         if (isSelf) {
-            sender.sendTl("playTime", "time" to duration)
+            sender.sendTl("playTime", duration)
         } else {
-            sender.sendTl("playTimeOther", "name" to user.name, "time" to duration)
+            sender.sendTl("playTimeOther", user.name, duration)
         }
     }
 }

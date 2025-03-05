@@ -32,7 +32,7 @@ class CommandGod : AbstractCommand(
         user.isGod = !user.isGod
 
         if (!isSelf) {
-            sender.sendTl(if (user.isGod) "enabledGodOther" else "disabledGodOther", user.player)
+            sender.sendTl(if (user.isGod) "enabledGodOther" else "disabledGodOther", user.player.name)
         }
         user.player.sendTl(if (user.isGod) "enabledGod" else "disabledGod")
     }

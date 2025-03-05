@@ -63,7 +63,7 @@ abstract class AbstractCommand(
         val cost = Config.getCommandCost(this)
         if (cost > 0.0 && !player.isAuthorized("$permission.charge.bypass")) {
             Economy.subtractBalance(player.uniqueId, cost)
-            player.sendTl("commandCharge", "amount" to Economy.formatBalance(cost), "command" to name)
+            player.sendTl("commandCharge", Economy.formatBalance(cost), name)
         }
     }
 }

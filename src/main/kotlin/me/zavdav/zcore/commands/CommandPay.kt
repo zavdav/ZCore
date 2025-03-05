@@ -24,12 +24,11 @@ class CommandPay : AbstractCommand(
         val receiving = User.from(getUUIDFromString(args[0]))
 
         val amount = args[1].toDoubleOrNull()?.roundTo2()
-        assert(amount != null && amount > 0, "invalidAmount", "string" to amount.toString())
+        assert(amount != null && amount > 0, "invalidAmount", amount.toString())
         Economy.transferBalance(sending.uuid, receiving.uuid, amount!!)
 
-        sender.sendTl("paidMoney",
-            "user" to receiving.name, "amount" to Economy.formatBalance(amount))
+        sender.sendTl("paidMoney", receiving.name, Economy.formatBalance(amount))
         if (receiving.isOnline) receiving.player.sendTl("receivedMoney",
-            "player" to sending.name, "amount" to Economy.formatBalance(amount))
+            Economy.formatBalance(amount), sending.name)
     }
 }

@@ -24,10 +24,10 @@ class CommandIgnore : AbstractCommand(
 
         if (uuid in user.ignores) {
             user.setIgnored(uuid, false)
-            sender.sendTl("unignoredPlayer", "name" to User.from(uuid).name)
+            sender.sendTl("unignoredPlayer", User.from(uuid).name)
         } else {
             user.setIgnored(uuid, true)
-            sender.sendTl("ignoredPlayer", "name" to User.from(uuid).name)
+            sender.sendTl("ignoredPlayer", User.from(uuid).name)
         }
     }
 }

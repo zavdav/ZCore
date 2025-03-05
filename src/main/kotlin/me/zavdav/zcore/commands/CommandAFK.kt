@@ -32,7 +32,7 @@ class CommandAFK : AbstractCommand(
             user.updateActivity()
         } else if (Config.protectAfkPlayers && Config.afkDelay > 0) {
             val delay = Config.afkDelay
-            target.sendTl("commencingAfk", "delay" to delay)
+            target.sendTl("commencingAfk", delay)
             target.sendTl("doNotMove")
 
             Delay(target, delay) { if (!user.isAfk) user.setInactive() }

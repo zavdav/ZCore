@@ -110,34 +110,34 @@ object Config {
         get() = getInt("commandsPerPage", 1..Int.MAX_VALUE, 10)
 
     val chat: String
-        get() = getString("chat", "{DISPLAYNAME}§f: {MESSAGE}")
+        get() = getString("chat", "{DISPLAYNAME}&f: {MESSAGE}")
 
     val broadcast: String
-        get() = getString("broadcast", "§d[Broadcast] {MESSAGE}")
+        get() = getString("broadcast", "&d[Broadcast] {MESSAGE}")
 
     val sendMsg: String
-        get() = getString("sendMsg", "§7[me -> {NAME}§7] §f{MESSAGE}")
+        get() = getString("sendMsg", "&7[me -> &f{DISPLAYNAME}&7] &f{MESSAGE}")
 
     val receiveMsg: String
-        get() = getString("receiveMsg", "§7[{NAME}§7 -> me] §f{MESSAGE}")
+        get() = getString("receiveMsg", "&7[&f{DISPLAYNAME}&7 -> me] &f{MESSAGE}")
 
     val mail: String
-        get() = getString("mail", "{NAME}&f: {MESSAGE}")
+        get() = getString("mail", "{DISPLAYNAME}&f: {MESSAGE}")
 
     val socialSpy: String
-        get() = getString("socialSpy", "§6[SocialSpy] §f{DISPLAYNAME}§f: {COMMAND}")
+        get() = getString("socialSpy", "&5[SocialSpy] &f{DISPLAYNAME}&f: {COMMAND}")
 
     val joinMsg: String
-        get() = getString("joinMsg", "§e{NAME} has joined the game.")
+        get() = getString("joinMsg", "&e{NAME} has joined the game")
 
     val leaveMsg: String
-        get() = getString("leaveMsg", "§e{NAME} has left the game.")
+        get() = getString("leaveMsg", "&e{NAME} has left the game")
 
     val kickMsg: String
-        get() = getString("kickMsg", "§e{NAME} has been kicked from the server.")
+        get() = getString("kickMsg", "&e{NAME} has been kicked from the server")
 
     val banMsg: String
-        get() = getString("banMsg", "§e{NAME} has been banned from the server.")
+        get() = getString("banMsg", "&e{NAME} has been banned from the server")
 
     val operatorColor: String
         get() {
@@ -149,13 +149,13 @@ object Config {
         get() = getString("nickPrefix", "~")
 
     val displayNameFormat: String
-        get() = getString("displayNameFormat", "{PREFIX} §f{NICKNAME}§f {SUFFIX}")
+        get() = getString("displayNameFormat", "{PREFIX} &f{NICKNAME}&f {SUFFIX}")
 
     val chatRadius: Int
         get() = getInt("chatRadius", def = 0)
 
     val firstJoinMessage: String
-        get() = getString("firstJoinMessage", "§dWelcome to the server, {DISPLAYNAME}§d!")
+        get() = getString("firstJoinMessage", "&dWelcome to the server, {DISPLAYNAME}&d!")
 
     val disabledCommands: List<String>
         get() = getStringList("disabledCommands", emptyList())

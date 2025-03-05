@@ -26,12 +26,12 @@ class CommandUnbanIP : AbstractCommand(
             } else {
                 val uuid = getUUIDFromString(args[0])
                 val ipBan = Punishments.getIPBan(uuid)
-                assert(ipBan != null, "ipNotBanned", "user" to uuid)
+                assert(ipBan != null, "ipNotBanned", uuid)
                 ipBan!!.ip
             }
 
-        assert(Punishments.isIPBanned(ip), "ipNotBanned", "user" to ip)
+        assert(Punishments.isIPBanned(ip), "ipNotBanned", ip)
         Punishments.unbanIP(ip)
-        sender.sendTl("unbannedIp", "ip" to ip)
+        sender.sendTl("unbannedIp", ip)
     }
 }

@@ -10,7 +10,7 @@
 
 # The config version
 # This should never be changed manually.
-configVersion: 20250303
+configVersion: 20250305
 
 # The prefix that will be applied to most messages
 prefix: "&5» "
@@ -31,9 +31,9 @@ backupFolder: './backup'
 # The Message of the day
 # Leave this empty to disable
 motd:
-  - '&5Welcome, {NAME}&5!'
+  - '&5Welcome, {DISPLAYNAME}&5!'
   - '&7Type &d/help &7for a list of commands.'
-  - '&7Online players: &f{PLAYERLIST}'
+  - '&7Online players: &f{LIST}'
 
 # The server rules which are displayed when typing /rules
 rules:
@@ -64,9 +64,9 @@ commandsPerPage: 10
 # Chat formats
 chat: '{DISPLAYNAME}&f: {MESSAGE}'
 broadcast: '&d[Broadcast] {MESSAGE}'
-sendMsg: '&7[me -> {NAME}&7] &f{MESSAGE}'
-receiveMsg: '&7[{NAME}&7 -> me] &f{MESSAGE}'
-mail: '{NAME}&f: {MESSAGE}'
+sendMsg: '&7[me -> &f{DISPLAYNAME}&7] &f{MESSAGE}'
+receiveMsg: '&7[&f{DISPLAYNAME}&7 -> me] &f{MESSAGE}'
+mail: '{DISPLAYNAME}&f: {MESSAGE}'
 socialSpy: '&5[SocialSpy] &f{DISPLAYNAME}&f: {COMMAND}'
 
 # Join/Leave formats

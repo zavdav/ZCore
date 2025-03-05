@@ -35,9 +35,9 @@ class CommandBan: AbstractCommand(
             val user = User.from(uuid)
             name = user.name
             if (user.isOnline) {
-                assert(!user.player.isAuthorized("zcore.ban.exempt"), "cannotBanUser", "name" to name)
+                assert(!user.player.isAuthorized("zcore.ban.exempt"), "cannotBanUser", name)
             } else {
-                assert(!user.banExempt, "cannotBanUser", "name" to name)
+                assert(!user.banExempt, "cannotBanUser", name)
             }
         }
 
@@ -56,12 +56,9 @@ class CommandBan: AbstractCommand(
         Punishments.banPlayer(uuid, (sender as? Player)?.uniqueId, duration, reason)
 
         if (duration == null) {
-            sender.sendTl("bannedPlayer", "user" to name, "reason" to reason)
+            sender.sendTl("bannedPlayer", name, reason)
         } else {
-            sender.sendTl("tempBannedPlayer",
-                "user" to name,
-                "duration" to formatDuration(duration * 1000),
-                "reason" to reason)
+            sender.sendTl("tempBannedPlayer", name, formatDuration(duration * 1000), reason)
         }
     }
 }

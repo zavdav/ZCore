@@ -27,14 +27,13 @@ class CommandSeen : AbstractCommand(
             val duration = formatDuration(System.currentTimeMillis() - user.lastJoin)
 
             if (isSelf) {
-                sender.sendTl("seenOnline", "duration" to duration)
+                sender.sendTl("seenOnline", duration)
             } else {
-                sender.sendTl("seenOnlineOther", user.player, "duration" to duration)
+                sender.sendTl("seenOnlineOther", user.player.name, duration)
             }
         } else {
             sender.sendTl("seenOffline",
-                "user" to user.name,
-                "duration" to formatDuration(System.currentTimeMillis() - user.lastSeen))
+                user.name, formatDuration(System.currentTimeMillis() - user.lastSeen))
         }
     }
 }

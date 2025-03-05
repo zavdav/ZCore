@@ -28,7 +28,7 @@ class CommandClearInv : AbstractCommand(
         if (isSelf) charge(player)
         target.inventory.clear()
 
-        if (!isSelf) sender.sendTl("clearedInventoryOther", target)
+        if (!isSelf) sender.sendTl("clearedInventoryOther", target.name)
         target.sendTl("clearedInventory")
     }
 }

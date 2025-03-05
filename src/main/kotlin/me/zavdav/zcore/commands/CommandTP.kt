@@ -42,12 +42,12 @@ class CommandTP : AbstractCommand(
 
         player.teleport(target)
         if (sender == player) {
-            sender.sendTl("teleportedToPlayer", "player" to target.name)
+            sender.sendTl("teleportedToPlayer", target.name)
         } else {
             if (sender == target) {
-                sender.sendTl("teleportedPlayer", "player" to player.name)
+                sender.sendTl("teleportedPlayer", player.name)
             } else {
-                sender.sendTl("teleportedPlayerToPlayer", "player" to player.name, "other" to target.name)
+                sender.sendTl("teleportedPlayerToPlayer", player.name, target.name)
             }
         }
     }
@@ -66,10 +66,9 @@ class CommandTP : AbstractCommand(
 
         val coordinates = "${coords[0].toFloat()}, ${coords[1].toFloat()}, ${coords[2].toFloat()}"
         if (player == target) {
-            player.sendTl("teleportedToCoords", "coordinates" to coordinates)
+            player.sendTl("teleportedToCoords", coordinates)
         } else {
-            player.sendTl("teleportedPlayerToCoords",
-                "player" to target.name, "coordinates" to coordinates)
+            player.sendTl("teleportedPlayerToCoords", target.name, coordinates)
         }
     }
 
@@ -92,9 +91,7 @@ class CommandTP : AbstractCommand(
                     coords.add(loc.y)
                     computeY = true
                 } else {
-                    throw CommandException(tl(
-                        "invalidCoords", "string" to args.joinToString(" ")
-                    ))
+                    throw CommandException(tl("invalidCoords", args.joinToString(" ")))
                 }
             }
         }

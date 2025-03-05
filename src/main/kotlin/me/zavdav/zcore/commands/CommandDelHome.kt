@@ -34,14 +34,14 @@ class CommandDelHome : AbstractCommand(
             homeName = strings[1]
         }
 
-        assert(user.homeExists(homeName), "homeNotFound", "home" to homeName)
+        assert(user.homeExists(homeName), "homeNotFound", homeName)
         homeName = user.getHomeName(homeName)
         user.removeHome(homeName)
 
         if (player.uniqueId == user.uuid) {
-            sender.sendTl("deletedHome", "home" to homeName)
+            sender.sendTl("deletedHome", homeName)
         } else {
-            sender.sendTl("deletedHomeOther", "user" to user.name, "home" to homeName)
+            sender.sendTl("deletedHomeOther", user.name, homeName)
         }
     }
 }

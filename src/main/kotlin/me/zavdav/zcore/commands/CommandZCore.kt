@@ -18,6 +18,6 @@ class CommandZCore : AbstractCommand(
     override fun execute(sender: CommandSender, args: List<String>) {
         val asciiArt = getMessage("zcoreAsciiArt")
         asciiArt.split("\n").forEach { sender.send(it) }
-        sender.sendTl("zcoreVersion", "version" to ZCore.INSTANCE.description.version)
+        sender.sendTl("zcoreVersion", ZCore.INSTANCE.description.version)
     }
 }

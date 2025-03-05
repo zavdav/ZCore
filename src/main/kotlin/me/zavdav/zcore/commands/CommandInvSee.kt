@@ -24,7 +24,7 @@ class CommandInvSee : AbstractCommand(
             if (user.savedInventory == null) user.savedInventory = player.inventory.contents
             player.inventory.contents = User.from(target).savedInventory ?: target.inventory.contents
             user.isInvSee = true
-            sender.sendTl("lookingAtInventory", target)
+            sender.sendTl("lookingAtInventory", target.name)
         } else {
             if (user.savedInventory != null) {
                 player.inventory.contents = user.savedInventory

@@ -17,10 +17,10 @@ class CommandDelWarp : AbstractCommand(
 
     override fun execute(sender: CommandSender, args: List<String>) {
         var warpName = args[0]
-        assert(Warps.warpExists(warpName), "warpNotFound", "warp" to warpName)
+        assert(Warps.warpExists(warpName), "warpNotFound", warpName)
 
         warpName = Warps.getWarpName(warpName)
         Warps.removeWarp(warpName)
-        sender.sendTl("deletedWarp", "warp" to warpName)
+        sender.sendTl("deletedWarp", warpName)
     }
 }

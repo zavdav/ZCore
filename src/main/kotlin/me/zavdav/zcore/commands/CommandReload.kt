@@ -17,6 +17,6 @@ class CommandReload : AbstractCommand(
     override fun execute(sender: CommandSender, args: List<String>) {
         ZCore.INSTANCE.reload()
         val desc = ZCore.INSTANCE.description
-        sender.sendTl("reloadedPlugin", "plugin" to desc.name, "version" to desc.version)
+        sender.sendTl("reloadedPlugin", desc.name, desc.version)
     }
 }

@@ -21,12 +21,12 @@ class CommandTpaHere : AbstractCommand(
         val player = sender as Player
         val target = getPlayerFromUsername(args[0])
         val targetUser = User.from(target)
-        player.sendTl("sentTpRequest", target)
+        player.sendTl("sentTpRequest", target.name)
 
         if (player.uniqueId !in targetUser.ignores ||
             player.isAuthorized("zcore.ignore.exempt")) {
             targetUser.tpRequest = player to User.TeleportType.TPAHERE
-            target.sendTl("tpaHereRequest", player)
+            target.sendTl("tpaHereRequest", player.name)
             target.sendTl("tpaUsage")
         }
     }

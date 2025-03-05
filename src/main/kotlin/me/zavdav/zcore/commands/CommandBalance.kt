@@ -32,9 +32,9 @@ class CommandBalance : AbstractCommand(
         val name = User.from(uuid).name
 
         if (isSelf) {
-            sender.sendTl("balance", "amount" to Economy.formatBalance(amount))
+            sender.sendTl("balance", Economy.formatBalance(amount))
         } else {
-            sender.sendTl("balanceOther", "user" to name, "amount" to Economy.formatBalance(amount))
+            sender.sendTl("balanceOther", name, Economy.formatBalance(amount))
         }
     }
 }

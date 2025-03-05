@@ -34,7 +34,7 @@ class CommandHome : AbstractCommand(
             homeName = strings[1]
         }
 
-        assert(user.homeExists(homeName), "homeNotFound", "home" to homeName)
+        assert(user.homeExists(homeName), "homeNotFound", homeName)
         val location = user.getHomeLocation(homeName)
         val isSelf = player.uniqueId == user.uuid
         if (isSelf) charge(player)
@@ -42,9 +42,9 @@ class CommandHome : AbstractCommand(
 
         homeName = user.getHomeName(homeName)
         if (isSelf) {
-            sender.sendTl("teleportedToHome", "home" to homeName)
+            sender.sendTl("teleportedToHome", homeName)
         } else {
-            sender.sendTl("teleportedToHomeOther", "user" to user.name, "home" to homeName)
+            sender.sendTl("teleportedToHomeOther", user.name, homeName)
         }
     }
 }

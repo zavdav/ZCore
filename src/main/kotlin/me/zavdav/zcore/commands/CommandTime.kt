@@ -20,11 +20,10 @@ class CommandTime : AbstractCommand(
     override fun execute(sender: CommandSender, args: List<String>) {
         if (args.isEmpty()) {
             for (world in Bukkit.getWorlds()) {
-                sender.sendTl("currentTime",
-                    "world" to world.name,
-                    "time24" to TimeTickParser.format24(world.time),
-                    "time12" to TimeTickParser.format12(world.time),
-                    "ticks" to TimeTickParser.formatTicks(world.time))
+                sender.sendTl("currentTime", world.name,
+                    TimeTickParser.format24(world.time),
+                    TimeTickParser.format12(world.time),
+                    TimeTickParser.formatTicks(world.time))
             }
             return
         }
@@ -32,7 +31,7 @@ class CommandTime : AbstractCommand(
         var world = (sender as Player).world
         if (args.size == 2) {
             world = Bukkit.getWorld(args[1])
-            assert(world != null, "worldNotFound", "world" to args[1])
+            assert(world != null, "worldNotFound", args[1])
         }
 
         val ticks = try {
@@ -42,10 +41,9 @@ class CommandTime : AbstractCommand(
         }
 
         world.time = ticks
-        sender.sendTl("setTime",
-            "time24" to TimeTickParser.format24(ticks),
-            "time12" to TimeTickParser.format12(ticks),
-            "ticks" to TimeTickParser.formatTicks(ticks),
-            "world" to world.name)
+        sender.sendTl("setTime", world.name,
+            TimeTickParser.format24(ticks),
+            TimeTickParser.format12(ticks),
+            TimeTickParser.formatTicks(ticks))
     }
 }

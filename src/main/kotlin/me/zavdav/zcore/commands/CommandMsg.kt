@@ -31,13 +31,15 @@ class CommandMsg : AbstractCommand(
         if (player.isAuthorized("zcore.msg.color")) message = colorize(message)
 
         user.replyTo = target
-        player.send(Config.sendMsg, target, "message" to message)
+        player.send(Config.sendMsg,
+            "name" to target.name, "displayname" to target.displayName, "message" to message)
         val targetUser = User.from(target)
 
         if (player.uniqueId !in targetUser.ignores ||
             player.isAuthorized("zcore.ignore.exempt")) {
             targetUser.replyTo = player
-            target.send(Config.receiveMsg, player, "message" to message)
+            target.send(Config.receiveMsg,
+                "name" to player.name, "displayname" to player.displayName, "message" to message)
         }
 
         notifySocialSpy(player, "/$name ${args.joinToString(" ")}")

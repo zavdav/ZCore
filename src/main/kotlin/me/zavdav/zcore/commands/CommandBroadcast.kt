@@ -4,6 +4,7 @@ import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.util.broadcast
 import me.zavdav.zcore.util.colorize
+import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.joinArgs
 import org.bukkit.command.CommandSender
 
@@ -18,6 +19,8 @@ class CommandBroadcast : AbstractCommand(
 ) {
 
     override fun execute(sender: CommandSender, args: List<String>) {
-        broadcast(Config.broadcast, "message" to colorize(joinArgs(args, 0)))
+        var message = joinArgs(args, 0)
+        if (sender.isAuthorized("zcore.broadcast.color")) message = colorize(message)
+        broadcast(Config.broadcast, "message" to message)
     }
 }

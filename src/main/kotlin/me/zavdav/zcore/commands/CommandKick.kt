@@ -22,11 +22,10 @@ class CommandKick : AbstractCommand(
 
     override fun execute(sender: CommandSender, args: List<String>) {
         val target = getPlayerFromUsername(args[0])
-        assert(sender == target || !target.isAuthorized("zcore.kick.exempt"),
-            "cannotKickPlayer", "name" to target.name)
+        assert(sender == target || !target.isAuthorized("zcore.kick.exempt"), "cannotKickPlayer", target.name)
         val reason = colorize(if (args.size > 1) joinArgs(args, 1) else tl("kickReason"))
 
-        target.kick("kickScreen", "reason" to reason)
-        sender.sendTl("kickedPlayer", "player" to target.name, "reason" to reason)
+        target.kick("kickScreen", reason)
+        sender.sendTl("kickedPlayer", target.name, reason)
     }
 }

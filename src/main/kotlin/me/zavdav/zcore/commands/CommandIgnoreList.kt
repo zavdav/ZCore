@@ -20,6 +20,6 @@ class CommandIgnoreList : AbstractCommand(
         val ignores = User.from(sender as Player).ignores
         assert(ignores.isNotEmpty(), "noIgnoredPlayers")
 
-        sender.sendTl("ignoreList", "list" to ignores.joinToString(", ") { User.from(it).name })
+        sender.sendTl("ignoreList", ignores.joinToString(", ") { User.from(it).name })
     }
 }

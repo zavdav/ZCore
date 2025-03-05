@@ -21,12 +21,12 @@ class CommandTpa : AbstractCommand(
         val player = sender as Player
         val target = getPlayerFromUsername(args[0])
         val targetUser = User.from(target)
-        player.sendTl("sentTpRequest", target)
+        player.sendTl("sentTpRequest", target.name)
 
         if (player.uniqueId !in targetUser.ignores ||
             player.isAuthorized("zcore.ignore.exempt")) {
             targetUser.tpRequest = player to User.TeleportType.TPA
-            target.sendTl("tpaRequest", player)
+            target.sendTl("tpaRequest", player.name)
             target.sendTl("tpaUsage")
         }
     }

@@ -44,7 +44,7 @@ class CommandMail : AbstractCommand(
 
                 val uuid = getUUIDFromUsername(args[1])
                 val targetUser = User.from(uuid)
-                player.sendTl("sentMail", "name" to targetUser.name)
+                player.sendTl("sentMail", targetUser.name)
 
                 if (player.uniqueId !in targetUser.ignores ||
                     player.isAuthorized("zcore.ignore.exempt")) {

@@ -21,8 +21,8 @@ class CommandUnmute : AbstractCommand(
     override fun execute(sender: CommandSender, args: List<String>) {
         val uuid = getUUIDFromUsername(args[0])
         val user = User.from(uuid)
-        assert(Punishments.isPlayerMuted(uuid), "userNotMuted", "user" to user.name)
+        assert(Punishments.isPlayerMuted(uuid), "userNotMuted", user.name)
         Punishments.unmutePlayer(uuid)
-        sender.sendTl("unmutedPlayer", "user" to user.name)
+        sender.sendTl("unmutedPlayer", user.name)
     }
 }

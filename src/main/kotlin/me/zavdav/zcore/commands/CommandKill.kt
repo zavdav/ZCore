@@ -27,7 +27,7 @@ class CommandKill : AbstractCommand(
         assert(isSelf || sender.isAuthorized("zcore.kill.others"), "noPermission")
         target.health = 0
 
-        if (!isSelf) sender.sendTl("killedOther", target)
+        if (!isSelf) sender.sendTl("killedOther", target.name)
         target.sendTl("killed")
     }
 }

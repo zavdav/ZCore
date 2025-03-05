@@ -50,7 +50,7 @@ object Backup {
             }
 
             val time = System.currentTimeMillis() - start
-            sender.sendTl("backupSuccess", "file" to folder.name, "millis" to time)
+            sender.sendTl("backupSuccess", folder.name, time)
         } catch (e: Exception) {
             e.printStackTrace()
             throw CommandException(tl("backupFailed"))

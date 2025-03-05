@@ -27,20 +27,20 @@ class CommandSetHome : AbstractCommand(
 
         val player = sender as Player
         val user = User.from(player)
-        val limit = Config.multipleHomes
         val homeCount = user.getHomes().size
 
         if (!sender.isAuthorized("zcore.sethome.unlimited")) {
             if (!sender.isAuthorized("zcore.sethome.multiple")) {
-                assert(homeCount == 0, "homeLimit", "amount" to 1)
+                assert(homeCount == 0, "homeLimit", 1)
             } else {
-                assert(homeCount < limit, "homeLimit", "amount" to limit)
+                val limit = Config.multipleHomes
+                assert(homeCount < limit, "homeLimit", limit)
             }
         }
 
-        assert(!user.homeExists(homeName), "homeAlreadyExists", "home" to homeName)
+        assert(!user.homeExists(homeName), "homeAlreadyExists", homeName)
         charge(player)
         user.addHome(homeName, sender.location)
-        sender.sendTl("setHome", "home" to homeName)
+        sender.sendTl("setHome", homeName)
     }
 }

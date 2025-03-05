@@ -24,7 +24,7 @@ class CommandTpDeny : AbstractCommand(
 
         user.tpRequest = null
         val target = request!!.first
-        player.sendTl("deniedTpRequest", target)
-        target.sendTl("otherDeniedRequest", player)
+        player.sendTl("deniedTpRequest", target.name)
+        target.sendTl("otherDeniedRequest", player.name)
     }
 }

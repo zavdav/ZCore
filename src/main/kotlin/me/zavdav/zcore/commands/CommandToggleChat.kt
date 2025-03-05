@@ -32,7 +32,7 @@ class CommandToggleChat : AbstractCommand(
         user.seesChat = !user.seesChat
 
         if (!isSelf) {
-            sender.sendTl(if (user.seesChat) "enabledChatOther" else "disabledChatOther", user.player)
+            sender.sendTl(if (user.seesChat) "enabledChatOther" else "disabledChatOther", user.player.name)
         }
         user.player.sendTl(if (user.seesChat) "enabledChat" else "disabledChat")
     }

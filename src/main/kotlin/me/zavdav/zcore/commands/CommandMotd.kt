@@ -21,8 +21,9 @@ class CommandMotd : AbstractCommand(
         val player = sender as Player
         val motd = Config.motd.toMutableList()
         for (i in motd.indices) {
-            motd[i] = format(motd[i], player, "playerlist" to Bukkit.getOnlinePlayers()
-                .map { it.displayName }.sorted().joinToString(", "))
+            motd[i] = format(motd[i],
+                "name" to player.name, "displayname" to player.displayName,
+                "list" to Bukkit.getOnlinePlayers().map { it.displayName }.sorted().joinToString(", "))
 
             player.sendMessage(motd[i])
         }

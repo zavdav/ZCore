@@ -64,14 +64,14 @@ fun CommandSender.isAuthorized(permission: String): Boolean {
 fun String.trimTo100(): String =
     if (length <= 100) this else substring(0, 100)
 
-fun Player.kick(key: String, vararg pairs: Pair<String, Any>) =
-    kickPlayer(tl(key, *pairs).trimTo100())
+fun Player.kick(key: String, vararg args: Any) =
+    kickPlayer(tl(key, *args).trimTo100())
 
-fun PlayerLoginEvent.kickBanned(key: String, vararg pairs: Pair<String, Any>) =
-    disallow(PlayerLoginEvent.Result.KICK_BANNED, tl(key, *pairs).trimTo100())
+fun PlayerLoginEvent.kickBanned(key: String, vararg args: Any) =
+    disallow(PlayerLoginEvent.Result.KICK_BANNED, tl(key, *args).trimTo100())
 
-fun PlayerLoginEvent.kickBannedIP(key: String, vararg pairs: Pair<String, Any>) =
-    disallow(PlayerLoginEvent.Result.KICK_BANNED_IP, tl(key, *pairs).trimTo100())
+fun PlayerLoginEvent.kickBannedIP(key: String, vararg args: Any) =
+    disallow(PlayerLoginEvent.Result.KICK_BANNED_IP, tl(key, *args).trimTo100())
 
 fun updateVanishedPlayers() {
     for (target in Bukkit.getOnlinePlayers()) {
@@ -89,7 +89,8 @@ fun updateVanishedPlayers() {
 fun notifySocialSpy(player: Player, commandLine: String) {
     for (target in Bukkit.getOnlinePlayers()) {
         if (User.from(target).socialSpy) {
-            target.send(Config.socialSpy, player, "command" to commandLine)
+            target.send(Config.socialSpy,
+                "name" to player.name, "displayname" to player.displayName, "command" to commandLine)
         }
     }
 }

@@ -22,7 +22,7 @@ class CommandSummon : AbstractCommand(
     override fun execute(sender: CommandSender, args: List<String>) {
         val player = sender as Player
         val type = args[0].lowercase()
-        assert(type in types.keys, "mobNotFound", "mob" to type)
+        assert(type in types.keys, "mobNotFound", type)
 
         val creatureType = types[type]!!
         var amount = 1
@@ -34,6 +34,6 @@ class CommandSummon : AbstractCommand(
         repeat(amount) {
             player.world.spawnCreature(targetBlock.location, creatureType)
         }
-        player.sendTl("summonedMob", "amount" to amount, "mob" to creatureType.name)
+        player.sendTl("summonedMob", amount, creatureType.name)
     }
 }

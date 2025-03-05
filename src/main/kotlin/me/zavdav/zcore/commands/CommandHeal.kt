@@ -28,7 +28,7 @@ class CommandHeal : AbstractCommand(
         if (isSelf) charge(player)
         target.health = 20
 
-        if (!isSelf) sender.sendTl("healedOther", target)
+        if (!isSelf) sender.sendTl("healedOther", target.name)
         target.sendTl("healed")
     }
 }

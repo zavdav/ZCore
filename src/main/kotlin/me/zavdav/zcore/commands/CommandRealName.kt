@@ -25,10 +25,10 @@ class CommandRealName : AbstractCommand(
                 .replace("§([0-9a-f])".toRegex(), "")
 
             if (string.equals(nickname, true)) {
-                sender.sendTl("realName", user.player)
+                sender.sendTl("realName", user.player.displayName, user.player.name)
                 matches++
             }
         }
-        assert(matches > 0, "nickNotFound", "nickname" to string)
+        assert(matches > 0, "nickNotFound", string)
     }
 }

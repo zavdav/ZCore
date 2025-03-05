@@ -38,7 +38,8 @@ class PlayerListener : Listener {
 
         if (isFirstJoin) {
             user.firstJoin = System.currentTimeMillis()
-            broadcast(Config.firstJoinMessage, event.player)
+            broadcast(Config.firstJoinMessage,
+                "name" to event.player.name, "displayname" to event.player.displayName)
             val spawn = Spawnpoints.getSpawn(event.player.world)
             if (spawn != null) event.player.teleport(spawn)
         }
@@ -60,7 +61,8 @@ class PlayerListener : Listener {
             event.player.sendTl("newMail")
         }
 
-        event.joinMessage = format(Config.joinMsg, event.player)
+        event.joinMessage = format(Config.joinMsg,
+            "name" to event.player.name, "displayname" to event.player.displayName)
     }
 
     @EventHandler(priority = Event.Priority.Low)
@@ -79,14 +81,16 @@ class PlayerListener : Listener {
         user.banExempt = event.player.isAuthorized("zcore.ban.exempt")
         user.muteExempt = event.player.isAuthorized("zcore.mute.exempt")
 
-        event.quitMessage = format(Config.leaveMsg, event.player)
+        event.quitMessage = format(Config.leaveMsg,
+            "name" to event.player.name, "displayname" to event.player.displayName)
     }
 
     @EventHandler(ignoreCancelled = true, priority = Event.Priority.Low)
     fun onPlayerKick(event: PlayerKickEvent) {
         val isBanned = Punishments.isPlayerBanned(event.player.uniqueId)
                     || Punishments.isIPBanned(event.player.address.address.hostAddress)
-        event.leaveMessage = format(if (isBanned) Config.banMsg else Config.kickMsg, event.player)
+        event.leaveMessage = format(if (isBanned) Config.banMsg else Config.kickMsg,
+            "name" to event.player.name, "displayname" to event.player.displayName)
     }
 
     @EventHandler(ignoreCancelled = true)

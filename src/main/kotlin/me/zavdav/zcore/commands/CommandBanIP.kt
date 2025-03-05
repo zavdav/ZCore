@@ -50,12 +50,9 @@ class CommandBanIP : AbstractCommand(
         Punishments.banIP(ip, (sender as? Player)?.uniqueId, duration, reason)
 
         if (duration == null) {
-            sender.sendTl("bannedIp", "ip" to ip, "reason" to reason)
+            sender.sendTl("bannedIp", ip, reason)
         } else {
-            sender.sendTl("tempBannedIp",
-                "ip" to ip,
-                "duration" to formatDuration(duration * 1000),
-                "reason" to reason)
+            sender.sendTl("tempBannedIp", ip, formatDuration(duration * 1000), reason)
         }
     }
 }

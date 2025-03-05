@@ -33,7 +33,7 @@ class CommandVanish : AbstractCommand(
         updateVanishedPlayers()
 
         if (!isSelf) {
-            sender.sendTl(if (user.isVanished) "enabledVanishOther" else "disabledVanishOther", user.player)
+            sender.sendTl(if (user.isVanished) "enabledVanishOther" else "disabledVanishOther", user.player.name)
         }
         user.player.sendTl(if (user.isVanished) "enabledVanish" else "disabledVanish")
     }

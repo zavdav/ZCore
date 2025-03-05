@@ -23,9 +23,9 @@ class CommandUnban : AbstractCommand(
     override fun execute(sender: CommandSender, args: List<String>) {
         val uuid = getUUIDFromString(args[0])
         val name = if (UserMap.isUserKnown(uuid)) User.from(uuid).name else uuid
-        assert(Punishments.isPlayerBanned(uuid), "userNotBanned", "user" to name)
+        assert(Punishments.isPlayerBanned(uuid), "userNotBanned", name)
 
         Punishments.unbanPlayer(uuid)
-        sender.sendTl("unbannedPlayer", "user" to name)
+        sender.sendTl("unbannedPlayer", name)
     }
 }

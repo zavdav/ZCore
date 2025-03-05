@@ -47,16 +47,16 @@ class CommandNick : AbstractCommand(
         val rawNick = user.getNick()
         if (!isSelf) {
             if (reset) {
-                sender.sendTl("resetNickOther", target)
+                sender.sendTl("resetNickOther", target.name)
             } else {
-                sender.sendTl("setNickOther", target, "nickname" to rawNick)
+                sender.sendTl("setNickOther", target.name, rawNick)
             }
         }
 
         if (reset) {
             target.sendTl("resetNick")
         } else {
-            target.sendTl("setNick", "nickname" to rawNick)
+            target.sendTl("setNick", rawNick)
         }
     }
 }

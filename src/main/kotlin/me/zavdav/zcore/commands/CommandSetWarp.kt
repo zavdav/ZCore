@@ -19,9 +19,9 @@ class CommandSetWarp : AbstractCommand(
     override fun execute(sender: CommandSender, args: List<String>) {
         val warpName = args[0]
         assert(warpName.matches("^[a-zA-Z0-9_-]+$".toRegex()), "invalidWarpName")
-        assert(!Warps.warpExists(warpName), "warpAlreadyExists", "warp" to warpName)
+        assert(!Warps.warpExists(warpName), "warpAlreadyExists", warpName)
 
         Warps.setWarp(warpName, (sender as Player).location)
-        sender.sendTl("setWarp", "warp" to warpName)
+        sender.sendTl("setWarp", warpName)
     }
 }
