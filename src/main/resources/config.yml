@@ -10,7 +10,7 @@
 
 # The config version
 # This should never be changed manually.
-configVersion: 20250305
+configVersion: 20250306
 
 # The prefix that will be applied to most messages
 prefix: "&5» "
@@ -137,9 +137,11 @@ homesPerPage: 50
 # └───────────────────────────┘
 
 # After how long will inactive players be marked as AFK
+# Set to -1 to disable
 afkTime: 300
 
 # After how long will AFK players be kicked
+# Set to -1 to disable
 afkKickTime: 1800
 
 # Makes AFK players invincible and freezes them in place

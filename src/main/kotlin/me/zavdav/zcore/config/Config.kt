@@ -182,10 +182,10 @@ object Config {
         get() = getInt("homesPerPage", 1..Int.MAX_VALUE, 50)
 
     val afkTime: Int
-        get() = getInt("afkTime", 1..Int.MAX_VALUE, 300)
+        get() = getInt("afkTime", -1..Int.MAX_VALUE, 300)
 
     val afkKickTime: Int
-        get() = getInt("afkKickTime", 1..Int.MAX_VALUE, 1800)
+        get() = getInt("afkKickTime", -1..Int.MAX_VALUE, 1800)
 
     val protectAfkPlayers: Boolean
         get() = getBoolean("protectAfkPlayers", false)

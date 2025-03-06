@@ -120,10 +120,13 @@ class User private constructor(uuid: UUID) : UserData(uuid) {
     fun checkIsAfk() {
         if (!isOnline) return
 
-        if (!isAfk && System.currentTimeMillis() - lastSeen >= Config.afkTime * 1000) {
+        if (!isAfk && Config.afkTime != -1 &&
+            System.currentTimeMillis() - lastSeen >= Config.afkTime * 1000)
+        {
             setInactive()
         }
-        if (isAfk && System.currentTimeMillis() - lastSeen >= Config.afkKickTime * 1000 &&
+        if (isAfk && Config.afkKickTime != -1 &&
+            System.currentTimeMillis() - lastSeen >= Config.afkKickTime * 1000 &&
             !player.isAuthorized("zcore.afk.kick.exempt"))
         {
             player.kick("afkKickReason")
