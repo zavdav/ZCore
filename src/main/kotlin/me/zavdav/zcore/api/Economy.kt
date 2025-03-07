@@ -88,6 +88,32 @@ object Economy {
     }
 
     /**
+     * Multiplies a player's balance with a factor, rounded to 2 decimal places.
+     *
+     * @param uuid the player's UUID
+     * @param amount the factor to multiply with
+     * @throws [UnknownUserException] if the player does not exist
+     * @throws [BalanceOutOfBoundsException] if the new balance would be higher than the maximum balance
+     */
+    @JvmStatic
+    fun multiplyBalance(uuid: UUID, amount: Double) {
+        setBalance(uuid, getBalance(uuid) * amount)
+    }
+
+    /**
+     * Divides a player's balance by a factor, rounded to 2 decimal places.
+     *
+     * @param uuid the player's UUID
+     * @param amount the factor to divide by
+     * @throws [UnknownUserException] if the player does not exist
+     * @throws [BalanceOutOfBoundsException] if the new balance would be higher than the maximum balance
+     */
+    @JvmStatic
+    fun divideBalance(uuid: UUID, amount: Double) {
+        setBalance(uuid, getBalance(uuid) / amount)
+    }
+
+    /**
      * Transfers an amount from one player to another player, rounded to 2 decimal places.
      *
      * @param sender the sender's UUID
@@ -112,10 +138,35 @@ object Economy {
      * @param uuid the player's UUID
      * @param amount the amount to check for
      * @return if the player has at least this amount in their account
+     * @throws [UnknownUserException] if the player does not exist
      */
     @JvmStatic
     fun hasEnough(uuid: UUID, amount: Double): Boolean =
         getBalance(uuid) >= amount.roundTo2()
+
+    /**
+     * Checks if a player's balance is greater than an amount.
+     *
+     * @param uuid the player's UUID
+     * @param amount the amount
+     * @return if the balance is greater than the amount
+     * @throws [UnknownUserException] if the player does not exist
+     */
+    @JvmStatic
+    fun hasOver(uuid: UUID, amount: Double): Boolean =
+        getBalance(uuid) > amount.roundTo2()
+
+    /**
+     * Checks if a player's balance is below an amount.
+     *
+     * @param uuid the player's UUID
+     * @param amount the amount
+     * @return if the balance is below the amount
+     * @throws [UnknownUserException] if the player does not exist
+     */
+    @JvmStatic
+    fun hasUnder(uuid: UUID, amount: Double): Boolean =
+        !hasEnough(uuid, amount)
 
     /**
      * Checks if an amount is higher than the maximum balance.

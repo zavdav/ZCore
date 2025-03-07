@@ -104,6 +104,63 @@ class EconomyTest : ZCoreTest {
     }
 
     @Test
+    fun `test multiplying balance`() {
+        val player1 = MockPlayer(UUID.randomUUID(), "Player1")
+        player1.joinServer()
+        val user1 = User.from(player1)
+
+        Economy.setBalance(user1.uuid, 5000.0)
+        assertEquals(5000.0, user1.balance)
+
+        Economy.multiplyBalance(user1.uuid, 3.0)
+        assertEquals(15000.0, user1.balance)
+
+        Economy.multiplyBalance(user1.uuid, 0.5)
+        assertEquals(7500.0, user1.balance)
+
+        Economy.setBalance(user1.uuid, 500.0)
+        assertEquals(500.0, user1.balance)
+
+        Economy.multiplyBalance(user1.uuid, 1.125125)
+        assertEquals(562.56, user1.balance)
+
+        Economy.setBalance(user1.uuid, Config.maxBalance / 4)
+        assertThrows<BalanceOutOfBoundsException> {
+            Economy.multiplyBalance(user1.uuid, 4.01)
+        }
+        assertDoesNotThrow {
+            Economy.addBalance(user1.uuid, 4.0)
+        }
+    }
+
+    @Test
+    fun `test dividing balance`() {
+        val player1 = MockPlayer(UUID.randomUUID(), "Player1")
+        player1.joinServer()
+        val user1 = User.from(player1)
+
+        Economy.setBalance(user1.uuid, 5000.0)
+        assertEquals(5000.0, user1.balance)
+
+        Economy.divideBalance(user1.uuid, 5.0)
+        assertEquals(1000.0, user1.balance)
+
+        Economy.divideBalance(user1.uuid, 0.5)
+        assertEquals(2000.0, user1.balance)
+
+        Economy.setBalance(user1.uuid, 6000.0)
+        assertEquals(6000.0, user1.balance)
+
+        Economy.divideBalance(user1.uuid, 1.55)
+        assertEquals(3870.97, user1.balance)
+
+        Economy.setBalance(user1.uuid, Config.maxBalance / 4)
+        assertThrows<BalanceOutOfBoundsException> {
+            Economy.divideBalance(user1.uuid, 0.249)
+        }
+    }
+
+    @Test
     fun `test transferring balance`() {
         val player1 = MockPlayer(UUID.randomUUID(), "Player1")
         val player2 = MockPlayer(UUID.randomUUID(), "Player2")
