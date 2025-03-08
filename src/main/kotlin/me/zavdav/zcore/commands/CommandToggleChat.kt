@@ -2,7 +2,7 @@ package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.getPlayerFromUsername
 import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.sendTl
@@ -28,7 +28,7 @@ class CommandToggleChat : AbstractCommand(
         }
 
         val isSelf = player.uniqueId == user.uuid
-        assert(isSelf || sender.isAuthorized("zcore.togglechat.others"), "noPermission")
+        sender.assertOrSend("noPermission") { isSelf || it.isAuthorized("zcore.togglechat.others") }
         user.seesChat = !user.seesChat
 
         if (!isSelf) {

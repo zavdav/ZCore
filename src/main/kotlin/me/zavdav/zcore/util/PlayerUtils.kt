@@ -20,15 +20,15 @@ val UUID_PATTERN: Pattern = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}
 val IPV4_PATTERN: Pattern = Pattern.compile("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")
 
 fun getPlayerFromUsername(name: String): Player {
-    if (name.isEmpty()) throw PlayerNotFoundException(name)
-    return Bukkit.matchPlayer(name).firstOrNull() ?: throw PlayerNotFoundException(name)
+    if (name.isEmpty()) throw MiscellaneousException(tl("playerNotFound", name))
+    return Bukkit.matchPlayer(name).firstOrNull() ?: throw MiscellaneousException(tl("playerNotFound", name))
 }
 
 fun getPlayerFromUUID(uuid: UUID): Player? =
     Bukkit.getOnlinePlayers().firstOrNull { it.uniqueId == uuid }
 
 fun getPlayerFromString(string: String): Player =
-    getPlayerFromUUID(getUUIDFromString(string)) ?: throw PlayerNotFoundException(string)
+    getPlayerFromUUID(getUUIDFromString(string)) ?: throw MiscellaneousException(tl("playerNotFound", string))
 
 fun getPlayersFromIP(ip: String): Set<Player> =
     Bukkit.getOnlinePlayers().filter { it.address.address.hostAddress == ip }.toSet()
@@ -42,7 +42,7 @@ fun getUUIDFromUsername(name: String): UUID {
     when (PoseidonUUID.getPlayerUUIDCacheStatus(name)) {
         UUIDType.ONLINE -> PoseidonUUID.getPlayerUUIDFromCache(name, true)
         UUIDType.OFFLINE -> PoseidonUUID.getPlayerUUIDFromCache(name, false)
-        else -> throw PlayerNotFoundException(name)
+        else -> throw MiscellaneousException(tl("playerNotFound", name))
     }
 }
 
@@ -59,6 +59,12 @@ fun CommandSender.isAuthorized(permission: String): Boolean {
         is ConsoleCommandSender -> true
         else -> false
     }
+}
+
+inline fun CommandSender.assertOrSend(key: String, vararg args: Any,
+                                      condition: (CommandSender) -> Boolean)
+{
+    if (!condition(this)) throw CommandException(this, tl(key, *args))
 }
 
 fun String.trimTo100(): String =

@@ -3,7 +3,7 @@ package me.zavdav.zcore.commands
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.colorize
 import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.joinArgs
@@ -27,7 +27,7 @@ class CommandR : AbstractCommand(
         val replyTo = user.replyTo
 
         if (user.checkIsMuted()) return
-        assert(replyTo != null && replyTo.isOnline, "noReply")
+        sender.assertOrSend("noReply") { replyTo?.isOnline == true }
         var message = joinArgs(args, 0)
 
         if (player.isAuthorized("zcore.msg.color")) message = colorize(message)

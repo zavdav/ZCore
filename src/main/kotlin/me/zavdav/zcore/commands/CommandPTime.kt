@@ -1,7 +1,7 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.commands.core.AbstractCommand
-import me.zavdav.zcore.util.InvalidSyntaxException
+import me.zavdav.zcore.util.CommandSyntaxException
 import me.zavdav.zcore.util.TimeTickParser
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.command.CommandSender
@@ -40,7 +40,7 @@ class CommandPTime : AbstractCommand(
                 sender.sendTl("resetPlayerTime")
                 return
             }
-            throw InvalidSyntaxException(this)
+            throw CommandSyntaxException(sender, this)
         }
 
         if (relative) {

@@ -3,8 +3,8 @@ package me.zavdav.zcore.commands
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.InvalidSyntaxException
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.CommandSyntaxException
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.getUUIDFromUsername
 import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.joinArgs
@@ -28,7 +28,7 @@ class CommandMail : AbstractCommand(
 
         when (args[0].lowercase()) {
             "read" -> {
-                assert(user.mails.isNotEmpty(), "noMail")
+                sender.assertOrSend("noMail") { user.mails.isNotEmpty() }
                 player.sendTl("readMail")
                 for (mail in user.mails) {
                     val fromUser = User.from(mail.first)
@@ -40,7 +40,7 @@ class CommandMail : AbstractCommand(
             }
             "send" -> {
                 if (user.checkIsMuted()) return
-                if (args.size < 3) throw InvalidSyntaxException(this)
+                if (args.size < 3) throw CommandSyntaxException(sender, this)
 
                 val uuid = getUUIDFromUsername(args[1])
                 val targetUser = User.from(uuid)
@@ -58,7 +58,7 @@ class CommandMail : AbstractCommand(
                 user.clearMail()
                 player.sendTl("clearedMail")
             }
-            else -> throw InvalidSyntaxException(this)
+            else -> throw CommandSyntaxException(sender, this)
         }
     }
 }

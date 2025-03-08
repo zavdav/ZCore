@@ -5,8 +5,7 @@ import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.Delay
-import me.zavdav.zcore.util.NoFundsException
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.command.CommandSender
@@ -25,7 +24,7 @@ class CommandTpAccept : AbstractCommand(
         val player = sender as Player
         val user = User.from(player)
         val request = user.tpRequest
-        assert(request != null, "noTpRequest")
+        sender.assertOrSend("noTpRequest") { request != null }
 
         val target = request!!.first
         val requestType = request.second
@@ -39,30 +38,18 @@ class CommandTpAccept : AbstractCommand(
                 target.sendTl("commencingTeleport", player.name, delay)
                 target.sendTl("doNotMove")
             }
-            Delay(target, delay) {
-                try {
-                    charge(target)
-                    target.teleport(player)
-                } catch (e: NoFundsException) {
-                    for (message in e.messages) {
-                        target.sendMessage(message)
-                    }
-                }
+            Delay(sender, target, delay) {
+                charge(target)
+                target.teleport(player)
             }
         } else {
             if (delay > 0) {
                 player.sendTl("commencingTeleport", target.name, delay)
                 player.sendTl("doNotMove")
             }
-            Delay(player, delay) {
-                try {
-                    charge(target)
-                    player.teleport(target)
-                } catch (e: NoFundsException) {
-                    for (message in e.messages) {
-                        target.sendMessage(message)
-                    }
-                }
+            Delay(target, player, delay) {
+                charge(target)
+                player.teleport(target)
             }
         }
     }

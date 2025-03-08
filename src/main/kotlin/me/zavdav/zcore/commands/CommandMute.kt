@@ -4,7 +4,7 @@ import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.TIME_PATTERN
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.formatDuration
 import me.zavdav.zcore.util.getUUIDFromUsername
 import me.zavdav.zcore.util.isAuthorized
@@ -29,13 +29,13 @@ class CommandMute : AbstractCommand(
         val uuid = getUUIDFromUsername(args[0])
         val name: String
 
-        assert(sender !is Player || sender.uniqueId != uuid, "cannotMuteSelf")
+        sender.assertOrSend("cannotMuteSelf") { it !is Player || it.uniqueId != uuid }
         val user = User.from(uuid)
         name = user.name
         if (user.isOnline) {
-            assert(!user.player.isAuthorized("zcore.mute.exempt"), "cannotMuteUser", name)
+            sender.assertOrSend("cannotMuteUser", name) { !user.player.isAuthorized("zcore.mute.exempt") }
         } else {
-            assert(!user.muteExempt, "cannotMuteUser", name)
+            sender.assertOrSend("cannotMuteUser", name) { !user.muteExempt }
         }
 
         val subArgs = joinArgs(args, 1, args.size)

@@ -61,7 +61,7 @@ class CommandTP : AbstractCommand(
             strings = strings.subList(1, strings.size)
         }
 
-        val coords = parseCoordinates(target, strings)
+        val coords = parseCoordinates(player, strings)
         target.teleport(Location(target.world, coords[0], coords[1], coords[2], target.location.yaw, target.location.pitch))
 
         val coordinates = "${coords[0].toFloat()}, ${coords[1].toFloat()}, ${coords[2].toFloat()}"
@@ -91,7 +91,7 @@ class CommandTP : AbstractCommand(
                     coords.add(loc.y)
                     computeY = true
                 } else {
-                    throw CommandException(tl("invalidCoords", args.joinToString(" ")))
+                    throw CommandException(player, tl("invalidCoords", args.joinToString(" ")))
                 }
             }
         }

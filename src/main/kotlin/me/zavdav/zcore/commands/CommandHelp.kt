@@ -3,7 +3,7 @@ package me.zavdav.zcore.commands
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.commands.core.CommandManager
 import me.zavdav.zcore.config.Config
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.joinArgs
 import me.zavdav.zcore.util.sendTl
@@ -31,11 +31,11 @@ class CommandHelp : AbstractCommand(
                 })
         }
 
-        val page = parseArgs(args, commands)
+        val page = parseArgs(sender, args, commands)
         printHelp(sender, page, commands)
     }
 
-    private fun parseArgs(args: List<String>, commands: MutableList<AbstractCommand>): Int {
+    private fun parseArgs(sender: CommandSender, args: List<String>, commands: MutableList<AbstractCommand>): Int {
         var page = 1
         if (args.isEmpty()) return page
 
@@ -46,10 +46,8 @@ class CommandHelp : AbstractCommand(
                 query = joinArgs(args, 0, args.lastIndex)
             }
 
-            commands.removeIf {
-                !it.name.contains(query, true) && !it.description.contains(query, true)
-            }
-            assert(commands.isNotEmpty(), "noMatchingResults")
+            commands.removeIf { !it.name.contains(query, true) && !it.description.contains(query, true) }
+            sender.assertOrSend("noMatchingResults") { commands.isNotEmpty() }
         } else {
             page = args[0].toInt().coerceAtLeast(1)
         }
@@ -60,7 +58,7 @@ class CommandHelp : AbstractCommand(
     private fun printHelp(sender: CommandSender, page: Int, commands: List<AbstractCommand>) {
         val commandsPerPage = Config.commandsPerPage
         val pages = ceil(commands.size.toDouble() / commandsPerPage).toInt()
-        assert(page <= pages, "pageTooHigh", page)
+        sender.assertOrSend("pageTooHigh", page) { page <= pages }
         sender.sendTl("helpPage", page, pages)
 
         for (i in (page * commandsPerPage - commandsPerPage)..<page * commandsPerPage) {

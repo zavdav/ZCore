@@ -5,7 +5,7 @@ import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.user.UserMap
 import me.zavdav.zcore.util.TIME_PATTERN
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.formatDuration
 import me.zavdav.zcore.util.getUUIDFromString
 import me.zavdav.zcore.util.isAuthorized
@@ -31,13 +31,13 @@ class CommandBan: AbstractCommand(
         var name = uuid.toString()
 
         if (UserMap.isUserKnown(uuid)) {
-            assert(sender !is Player || sender.uniqueId != uuid, "cannotBanSelf")
+            sender.assertOrSend("cannotBanSelf") { it !is Player || it.uniqueId != uuid }
             val user = User.from(uuid)
             name = user.name
             if (user.isOnline) {
-                assert(!user.player.isAuthorized("zcore.ban.exempt"), "cannotBanUser", name)
+                sender.assertOrSend("cannotBanUser", name) { !user.player.isAuthorized("zcore.ban.exempt") }
             } else {
-                assert(!user.banExempt, "cannotBanUser", name)
+                sender.assertOrSend("cannotBanUser", name) { !user.banExempt }
             }
         }
 

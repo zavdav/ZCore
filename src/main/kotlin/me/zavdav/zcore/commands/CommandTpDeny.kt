@@ -2,7 +2,7 @@ package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -20,7 +20,7 @@ class CommandTpDeny : AbstractCommand(
         val player = sender as Player
         val user = User.from(player)
         val request = user.tpRequest
-        assert(request != null, "noTpRequest")
+        sender.assertOrSend("noTpRequest") { request != null }
 
         user.tpRequest = null
         val target = request!!.first

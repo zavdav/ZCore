@@ -1,7 +1,7 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.commands.core.AbstractCommand
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.CreatureType
@@ -22,7 +22,7 @@ class CommandSummon : AbstractCommand(
     override fun execute(sender: CommandSender, args: List<String>) {
         val player = sender as Player
         val type = args[0].lowercase()
-        assert(type in types.keys, "mobNotFound", type)
+        sender.assertOrSend("mobNotFound", type) { type in types.keys }
 
         val creatureType = types[type]!!
         var amount = 1

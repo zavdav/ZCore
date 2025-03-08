@@ -1,7 +1,7 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.commands.core.AbstractCommand
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.getPlayerFromUsername
 import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.sendTl
@@ -24,7 +24,7 @@ class CommandClearInv : AbstractCommand(
         }
 
         val isSelf = player == target
-        assert(isSelf || sender.isAuthorized("zcore.clearinv.others"), "noPermission")
+        sender.assertOrSend("noPermission") { isSelf || it.isAuthorized("zcore.clearinv.others") }
         if (isSelf) charge(player)
         target.inventory.clear()
 

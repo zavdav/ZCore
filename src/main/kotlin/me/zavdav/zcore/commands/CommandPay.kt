@@ -4,7 +4,7 @@ import me.zavdav.zcore.api.Economy
 import me.zavdav.zcore.api.Economy.roundTo2
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.getUUIDFromString
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.command.CommandSender
@@ -24,7 +24,7 @@ class CommandPay : AbstractCommand(
         val receiving = User.from(getUUIDFromString(args[0]))
 
         val amount = args[1].toDoubleOrNull()?.roundTo2()
-        assert(amount != null && amount > 0, "invalidAmount", amount.toString())
+        sender.assertOrSend("invalidAmount", amount.toString()) { amount != null && amount > 0 }
         Economy.transferBalance(sending.uuid, receiving.uuid, amount!!)
 
         sender.sendTl("paidMoney", receiving.name, Economy.formatBalance(amount))

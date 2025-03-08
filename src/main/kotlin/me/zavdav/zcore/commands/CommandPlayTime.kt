@@ -2,7 +2,7 @@ package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.formatDuration
 import me.zavdav.zcore.util.getUUIDFromUsername
 import me.zavdav.zcore.util.isAuthorized
@@ -27,7 +27,7 @@ class CommandPlayTime : AbstractCommand(
         }
 
         val isSelf = player.uniqueId == uuid
-        assert(isSelf || sender.isAuthorized("zcore.playtime.others"), "noPermission")
+        sender.assertOrSend("noPermission") { isSelf || it.isAuthorized("zcore.playtime.others") }
         val user = User.from(uuid)
         if (user.isOnline) user.updatePlayTime()
 

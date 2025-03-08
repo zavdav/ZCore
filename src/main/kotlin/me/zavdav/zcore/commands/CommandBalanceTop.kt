@@ -31,7 +31,7 @@ class CommandBalanceTop : AbstractCommand(
 
             val balancesPerPage = Config.balancesPerPage
             val pages = ceil(players.size.toDouble() / balancesPerPage).toInt()
-            assert(page <= pages, AsyncCommandException(sender, tl("pageTooHigh", page)))
+            sender.assertOrSend("pageTooHigh", page) { page <= pages }
             sender.sendTl("balancetopPage", page, pages)
 
             for (i in (page * balancesPerPage - balancesPerPage)..<page * balancesPerPage) {

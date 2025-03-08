@@ -2,7 +2,7 @@ package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.colorize
 import me.zavdav.zcore.util.getPlayerFromUsername
 import me.zavdav.zcore.util.isAuthorized
@@ -31,7 +31,7 @@ class CommandNick : AbstractCommand(
         }
 
         val isSelf = player == target
-        assert(isSelf || sender.isAuthorized("zcore.nick.others"), "noPermission")
+        sender.assertOrSend("noPermission") { isSelf || it.isAuthorized("zcore.nick.others") }
         val reset = nickname.equals("reset", true) || nickname.equals(target.name, true)
         if (target.isAuthorized("zcore.nick.color")) nickname = colorize(nickname)
 

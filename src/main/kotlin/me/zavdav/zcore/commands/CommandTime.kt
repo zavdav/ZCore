@@ -1,9 +1,9 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.commands.core.AbstractCommand
-import me.zavdav.zcore.util.InvalidSyntaxException
+import me.zavdav.zcore.util.CommandSyntaxException
 import me.zavdav.zcore.util.TimeTickParser
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
@@ -31,13 +31,13 @@ class CommandTime : AbstractCommand(
         var world = (sender as Player).world
         if (args.size == 2) {
             world = Bukkit.getWorld(args[1])
-            assert(world != null, "worldNotFound", args[1])
+            sender.assertOrSend("worldNotFound", args[1]) { world != null }
         }
 
         val ticks = try {
             TimeTickParser.parse(args[0])
         } catch (_: NumberFormatException) {
-            throw InvalidSyntaxException(this)
+            throw CommandSyntaxException(sender, this)
         }
 
         world.time = ticks

@@ -25,7 +25,7 @@ fun getSafeHeight(loc: Location): Int {
     }
     while (isBlockUnsafe(world, x, y, z)) {
         y += 1
-        if (y > 127) throw UnsafeDestinationException()
+        if (y > 127) throw MiscellaneousException(tl("unsafeDestination"))
     }
     return y
 }

@@ -1,7 +1,7 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.commands.core.AbstractCommand
-import me.zavdav.zcore.util.InvalidSyntaxException
+import me.zavdav.zcore.util.CommandSyntaxException
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
@@ -35,7 +35,7 @@ class CommandWeather : AbstractCommand(
                 world.isThundering = true
                 sender.sendTl("thunderWeather")
             }
-            else -> throw InvalidSyntaxException(this)
+            else -> throw CommandSyntaxException(sender, this)
         }
     }
 }

@@ -4,7 +4,7 @@ import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.util.IPV4_PATTERN
 import me.zavdav.zcore.util.TIME_PATTERN
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.formatDuration
 import me.zavdav.zcore.util.getPlayerFromString
 import me.zavdav.zcore.util.joinArgs
@@ -34,7 +34,7 @@ class CommandBanIP : AbstractCommand(
                 player.address.address.hostAddress
             }
 
-        assert(sender !is Player || sender.address.address.hostAddress != ip, "cannotBanSelf")
+        sender.assertOrSend("cannotBanSelf") { it !is Player || it.address.address.hostAddress != ip }
         val subArgs = joinArgs(args , 1, args.size)
         val matcher = Pattern.compile("^${TIME_PATTERN.pattern()}").matcher(subArgs)
         val sb = StringBuilder()

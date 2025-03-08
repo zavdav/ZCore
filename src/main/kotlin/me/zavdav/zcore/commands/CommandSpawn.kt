@@ -4,7 +4,6 @@ import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.data.Spawnpoints
 import me.zavdav.zcore.util.Delay
-import me.zavdav.zcore.util.NoFundsException
 import me.zavdav.zcore.util.getSafeHeight
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.command.CommandSender
@@ -31,16 +30,10 @@ class CommandSpawn : AbstractCommand(
             sender.sendTl("commencingTeleport", loc.world.name, delay)
             sender.sendTl("doNotMove")
         }
-        Delay(player, delay) {
-            try {
-                charge(player)
-                player.teleport(loc)
-                player.sendTl("teleportedToSpawn", loc.world.name)
-            } catch (e: NoFundsException) {
-                for (message in e.messages) {
-                    player.sendMessage(message)
-                }
-            }
+        Delay(sender, player, delay) {
+            charge(player)
+            player.teleport(loc)
+            player.sendTl("teleportedToSpawn", loc.world.name)
         }
     }
 }

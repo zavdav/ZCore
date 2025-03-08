@@ -3,7 +3,7 @@ package me.zavdav.zcore.commands
 import me.zavdav.zcore.api.Economy
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.getUUIDFromString
 import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.sendTl
@@ -27,7 +27,7 @@ class CommandBalance : AbstractCommand(
         }
 
         val isSelf = player.uniqueId == uuid
-        assert(isSelf || sender.isAuthorized("zcore.balance.others"), "noPermission")
+        sender.assertOrSend("noPermission") { isSelf || it.isAuthorized("zcore.balance.others") }
         val amount = Economy.getBalance(uuid)
         val name = User.from(uuid).name
 

@@ -4,8 +4,7 @@ import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.data.Warps
 import me.zavdav.zcore.util.Delay
-import me.zavdav.zcore.util.NoFundsException
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -25,7 +24,7 @@ class CommandWarp : AbstractCommand(
         } else {
             val player = sender as Player
             var warpName = args[0]
-            assert(Warps.warpExists(warpName), "warpNotFound", warpName)
+            sender.assertOrSend("warpNotFound", warpName) { Warps.warpExists(warpName) }
 
             val location = Warps.getWarpLocation(warpName)
             val delay = Config.teleportDelay
@@ -35,16 +34,10 @@ class CommandWarp : AbstractCommand(
                 sender.sendTl("commencingTeleport", warpName, delay)
                 sender.sendTl("doNotMove")
             }
-            Delay(player, delay) {
-                try {
-                    charge(player)
-                    player.teleport(location)
-                    sender.sendTl("teleportedToWarp", warpName)
-                } catch (e: NoFundsException) {
-                    for (message in e.messages) {
-                        player.sendMessage(message)
-                    }
-                }
+            Delay(sender, player, delay) {
+                charge(player)
+                player.teleport(location)
+                sender.sendTl("teleportedToWarp", warpName)
             }
         }
     }

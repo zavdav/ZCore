@@ -24,19 +24,20 @@ class CommandKit : AbstractCommand(
         val kits = Kits.getKits().filter { player.isAuthorized("zcore.kit.${it.key}") }
 
         if (args.isEmpty()) {
-            assert(kits.isNotEmpty(), "noKits")
+            sender.assertOrSend("noKits") { kits.isNotEmpty() }
             sender.sendTl("kitList")
             sender.sendMessage(kits.keys.sorted().joinToString(", "))
         } else {
             val name = args[0].lowercase()
-            assert(name in kits.keys, "kitNotFound", name)
+            sender.assertOrSend("kitNotFound", name) { name in kits.keys }
             val kit = kits[name]!!
 
             user.checkKitCooldowns()
             val kitCooldown = user.kitCooldowns[kit.name]
             if (kitCooldown != null) {
-                assert(System.currentTimeMillis() > kitCooldown, "kitOnCooldown",
-                    name, formatDuration(kitCooldown - System.currentTimeMillis()))
+                sender.assertOrSend("kitOnCooldown", name,
+                                    formatDuration(kitCooldown - System.currentTimeMillis()))
+                { System.currentTimeMillis() > kitCooldown }
             }
 
             val currentInv = player.inventory.contents.map { it?.copy() }.toTypedArray()
@@ -44,13 +45,13 @@ class CommandKit : AbstractCommand(
             if (player.inventory.addItem(*items).isEmpty()) {
                 try {
                     charge(player, kit)
-                } catch (e: CommandException) {
+                } catch (e: EconomyException) {
                     player.inventory.contents = currentInv
                     throw e
                 }
             } else {
                 player.inventory.contents = currentInv
-                throw CommandException(tl("noInventorySpace"))
+                throw CommandException(sender, tl("noInventorySpace"))
             }
 
             if (kit.cooldown > 0) user.addKitCooldown(kit, kit.cooldown)

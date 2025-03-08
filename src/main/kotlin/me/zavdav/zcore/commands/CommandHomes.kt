@@ -3,7 +3,7 @@ package me.zavdav.zcore.commands
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.getUUIDFromUsername
 import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.sendTl
@@ -45,11 +45,13 @@ class CommandHomes : AbstractCommand(
             query = strings.getOrNull(1) ?: ""
         }
 
-        assert(player.uniqueId == user.uuid || sender.isAuthorized("zcore.homes.others"), "noPermission")
+        sender.assertOrSend("noPermission") {
+            player.uniqueId == user.uuid ||it.isAuthorized("zcore.homes.others")
+        }
         var homes = user.getHomes().sorted()
         if (page < 1) page = 1
         if (query != "") homes = homes.filter { it.startsWith(query, true) }
-        assert(homes.isNotEmpty(), "noMatchingResults")
+        sender.assertOrSend("noMatchingResults") { homes.isNotEmpty() }
 
         printHomes(sender, page, homes)
     }
@@ -57,7 +59,7 @@ class CommandHomes : AbstractCommand(
     private fun printHomes(sender: CommandSender, page: Int, homes: List<String>) {
         val homesPerPage = Config.homesPerPage
         val pages = ceil(homes.size.toDouble() / homesPerPage).toInt()
-        assert(page <= pages, "pageTooHigh", page)
+        sender.assertOrSend("pageTooHigh", page) { page <= pages }
         sender.sendTl("homesPage", page, pages)
 
         val sb = StringBuilder()

@@ -7,20 +7,25 @@ import me.zavdav.zcore.user.User
 import org.bukkit.command.CommandSender
 import java.util.UUID
 
-open class CommandException(vararg val messages: String) : RuntimeException()
+open class CommandException(val sender: CommandSender, errorMessage: String)
+: RuntimeException(null, null, false, false)
+{
+    init { sender.sendMessage(errorMessage) }
+}
 
-class AsyncCommandException(val sender: CommandSender, vararg messages: String) : CommandException(*messages)
+class CommandSyntaxException(sender: CommandSender, command: AbstractCommand)
+: CommandException(sender, command.description)
+{
+    init { sender.sendMessage("Syntax: ${command.syntax}") }
+}
 
-class InvalidSyntaxException(command: AbstractCommand) : CommandException(command.description, "Syntax: ${command.syntax}")
+open class EconomyException(val uuid: UUID, message: String) : Exception(message, null, false, false)
 
-class PlayerNotFoundException(val name: String) : CommandException(tl("playerNotFound", name))
+class UnknownUserException(uuid: UUID) : EconomyException(uuid, tl("unknownUser", uuid))
 
-class UnknownUserException(val uuid: UUID) : CommandException(tl("unknownUser", uuid))
+class NoFundsException(uuid: UUID) : EconomyException(uuid, tl("noFunds"))
 
-class NoFundsException : CommandException(tl("noFunds"))
+class BalanceOutOfBoundsException(uuid: UUID)
+: EconomyException(uuid, tl("balanceOutOfBounds", User.from(uuid).name, Economy.formatBalance(Config.maxBalance)))
 
-class BalanceOutOfBoundsException(val uuid: UUID) : CommandException(
-    tl("balanceOutOfBounds", User.from(uuid).name, Economy.formatBalance(Config.maxBalance))
-)
-
-class UnsafeDestinationException : CommandException(tl("unsafeDestination"))
+class MiscellaneousException(message: String): RuntimeException(message, null, false, false)

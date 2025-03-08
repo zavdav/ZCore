@@ -5,46 +5,30 @@ package me.zavdav.zcore.util
 import me.zavdav.zcore.ZCore
 import org.bukkit.Bukkit
 
-fun syncDelayedTask(runnable: Runnable): Int =
-    Bukkit.getScheduler().scheduleSyncDelayedTask(ZCore.INSTANCE, runnable)
+inline fun syncDelayedTask(crossinline block: () -> Any?): Int =
+    syncDelayedTask(0, block)
 
-fun syncDelayedTask(delay: Long, runnable: Runnable): Int =
-    Bukkit.getScheduler().scheduleSyncDelayedTask(ZCore.INSTANCE, runnable, delay)
+inline fun syncDelayedTask(delay: Long, crossinline block: () -> Any?): Int =
+    syncRepeatingTask(delay, -1, block)
 
-fun syncRepeatingTask(delay: Long, interval: Long, runnable: Runnable): Int =
-    Bukkit.getScheduler().scheduleSyncRepeatingTask(ZCore.INSTANCE, runnable, delay, interval)
-
-fun asyncDelayedTask(runnable: Runnable): Int =
-    Bukkit.getScheduler().scheduleAsyncDelayedTask(ZCore.INSTANCE) {
+inline fun syncRepeatingTask(delay: Long, interval: Long, crossinline block: () -> Any?): Int =
+    Bukkit.getScheduler().scheduleSyncRepeatingTask(ZCore.INSTANCE, {
         try {
-            runnable.run()
-        } catch (e: AsyncCommandException) {
-            for (message in e.messages) {
-                e.sender.sendMessage(message)
-            }
-        }
-    }
+            block()
+        } catch (_: CommandException) {}
+    }, delay, interval)
 
-fun asyncDelayedTask(delay: Long, runnable: Runnable): Int =
-    Bukkit.getScheduler().scheduleAsyncDelayedTask(ZCore.INSTANCE, {
-        try {
-            runnable.run()
-        } catch (e: AsyncCommandException) {
-            for (message in e.messages) {
-                e.sender.sendMessage(message)
-            }
-        }
-    }, delay)
+inline fun asyncDelayedTask(crossinline block: () -> Any?): Int =
+    asyncDelayedTask(0, block)
 
-fun asyncRepeatingTask(delay: Long, interval: Long, runnable: Runnable): Int =
+inline fun asyncDelayedTask(delay: Long, crossinline block: () -> Any?): Int =
+    asyncRepeatingTask(delay, -1, block)
+
+inline fun asyncRepeatingTask(delay: Long, interval: Long, crossinline block: () -> Any?): Int =
     Bukkit.getScheduler().scheduleAsyncRepeatingTask(ZCore.INSTANCE, {
         try {
-            runnable.run()
-        } catch (e: AsyncCommandException) {
-            for (message in e.messages) {
-                e.sender.sendMessage(message)
-            }
-        }
+            block()
+        } catch (_: CommandException) {}
     }, delay, interval)
 
 fun cancelTask(taskId: Int) = Bukkit.getScheduler().cancelTask(taskId)

@@ -2,7 +2,7 @@ package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Items
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.getPlayerFromUsername
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.command.CommandSender
@@ -23,7 +23,7 @@ class CommandGive : AbstractCommand(
         val target = getPlayerFromUsername(args[0])
 
         val itemStack = Items.get(args[1]) ?: Items.itemFromString(args[1])
-        assert(itemStack != null, "unknownItem", args[1])
+        sender.assertOrSend("unknownItem", args[1]) { itemStack != null }
         if (args.size == 3 && args[2].toIntOrNull() != null) {
             itemStack!!.amount = args[2].toInt().coerceAtLeast(1)
         }

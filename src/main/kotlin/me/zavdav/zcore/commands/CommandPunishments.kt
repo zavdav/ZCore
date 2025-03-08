@@ -7,7 +7,7 @@ import me.zavdav.zcore.data.IPBan
 import me.zavdav.zcore.data.Mute
 import me.zavdav.zcore.data.Punishment
 import me.zavdav.zcore.util.IPV4_PATTERN
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.formatDuration
 import me.zavdav.zcore.util.formatEpoch
 import me.zavdav.zcore.util.getUUIDFromString
@@ -40,7 +40,7 @@ class CommandPunishments : AbstractCommand(
             punishments = (Punishments.getMutes(uuid) + Punishments.getBans(uuid)).sortedBy { it.timeIssued }
         }
 
-        assert(punishments.isNotEmpty(), "noPunishments", name)
+        sender.assertOrSend("noPunishments", name) { punishments.isNotEmpty() }
         var page = 1
         if (args.size == 2) {
             page = (args[1].toIntOrNull() ?: 1).coerceAtLeast(1)
@@ -50,7 +50,7 @@ class CommandPunishments : AbstractCommand(
 
     private fun printPunishments(sender: CommandSender, page: Int, punishments: List<Punishment>) {
         val pages = ceil(punishments.size.toDouble() / 2).toInt()
-        assert(page <= pages, "pageTooHigh", page)
+        sender.assertOrSend("pageTooHigh", page) { page <= pages }
         sender.sendTl("punishmentsPage", page, pages)
 
         for (i in (page * 2 - 2)..<page * 2) {

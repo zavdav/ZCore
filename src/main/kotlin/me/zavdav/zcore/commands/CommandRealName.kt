@@ -2,7 +2,7 @@ package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
@@ -29,6 +29,6 @@ class CommandRealName : AbstractCommand(
                 matches++
             }
         }
-        assert(matches > 0, "nickNotFound", string)
+        sender.assertOrSend("nickNotFound", string) { matches > 0 }
     }
 }

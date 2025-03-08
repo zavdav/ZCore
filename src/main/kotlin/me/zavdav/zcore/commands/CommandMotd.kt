@@ -2,7 +2,7 @@ package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Config
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.format
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
@@ -17,7 +17,7 @@ class CommandMotd : AbstractCommand(
 ) {
 
     override fun execute(sender: CommandSender, args: List<String>) {
-        assert(Config.motd.isNotEmpty(), "noMotd")
+        sender.assertOrSend("noMotd") { Config.motd.isNotEmpty() }
         val player = sender as Player
         val motd = Config.motd.toMutableList()
         for (i in motd.indices) {

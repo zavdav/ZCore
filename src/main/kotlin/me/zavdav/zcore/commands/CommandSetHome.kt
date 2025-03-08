@@ -3,7 +3,7 @@ package me.zavdav.zcore.commands
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.command.CommandSender
@@ -21,7 +21,7 @@ class CommandSetHome : AbstractCommand(
     override fun execute(sender: CommandSender, args: List<String>) {
         var homeName = "main"
         if (args.isNotEmpty()) {
-            assert(args[0].matches("^[a-zA-Z0-9_-]+$".toRegex()), "invalidHomeName")
+            sender.assertOrSend("invalidHomeName") { args[0].matches("^[a-zA-Z0-9_-]+$".toRegex()) }
             homeName = args[0]
         }
 
@@ -31,14 +31,14 @@ class CommandSetHome : AbstractCommand(
 
         if (!sender.isAuthorized("zcore.sethome.unlimited")) {
             if (!sender.isAuthorized("zcore.sethome.multiple")) {
-                assert(homeCount == 0, "homeLimit", 1)
+                sender.assertOrSend("homeLimit", 1) { homeCount == 0 }
             } else {
                 val limit = Config.multipleHomes
-                assert(homeCount < limit, "homeLimit", limit)
+                sender.assertOrSend("homeLimit", limit) { homeCount < limit }
             }
         }
 
-        assert(!user.homeExists(homeName), "homeAlreadyExists", homeName)
+        sender.assertOrSend("homeAlreadyExists", homeName) { !user.homeExists(homeName) }
         charge(player)
         user.addHome(homeName, sender.location)
         sender.sendTl("setHome", homeName)

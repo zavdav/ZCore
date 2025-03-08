@@ -4,7 +4,7 @@ import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.user.UserMap
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.getUUIDFromString
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.command.CommandSender
@@ -23,7 +23,7 @@ class CommandUnban : AbstractCommand(
     override fun execute(sender: CommandSender, args: List<String>) {
         val uuid = getUUIDFromString(args[0])
         val name = if (UserMap.isUserKnown(uuid)) User.from(uuid).name else uuid
-        assert(Punishments.isPlayerBanned(uuid), "userNotBanned", name)
+        sender.assertOrSend("userNotBanned", name) { Punishments.isPlayerBanned(uuid) }
 
         Punishments.unbanPlayer(uuid)
         sender.sendTl("unbannedPlayer", name)

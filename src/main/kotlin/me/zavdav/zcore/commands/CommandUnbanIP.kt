@@ -3,7 +3,7 @@ package me.zavdav.zcore.commands
 import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.util.IPV4_PATTERN
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.getUUIDFromString
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.command.CommandSender
@@ -26,11 +26,11 @@ class CommandUnbanIP : AbstractCommand(
             } else {
                 val uuid = getUUIDFromString(args[0])
                 val ipBan = Punishments.getIPBan(uuid)
-                assert(ipBan != null, "ipNotBanned", uuid)
+                sender.assertOrSend("ipNotBanned", uuid) { ipBan != null }
                 ipBan!!.ip
             }
 
-        assert(Punishments.isIPBanned(ip), "ipNotBanned", ip)
+        sender.assertOrSend("ipNotBanned", ip) { Punishments.isIPBanned(ip) }
         Punishments.unbanIP(ip)
         sender.sendTl("unbannedIp", ip)
     }

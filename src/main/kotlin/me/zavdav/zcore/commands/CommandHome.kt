@@ -2,7 +2,7 @@ package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.getUUIDFromUsername
 import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.sendTl
@@ -25,16 +25,16 @@ class CommandHome : AbstractCommand(
         var homeName = args[0]
 
         if (":" in homeName) {
-            assert(sender.isAuthorized("zcore.home.others"), "noPermission")
+            sender.assertOrSend("noPermission") { it.isAuthorized("zcore.home.others") }
             val strings = args[0].split(":", limit = 2)
-            assert(strings[1].isNotEmpty(), "noHomeSpecified")
+            sender.assertOrSend("noHomeSpecified") { strings[1].isNotEmpty() }
 
             val uuid = getUUIDFromUsername(strings[0])
             user = User.from(uuid)
             homeName = strings[1]
         }
 
-        assert(user.homeExists(homeName), "homeNotFound", homeName)
+        sender.assertOrSend("homeNotFound", homeName) { user.homeExists(homeName) }
         val location = user.getHomeLocation(homeName)
         val isSelf = player.uniqueId == user.uuid
         if (isSelf) charge(player)

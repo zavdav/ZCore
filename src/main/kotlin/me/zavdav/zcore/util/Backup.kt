@@ -53,7 +53,7 @@ object Backup {
             sender.sendTl("backupSuccess", folder.name, time)
         } catch (e: Exception) {
             e.printStackTrace()
-            throw CommandException(tl("backupFailed"))
+            throw CommandException(sender, tl("backupFailed"))
         }
     }
 }

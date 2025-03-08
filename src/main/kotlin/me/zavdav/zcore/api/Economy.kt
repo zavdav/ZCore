@@ -83,7 +83,7 @@ object Economy {
      */
     @JvmStatic
     fun subtractBalance(uuid: UUID, amount: Double) {
-        if (!hasEnough(uuid, amount)) throw NoFundsException()
+        if (!hasEnough(uuid, amount)) throw NoFundsException(uuid)
         setBalance(uuid, getBalance(uuid) - amount.roundTo2())
     }
 

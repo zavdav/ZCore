@@ -4,7 +4,7 @@ import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.Delay
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.getPlayerFromUsername
 import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.sendTl
@@ -25,7 +25,7 @@ class CommandAFK : AbstractCommand(
             target = getPlayerFromUsername(args[0])
         }
 
-        assert(sender == target || sender.isAuthorized("zcore.afk.others"), "noPermission")
+        sender.assertOrSend("noPermission") { it == target || it.isAuthorized("zcore.afk.others") }
         val user = User.from(target)
 
         if (user.isAfk) {
@@ -35,7 +35,7 @@ class CommandAFK : AbstractCommand(
             target.sendTl("commencingAfk", delay)
             target.sendTl("doNotMove")
 
-            Delay(target, delay) { if (!user.isAfk) user.setInactive() }
+            Delay(sender, target, delay) { if (!user.isAfk) user.setInactive() }
         } else {
             user.setInactive()
         }

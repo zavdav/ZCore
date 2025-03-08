@@ -2,7 +2,7 @@ package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.getUUIDFromUsername
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.command.CommandSender
@@ -20,7 +20,7 @@ class CommandIgnore : AbstractCommand(
     override fun execute(sender: CommandSender, args: List<String>) {
         val user = User.from(sender as Player)
         val uuid = getUUIDFromUsername(args[0])
-        assert(user.uuid != uuid, "cannotIgnoreSelf")
+        sender.assertOrSend("cannotIgnoreSelf") { user.uuid != uuid }
 
         if (uuid in user.ignores) {
             user.setIgnored(uuid, false)

@@ -4,8 +4,8 @@ import me.zavdav.zcore.api.Economy
 import me.zavdav.zcore.api.Economy.roundTo2
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
-import me.zavdav.zcore.util.InvalidSyntaxException
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.CommandSyntaxException
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.getUUIDFromString
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.command.CommandSender
@@ -24,7 +24,7 @@ class CommandEconomy : AbstractCommand(
         val uuid = getUUIDFromString(args[1])
         val name = User.from(uuid).name
         var amount = args[2].toDoubleOrNull()?.roundTo2()
-        assert(amount != null && amount >= 0, "invalidAmount", amount.toString())
+        sender.assertOrSend ("invalidAmount", amount.toString()){ amount != null && amount >= 0 }
 
         when (args[0].lowercase()) {
             "set" -> {
@@ -40,7 +40,7 @@ class CommandEconomy : AbstractCommand(
                 Economy.subtractBalance(uuid, amount)
                 sender.sendTl("tookMoney", Economy.formatBalance(amount), name)
             }
-            else -> throw InvalidSyntaxException(this)
+            else -> throw CommandSyntaxException(sender, this)
         }
     }
 }

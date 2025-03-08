@@ -1,7 +1,7 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.commands.core.AbstractCommand
-import me.zavdav.zcore.util.assert
+import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.colorize
 import me.zavdav.zcore.util.getPlayerFromUsername
 import me.zavdav.zcore.util.isAuthorized
@@ -22,7 +22,9 @@ class CommandKick : AbstractCommand(
 
     override fun execute(sender: CommandSender, args: List<String>) {
         val target = getPlayerFromUsername(args[0])
-        assert(sender == target || !target.isAuthorized("zcore.kick.exempt"), "cannotKickPlayer", target.name)
+        sender.assertOrSend("cannotKickPlayer", target.name) {
+            it == target || !target.isAuthorized("zcore.kick.exempt")
+        }
         val reason = colorize(if (args.size > 1) joinArgs(args, 1) else tl("kickReason"))
 
         target.kick("kickScreen", reason)
