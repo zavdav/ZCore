@@ -176,6 +176,8 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData("userda
 
     fun getHomeLocation(name: String): Location? {
         val location = getHome(name) ?: return null
+        location.x = location.blockX + 0.5
+        location.z = location.blockZ + 0.5
         location.y = getSafeHeight(location).toDouble()
         return location
     }
