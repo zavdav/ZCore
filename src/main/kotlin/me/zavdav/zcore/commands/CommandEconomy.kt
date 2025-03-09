@@ -15,9 +15,10 @@ class CommandEconomy : AbstractCommand(
     "Modifies a player's balance.",
     "/economy <set|give|take> <player> <amount>",
     "zcore.economy",
-    minArgs = 3,
-    maxArgs = 3,
-    aliases = listOf("eco")
+    false,
+    3,
+    3,
+    listOf("eco")
 ) {
 
     override fun execute(sender: CommandSender, args: List<String>) {
