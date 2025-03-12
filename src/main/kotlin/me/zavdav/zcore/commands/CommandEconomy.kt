@@ -1,7 +1,6 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.api.Economy
-import me.zavdav.zcore.api.Economy.roundTo2
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.CommandSyntaxException
@@ -9,6 +8,7 @@ import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.getUUIDFromString
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.command.CommandSender
+import java.math.BigDecimal
 
 class CommandEconomy : AbstractCommand(
     "economy",
@@ -24,8 +24,8 @@ class CommandEconomy : AbstractCommand(
     override fun execute(sender: CommandSender, args: List<String>) {
         val uuid = getUUIDFromString(args[1])
         val name = User.from(uuid).name
-        var amount = args[2].toDoubleOrNull()?.roundTo2()
-        sender.assertOrSend ("invalidAmount", amount.toString()){ amount != null && amount >= 0 }
+        var amount = args[2].toBigDecimalOrNull()
+        sender.assertOrSend ("invalidAmount", args[2]){ amount != null && amount >= BigDecimal.ZERO }
 
         when (args[0].lowercase()) {
             "set" -> {

@@ -1,6 +1,7 @@
 package me.zavdav.zcore.data
 
 import org.bukkit.inventory.ItemStack
+import java.math.BigDecimal
 import java.util.UUID
 
 interface Punishment {
@@ -42,6 +43,6 @@ class IPBan(
 class Kit(
     val name: String,
     val items: Array<out ItemStack>,
-    val cost: Double,
+    val cost: BigDecimal,
     val cooldown: Int
 )

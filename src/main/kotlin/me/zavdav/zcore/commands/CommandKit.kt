@@ -1,6 +1,7 @@
 package me.zavdav.zcore.commands
 
 import me.zavdav.zcore.api.Economy
+import me.zavdav.zcore.api.EconomyException
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.config.Kits
 import me.zavdav.zcore.data.Kit
@@ -9,6 +10,7 @@ import me.zavdav.zcore.util.*
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import java.math.BigDecimal
 
 class CommandKit : AbstractCommand(
     "kit",
@@ -60,7 +62,7 @@ class CommandKit : AbstractCommand(
     }
 
     private fun charge(player: Player, kit: Kit) {
-        if (kit.cost > 0.0 && !player.isAuthorized("$permission.charge.bypass")) {
+        if (kit.cost > BigDecimal.ZERO && !player.isAuthorized("$permission.charge.bypass")) {
             Economy.subtractBalance(player.uniqueId, kit.cost)
             player.sendTl("kitCharge", Economy.formatBalance(kit.cost), kit.name)
         }

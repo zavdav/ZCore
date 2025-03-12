@@ -2,11 +2,11 @@ package me.zavdav.zcore.data
 
 import com.github.cliftonlabs.json_simple.JsonArray
 import com.github.cliftonlabs.json_simple.JsonObject
-import me.zavdav.zcore.api.Economy.roundTo2
-import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.util.getSafeHeight
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.UUID
 
 abstract class UserData protected constructor(val uuid: UUID) : JsonData("userdata/$uuid.json") {
@@ -17,9 +17,9 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData("userda
     var lastSeen: Long = -1
     var playTime: Long = 0
     @Volatile
-    var balance: Double = 0.0
-        get() = field.coerceIn(0.0..Config.maxBalance).roundTo2()
-        set(value) { field = value.coerceIn(0.0..Config.maxBalance).roundTo2() }
+    var balance: BigDecimal = BigDecimal.ZERO
+        set(value) { field = value.setScale(10, RoundingMode.FLOOR) }
+    var loanPermitted: Boolean = false
     var nickname: String? = null
     var homes: MutableMap<String, Location> = mutableMapOf()
     var ignores: MutableList<UUID> = mutableListOf()
@@ -42,7 +42,8 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData("userda
         json["lastJoin"]?.let { lastJoin = it.toString().toLong() }
         json["lastSeen"]?.let { lastSeen = it.toString().toLong() }
         json["playTime"]?.let { playTime = it.toString().toLong() }
-        json["balance"]?.let { balance = it.toString().toDouble() }
+        json["balance"]?.let { balance = BigDecimal(it.toString()) }
+        json["loanPermitted"]?.let { loanPermitted = it as Boolean }
         json["nickname"]?.let { nickname = it.toString() }
         json["homes"]?.let {
             homes = (it as JsonObject).map {
@@ -109,6 +110,7 @@ abstract class UserData protected constructor(val uuid: UUID) : JsonData("userda
         json["lastSeen"] = lastSeen
         json["playTime"] = playTime
         json["balance"] = balance
+        json["loanPermitted"] = loanPermitted
         json["nickname"] = nickname
         json["homes"] = JsonObject(homes.map {
             it.key to

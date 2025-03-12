@@ -8,6 +8,7 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import java.math.BigDecimal
 
 abstract class AbstractCommand(
     val name: String,
@@ -61,7 +62,7 @@ abstract class AbstractCommand(
 
     protected open fun charge(player: Player) {
         val cost = Config.getCommandCost(this)
-        if (cost > 0.0 && !player.isAuthorized("$permission.charge.bypass")) {
+        if (cost > BigDecimal.ZERO && !player.isAuthorized("$permission.charge.bypass")) {
             Economy.subtractBalance(player.uniqueId, cost)
             player.sendTl("commandCharge", Economy.formatBalance(cost), name)
         }

@@ -1,5 +1,6 @@
 package me.zavdav.zcore.util
 
+import me.zavdav.zcore.api.EconomyException
 import org.bukkit.Location
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player

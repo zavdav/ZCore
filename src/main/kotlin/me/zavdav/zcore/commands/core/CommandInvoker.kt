@@ -1,8 +1,8 @@
 package me.zavdav.zcore.commands.core
 
+import me.zavdav.zcore.api.EconomyException
 import me.zavdav.zcore.util.CommandException
 import me.zavdav.zcore.util.CommandSyntaxException
-import me.zavdav.zcore.util.EconomyException
 import me.zavdav.zcore.util.MiscellaneousException
 import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.isAuthorized

@@ -1,12 +1,11 @@
 package me.zavdav.zcore.config
 
 import me.zavdav.zcore.ZCore
-import me.zavdav.zcore.api.Economy
-import me.zavdav.zcore.api.Economy.roundTo2
 import me.zavdav.zcore.commands.core.AbstractCommand
 import me.zavdav.zcore.util.Logger
 import org.bukkit.util.config.Configuration
 import java.io.File
+import java.math.BigDecimal
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
@@ -157,8 +156,8 @@ object Config {
     val overrideCommands: List<String>
         get() = getStringList("overrideCommands", emptyList())
 
-    fun getCommandCost(command: AbstractCommand): Double =
-        getDouble("commandCosts.${command.name}", 0.0..maxBalance, 0.0).roundTo2()
+    fun getCommandCost(command: AbstractCommand): BigDecimal =
+        getDouble("commandCosts.${command.name}", def = 0.0).toBigDecimal()
 
     val listOtherCommands: Boolean
         get() = getBoolean("listOtherCommands", true)
@@ -168,9 +167,6 @@ object Config {
 
     val currency: String
         get() = getString("currency", "$")
-
-    val maxBalance: Double
-        get() = getDouble("maxBalance", 0.0..Economy.MAX_BALANCE, Economy.MAX_BALANCE).roundTo2()
 
     val balancesPerPage: Int
         get() = getInt("balancesPerPage", 1..Int.MAX_VALUE, 10)

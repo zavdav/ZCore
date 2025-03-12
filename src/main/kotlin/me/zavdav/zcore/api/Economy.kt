@@ -3,22 +3,20 @@ package me.zavdav.zcore.api
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.user.UserMap
-import me.zavdav.zcore.util.BalanceOutOfBoundsException
-import me.zavdav.zcore.util.NoFundsException
-import me.zavdav.zcore.util.UnknownUserException
-import java.text.NumberFormat
-import java.util.Locale
+import me.zavdav.zcore.util.isAuthorized
+import java.math.BigDecimal
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.util.UUID
-import kotlin.math.pow
-import kotlin.math.roundToLong
+import kotlin.jvm.Throws
 
 /**
  * This class provides methods to access ZCore's economy.
+ * Note that `BigDecimal(String)` is the preferred syntax for creating [BigDecimal]s.
  */
 object Economy {
 
-    const val MAX_BALANCE: Double = 10000000000000.0
-    private val formatter: NumberFormat = NumberFormat.getNumberInstance(Locale.US)
+    private val formatter: DecimalFormat = DecimalFormat("#,##0.00")
 
     /**
      * Checks if a player exists.
@@ -30,119 +28,133 @@ object Economy {
     fun userExists(uuid: UUID): Boolean = UserMap.isUserKnown(uuid)
 
     /**
-     * Returns a player's balance, rounded to 2 decimal places.
+     * Returns a player's current balance.
      *
      * @param uuid the player's UUID
      * @return the player's balance
      * @throws [UnknownUserException] if the player does not exist
      */
+    @Throws(UnknownUserException::class)
     @JvmStatic
-    fun getBalance(uuid: UUID): Double {
+    fun getBalance(uuid: UUID): BigDecimal {
         if (!userExists(uuid)) throw UnknownUserException(uuid)
         return User.from(uuid).balance
     }
 
     /**
-     * Sets a player's balance, rounded to 2 decimal places.
+     * Sets a player's balance to an amount.
      *
      * @param uuid the player's UUID
      * @param amount the new balance
      * @return the new balance
      * @throws [UnknownUserException] if the player does not exist
-     * @throws [BalanceOutOfBoundsException] if the new balance would be higher than the maximum balance
+     * @throws [LoanNotPermittedException] if the new balance would be negative and the player cannot have a loan
      */
+    @Throws(UnknownUserException::class, LoanNotPermittedException::class)
     @JvmStatic
-    fun setBalance(uuid: UUID, amount: Double): Double {
+    fun setBalance(uuid: UUID, amount: BigDecimal): BigDecimal {
         if (!userExists(uuid)) throw UnknownUserException(uuid)
-        if (isOutOfBounds(amount)) throw BalanceOutOfBoundsException(uuid)
-        User.from(uuid).balance = amount.roundTo2()
+        val user = User.from(uuid)
+
+        if (amount < BigDecimal.ZERO) {
+            if (user.isOnline) {
+                if (!user.player.isAuthorized("zcore.economy.loan"))
+                    throw LoanNotPermittedException(uuid)
+            } else {
+                if (!user.loanPermitted)
+                    throw LoanNotPermittedException(uuid)
+            }
+        }
+
+        user.balance = amount
         return getBalance(uuid)
     }
 
     /**
-     * Adds an amount to a player's balance, rounded to 2 decimal places.
+     * Adds an amount to a player's balance.
      *
      * @param uuid the player's UUID
      * @param amount the amount to add to the player's balance
      * @throws [UnknownUserException] if the player does not exist
-     * @throws [BalanceOutOfBoundsException] if the new balance would be higher than the maximum balance
+     * @throws [LoanNotPermittedException] if the new balance would be negative and the player cannot have a loan
      */
+    @Throws(UnknownUserException::class, LoanNotPermittedException::class)
     @JvmStatic
-    fun addBalance(uuid: UUID, amount: Double) {
-        setBalance(uuid, getBalance(uuid) + amount.roundTo2())
+    fun addBalance(uuid: UUID, amount: BigDecimal) {
+        setBalance(uuid, getBalance(uuid) + amount)
     }
 
     /**
-     * Subtracts an amount from a player's balance, rounded to 2 decimal places.
+     * Subtracts an amount from a player's balance.
      *
      * @param uuid the player's UUID
      * @param amount the amount to subtract from the player's balance
      * @throws [UnknownUserException] if the player does not exist
-     * @throws [NoFundsException] if the new balance would be below zero
-     * @throws [BalanceOutOfBoundsException] if the new balance would be higher than the maximum balance
+     * @throws [LoanNotPermittedException] if the new balance would be negative and the player cannot have a loan
      */
+    @Throws(UnknownUserException::class, LoanNotPermittedException::class)
     @JvmStatic
-    fun subtractBalance(uuid: UUID, amount: Double) {
-        if (!hasEnough(uuid, amount)) throw NoFundsException(uuid)
-        setBalance(uuid, getBalance(uuid) - amount.roundTo2())
+    fun subtractBalance(uuid: UUID, amount: BigDecimal) {
+        setBalance(uuid, getBalance(uuid) - amount)
     }
 
     /**
-     * Multiplies a player's balance with a factor, rounded to 2 decimal places.
+     * Multiplies a player's balance with an amount.
      *
      * @param uuid the player's UUID
-     * @param amount the factor to multiply with
+     * @param amount the amount to multiply the player's balance with
      * @throws [UnknownUserException] if the player does not exist
-     * @throws [BalanceOutOfBoundsException] if the new balance would be higher than the maximum balance
+     * @throws [LoanNotPermittedException] if the new balance would be negative and the player cannot have a loan
      */
+    @Throws(UnknownUserException::class, LoanNotPermittedException::class)
     @JvmStatic
-    fun multiplyBalance(uuid: UUID, amount: Double) {
+    fun multiplyBalance(uuid: UUID, amount: BigDecimal) {
         setBalance(uuid, getBalance(uuid) * amount)
     }
 
     /**
-     * Divides a player's balance by a factor, rounded to 2 decimal places.
+     * Divides a player's balance by an amount.
      *
      * @param uuid the player's UUID
-     * @param amount the factor to divide by
+     * @param amount the amount to divide the player's balance by
      * @throws [UnknownUserException] if the player does not exist
-     * @throws [BalanceOutOfBoundsException] if the new balance would be higher than the maximum balance
+     * @throws [LoanNotPermittedException] if the new balance would be negative and the player cannot have a loan
      */
+    @Throws(UnknownUserException::class, LoanNotPermittedException::class)
     @JvmStatic
-    fun divideBalance(uuid: UUID, amount: Double) {
+    fun divideBalance(uuid: UUID, amount: BigDecimal) {
         setBalance(uuid, getBalance(uuid) / amount)
     }
 
     /**
-     * Transfers an amount from one player to another player, rounded to 2 decimal places.
+     * Transfers an amount from one player to another player.
      *
-     * @param sender the sender's UUID
-     * @param receiver the receiver's UUID
+     * @param sender the sending player's UUID
+     * @param receiver the receiving player's UUID
      * @param amount the amount to transfer
      * @throws [UnknownUserException] if any of the players do not exist
-     * @throws [NoFundsException] if the sender's new balance would be below zero
-     * @throws [BalanceOutOfBoundsException] if the receiver's new balance would be higher than the maximum balance
+     * @throws [LoanNotPermittedException] if the sender's new balance would be negative and the sender cannot have a loan
      */
+    @Throws(UnknownUserException::class, LoanNotPermittedException::class)
     @JvmStatic
-    fun transferBalance(sender: UUID, receiver: UUID, amount: Double) {
-        if (isOutOfBounds(getBalance(receiver) + amount.roundTo2())) {
-            throw BalanceOutOfBoundsException(receiver)
-        }
+    fun transferBalance(sender: UUID, receiver: UUID, amount: BigDecimal) {
+        if (!userExists(receiver)) throw UnknownUserException(receiver)
         subtractBalance(sender, amount)
         addBalance(receiver, amount)
     }
 
     /**
-     * Checks if a player has at least the amount in their account.
+     * Checks if a player's balance is greater than or equal to an amount.
      *
      * @param uuid the player's UUID
-     * @param amount the amount to check for
-     * @return if the player has at least this amount in their account
+     * @param amount the amount
+     * @return if the balance is greater than or equal to the amount
      * @throws [UnknownUserException] if the player does not exist
      */
+    @Throws(UnknownUserException::class)
     @JvmStatic
-    fun hasEnough(uuid: UUID, amount: Double): Boolean =
-        getBalance(uuid) >= amount.roundTo2()
+    fun hasEnough(uuid: UUID, amount: BigDecimal): Boolean =
+        getBalance(uuid) >= amount
 
     /**
      * Checks if a player's balance is greater than an amount.
@@ -152,9 +164,10 @@ object Economy {
      * @return if the balance is greater than the amount
      * @throws [UnknownUserException] if the player does not exist
      */
+    @Throws(UnknownUserException::class)
     @JvmStatic
-    fun hasOver(uuid: UUID, amount: Double): Boolean =
-        getBalance(uuid) > amount.roundTo2()
+    fun hasOver(uuid: UUID, amount: BigDecimal): Boolean =
+        getBalance(uuid) > amount
 
     /**
      * Checks if a player's balance is below an amount.
@@ -164,38 +177,21 @@ object Economy {
      * @return if the balance is below the amount
      * @throws [UnknownUserException] if the player does not exist
      */
+    @Throws(UnknownUserException::class)
     @JvmStatic
-    fun hasUnder(uuid: UUID, amount: Double): Boolean =
-        !hasEnough(uuid, amount)
+    fun hasUnder(uuid: UUID, amount: BigDecimal): Boolean =
+        getBalance(uuid) < amount
 
     /**
-     * Checks if an amount is higher than the maximum balance.
-     *
-     * @param amount the amount to check
-     * @return if the amount is out of bounds
-     */
-    @JvmStatic
-    fun isOutOfBounds(amount: Double): Boolean = amount.roundTo2() > Config.maxBalance
-
-    /**
-     * Formats an amount to the currency, rounded to 2 decimal places.
+     * Formats an amount to the currency, rounded down to 2 decimal places.
      *
      * @param amount the amount to format
      * @return the formatted currency
      */
     @JvmStatic
-    fun formatBalance(amount: Double): String {
-        val string = "${Config.currency}${formatter.format(amount)}"
-        return if (string.endsWith(".00")) string.substring(0, string.length - 3) else string
-    }
-
-    /**
-     * Rounds this value to 2 decimal places.
-     *
-     * @return the rounded value
-     */
-    @JvmStatic
-    fun Double.roundTo2(): Double {
-        return (this * 10.0.pow(2)).roundToLong() / 10.0.pow(2)
+    fun formatBalance(amount: BigDecimal): String {
+        var balance = formatter.format(amount.setScale(2, RoundingMode.FLOOR))
+        if (balance.endsWith(".00")) balance = balance.substring(0, balance.length - 3)
+        return "${Config.currency}$balance"
     }
 }

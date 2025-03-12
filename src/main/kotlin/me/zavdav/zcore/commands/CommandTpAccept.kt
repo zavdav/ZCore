@@ -10,6 +10,7 @@ import me.zavdav.zcore.util.isAuthorized
 import me.zavdav.zcore.util.sendTl
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import java.math.BigDecimal
 
 class CommandTpAccept : AbstractCommand(
     "tpaccept",
@@ -56,7 +57,7 @@ class CommandTpAccept : AbstractCommand(
 
     override fun charge(player: Player) {
         val cost = Config.getCommandCost(this)
-        if (cost > 0.0 && !player.isAuthorized("$permission.charge.bypass")) {
+        if (cost > BigDecimal.ZERO && !player.isAuthorized("$permission.charge.bypass")) {
             Economy.subtractBalance(player.uniqueId, cost)
             player.sendTl("tpRequestCharge", Economy.formatBalance(cost))
         }
