@@ -9,7 +9,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.UUID
 
-abstract class UserData protected constructor(val uuid: UUID) : JsonData("userdata/$uuid.json") {
+abstract class OfflineUser protected constructor(val uuid: UUID) : JsonData("userdata/$uuid.json") {
 
     var username: String = "null"
     var firstJoin: Long = -1

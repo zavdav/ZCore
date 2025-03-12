@@ -3,7 +3,7 @@ package me.zavdav.zcore.user
 import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.config.Config
 import me.zavdav.zcore.data.BannedIPs
-import me.zavdav.zcore.data.UserData
+import me.zavdav.zcore.data.OfflineUser
 import me.zavdav.zcore.hooks.permissions.PermissionHandler
 import me.zavdav.zcore.util.broadcastTl
 import me.zavdav.zcore.util.format
@@ -19,7 +19,7 @@ import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.inventory.ItemStack
 import java.util.UUID
 
-class User private constructor(uuid: UUID) : UserData(uuid) {
+class User private constructor(uuid: UUID) : OfflineUser(uuid) {
 
     companion object {
         fun from(player: Player): User =
