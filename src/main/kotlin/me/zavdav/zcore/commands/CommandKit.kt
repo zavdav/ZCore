@@ -3,8 +3,8 @@ package me.zavdav.zcore.commands
 import me.zavdav.zcore.api.Economy
 import me.zavdav.zcore.api.EconomyException
 import me.zavdav.zcore.commands.core.AbstractCommand
+import me.zavdav.zcore.config.Kit
 import me.zavdav.zcore.config.Kits
-import me.zavdav.zcore.data.Kit
 import me.zavdav.zcore.user.User
 import me.zavdav.zcore.util.*
 import org.bukkit.command.CommandSender
@@ -23,21 +23,20 @@ class CommandKit : AbstractCommand(
     override fun execute(sender: CommandSender, args: List<String>) {
         val player = sender as Player
         val user = User.from(player)
-        val kits = Kits.getKits().filter { player.isAuthorized("zcore.kit.${it.key}") }
+        val kits = Kits.getKits()
 
         if (args.isEmpty()) {
             sender.assertOrSend("noKits") { kits.isNotEmpty() }
             sender.sendTl("kitList")
-            sender.sendMessage(kits.keys.sorted().joinToString(", "))
+            sender.sendMessage(kits.map { it.name }.sorted().joinToString(", "))
         } else {
-            val name = args[0].lowercase()
-            sender.assertOrSend("kitNotFound", name) { name in kits.keys }
-            val kit = kits[name]!!
+            val kit = Kits.getKit(args[0])
+            sender.assertOrSend("kitNotFound", args[0]) { kit != null }
 
             user.checkKitCooldowns()
-            val kitCooldown = user.kitCooldowns[kit.name]
+            val kitCooldown = user.kitCooldowns[kit!!.name]
             if (kitCooldown != null) {
-                sender.assertOrSend("kitOnCooldown", name,
+                sender.assertOrSend("kitOnCooldown", kit.name,
                                     formatDuration(kitCooldown - System.currentTimeMillis()))
                 { System.currentTimeMillis() > kitCooldown }
             }
@@ -68,5 +67,5 @@ class CommandKit : AbstractCommand(
         }
     }
 
-    private fun ItemStack.copy(): ItemStack = ItemStack(this.typeId, this.amount, this.durability)
+    private fun ItemStack.copy(): ItemStack = ItemStack(typeId, amount, durability)
 }

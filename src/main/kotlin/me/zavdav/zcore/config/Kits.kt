@@ -1,37 +1,44 @@
 package me.zavdav.zcore.config
 
-import me.zavdav.zcore.data.Kit
+import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
+import java.math.BigDecimal
+
+class Kit(
+    val name: String,
+    val items: Array<out ItemStack>,
+    val cost: BigDecimal,
+    val cooldown: Int
+)
 
 object Kits {
 
-    private lateinit var kits: MutableMap<String, Kit>
+    private val kits: MutableList<Kit> = mutableListOf()
 
     @Suppress("UNCHECKED_CAST")
     fun load() {
-        this.kits = mutableMapOf()
-        val kits = Config.kits
-        for (kit in kits) {
-            val name = kit.key
-            val map = kit.value as Map<String, Any>
-            val cost = ((map["cost"] ?: 0) as Number).toDouble().toBigDecimal()
-            val cooldown = ((map["cooldown"] ?: 0) as Number).toInt().coerceAtLeast(0)
-            val items = map["items"] as List<String>
-            val itemStacks = mutableListOf<ItemStack>()
+        kits.clear()
 
-            for (item in items) {
-                val split = item.split(",", limit = 3)
-                val idRange = (1..359) + (2256..2257)
-                val id = if ((split[0].toInt()) in idRange) split[0].toInt() else 1
+        for ((name, kit) in Config.kits) {
+            if (name in kits.map { it.name }) continue
+            kit as? Map<String, Any> ?: continue
+
+            val items = (kit["items"] as List<String>).map {
+                val split = it.split(",", limit = 3)
+                val material = Material.getMaterial(split[0].toInt())
                 val data = split[1].toShort().coerceIn(0, 15)
                 val count = split[2].toInt().coerceIn(1, 64)
-                itemStacks.add(ItemStack(id, count, data))
+                ItemStack(material, count, data)
             }
-            this.kits[name] = Kit(name, itemStacks.toTypedArray(), cost, cooldown)
+
+            val cost = ((kit["cost"] ?: 0) as Number).toDouble().toBigDecimal()
+            val cooldown = ((kit["cooldown"] ?: 0) as Number).toInt().coerceAtLeast(0)
+
+            kits.add(Kit(name, items.toTypedArray(), cost, cooldown))
         }
     }
 
-    fun getKits(): Map<String, Kit> = kits.toMap()
+    fun getKits(): List<Kit> = kits.toList()
 
-    fun getKit(name: String): Kit? = kits[name.lowercase()]
+    fun getKit(name: String): Kit? = kits.firstOrNull { it.name.equals(name, true) }
 }
