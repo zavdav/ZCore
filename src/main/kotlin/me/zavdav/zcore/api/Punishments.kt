@@ -1,9 +1,6 @@
 package me.zavdav.zcore.api
 
-import me.zavdav.zcore.data.Ban
 import me.zavdav.zcore.data.BannedIPs
-import me.zavdav.zcore.data.IPBan
-import me.zavdav.zcore.data.Mute
 import me.zavdav.zcore.user.User
 import java.util.UUID
 

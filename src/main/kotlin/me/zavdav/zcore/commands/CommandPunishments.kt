@@ -1,11 +1,11 @@
 package me.zavdav.zcore.commands
 
+import me.zavdav.zcore.api.Ban
+import me.zavdav.zcore.api.IPBan
+import me.zavdav.zcore.api.Mute
+import me.zavdav.zcore.api.Punishment
 import me.zavdav.zcore.api.Punishments
 import me.zavdav.zcore.commands.core.AbstractCommand
-import me.zavdav.zcore.data.Ban
-import me.zavdav.zcore.data.IPBan
-import me.zavdav.zcore.data.Mute
-import me.zavdav.zcore.data.Punishment
 import me.zavdav.zcore.util.IPV4_PATTERN
 import me.zavdav.zcore.util.assertOrSend
 import me.zavdav.zcore.util.formatDuration

@@ -1,4 +1,4 @@
-package me.zavdav.zcore.data
+package me.zavdav.zcore.api
 
 import java.util.UUID
 
