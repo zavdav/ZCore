@@ -77,6 +77,7 @@ class ZCore : JavaPlugin() {
             CommandIgnore(),
             CommandIgnoreList(),
             CommandInvSee(),
+            CommandItem(),
             CommandKick(),
             CommandKickAll(),
             CommandKill(),

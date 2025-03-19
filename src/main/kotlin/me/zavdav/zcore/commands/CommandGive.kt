@@ -15,8 +15,7 @@ class CommandGive : AbstractCommand(
     "zcore.give",
     false,
     2,
-    3,
-    listOf("item", "i")
+    3
 ) {
 
     override fun execute(sender: CommandSender, args: List<String>) {
